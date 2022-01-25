@@ -17,11 +17,9 @@ public class TaskGameHandler : MonoBehaviour
     {
         return taskSystem;
     }
-
-    [SerializeField]
-    private Sprite appleSprite;
-    [SerializeField]
-    private Sprite dewSprite;
+    [SerializeField] private Sprite PFCherrySprite;
+    [SerializeField] private Sprite appleSprite;
+    [SerializeField] private Sprite dewSprite;
 
 
     private StartEmptyVillagerPool pool;
@@ -69,9 +67,9 @@ public class TaskGameHandler : MonoBehaviour
         
         if (Input.GetMouseButtonDown(1))
         {
-            GameObject spawnedWorker = Instantiate(worker);
-            spawnedWorker.transform.position = new Vector3(UtilsClass.GetMouseWorldPosition().x, -3f);
-            spawnedWorker.GetComponent<TaskWorkerAI>().SetUp(spawnedWorker.GetComponent<Worker>(), taskSystem);
+            //GameObject spawnedWorker = Instantiate(worker);
+            //spawnedWorker.transform.position = new Vector3(UtilsClass.GetMouseWorldPosition().x, -3f);
+            //spawnedWorker.GetComponent<TaskWorkerAI>().SetUp(spawnedWorker.GetComponent<Worker>(), taskSystem);
         }
 
         if (Input.GetKeyDown(KeyCode.Q))
@@ -79,7 +77,7 @@ public class TaskGameHandler : MonoBehaviour
             //TaskSystem.Task task = new TaskSystem.Task.CleanUp { targetPosition = new Vector3(4, -3), cleanUpAction =  ()=> { Debug.Log("Cleaned Up Stuff"); } };
             //taskSystem.AddTask(task);
             //taskSystem.EnqueueTaskHelper()
-            SpawnMessCleanUp();
+            SpawnPFCherryCleanUp(new Vector3(UtilsClass.GetMouseWorldPosition().x, -3f));
 
         }
 
@@ -99,14 +97,16 @@ public class TaskGameHandler : MonoBehaviour
     }
 
 
-    private void SpawnMessCleanUp()
+    private void SpawnPFCherryCleanUp(Vector3 position)
     {
+        GameObject PFCherryObj = SpawnResourcePFCherry(position);
+
         float cleanupTime = Time.time + 5f;
         taskSystem.EnqueueTaskHelper(() => 
         { 
             if (Time.time > cleanupTime) 
             {
-                TaskSystem.Task task = new TaskSystem.Task.CleanUp { targetPosition = new Vector3(4, -3), cleanUpAction = () => { Debug.Log("Cleaned Up Stuff"); } };
+                TaskSystem.Task task = new TaskSystem.Task.CleanUp { targetPosition = position, cleanUpAction = () => { PFCherryObj.SetActive(false); Debug.Log("Cleaned Up Cherry"); } };
                 return task;
             }
             else
@@ -116,6 +116,14 @@ public class TaskGameHandler : MonoBehaviour
         });
     }
 
+    private GameObject SpawnResourcePFCherry(Vector3 position)
+    {
+        GameObject gameObject = new GameObject("PFCherry", typeof(SpriteRenderer));
+        gameObject.GetComponent<SpriteRenderer>().sprite = PFCherrySprite;
+        gameObject.transform.position = position;
+        return gameObject;
+    }
+    
     private GameObject SpawnResourceApple(Vector3 position)
     {
         GameObject gameObject = new GameObject("Apple", typeof(SpriteRenderer));
