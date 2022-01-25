@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 8f5b003a7254f214f959fc73ed56772e
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - tempWorkerSprite: {fileID: -3626068843856196821, guid: 3d1858f65f19da141b2c59b6c164e2a1, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
