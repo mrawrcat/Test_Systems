@@ -37,10 +37,10 @@ public class TaskGameHandler : MonoBehaviour
         spawnedWorker.transform.position = new Vector3(-3, -3f);
         spawnedWorker.GetComponent<TaskWorkerAI>().SetUp(spawnedWorker.GetComponent<Worker>(), taskSystem);
        
+        /*
         GameObject spawnedWorker2 = Instantiate(worker);
         spawnedWorker2.transform.position = new Vector3(3, -3f);
         spawnedWorker2.GetComponent<TaskWorkerAI>().SetUp(spawnedWorker2.GetComponent<Worker>(), taskSystem);
-        /*
         */
 
         GameObject dewGameObject = SpawnResourceDew(new Vector3(-7, -3.5f));
@@ -52,7 +52,8 @@ public class TaskGameHandler : MonoBehaviour
             takeResource = (TaskWorkerAI dewtaskWorkerAI) => { dewGameObject.transform.SetParent(dewtaskWorkerAI.transform); },
             dropResource = () => { dewGameObject.transform.SetParent(null); },
         };
-
+        taskSystem.AddTask(task);
+        task = new TaskSystem.Task.MoveToPosition { targetPosition = new Vector3(-8, -3f) };
         taskSystem.AddTask(task);
     }
 
