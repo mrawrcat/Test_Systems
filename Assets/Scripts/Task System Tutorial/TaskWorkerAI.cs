@@ -68,6 +68,11 @@ public class TaskWorkerAI : MonoBehaviour
                 ExecuteTask_CleanUp(task as TaskSystem.Task.CleanUp);
                 return;
             }
+            if(task is TaskSystem.Task.TakeResourceToPosition)
+            {
+                ExecuteTask_TakeResourceToPosition(task as TaskSystem.Task.TakeResourceToPosition);
+                return;
+            }
 
 
         }
@@ -88,6 +93,20 @@ public class TaskWorkerAI : MonoBehaviour
     {
         Debug.Log("Execute CleanUp Task");
         worker.MoveTo(cleanUpTask.targetPosition, () => { cleanUpTask.cleanUpAction(); state = State.WaitingForNextTask; });
+
+    }
+    private void ExecuteTask_TakeResourceToPosition(TaskSystem.Task.TakeResourceToPosition takeResourceTask)
+    {
+        Debug.Log("Execute Take Resource To Position Task");
+        worker.MoveTo(takeResourceTask.resourcePosition, () => 
+        { 
+            takeResourceTask.takeResource(this); 
+            worker.MoveTo(takeResourceTask.resourceDepositPosition, () => 
+            { 
+                takeResourceTask.dropResource(); 
+                state = State.WaitingForNextTask; 
+            }); 
+        });
 
     }
 }

@@ -17,6 +17,13 @@ public class TaskGameHandler : MonoBehaviour
     {
         return taskSystem;
     }
+
+    [SerializeField]
+    private Sprite appleSprite;
+    [SerializeField]
+    private Sprite dewSprite;
+
+
     private StartEmptyVillagerPool pool;
     [SerializeField]
     private GameObject worker;
@@ -36,7 +43,17 @@ public class TaskGameHandler : MonoBehaviour
         /*
         */
 
+        GameObject dewGameObject = SpawnResourceDew(new Vector3(-7, -3.5f));
+        GameObject appleGameObject = SpawnResourceApple(new Vector3(7, -3.5f));
+        TaskSystem.Task task = new TaskSystem.Task.TakeResourceToPosition
+        {
+            resourcePosition = dewGameObject.transform.position,
+            resourceDepositPosition = appleGameObject.transform.position,
+            takeResource = (TaskWorkerAI dewtaskWorkerAI) => { dewGameObject.transform.SetParent(dewtaskWorkerAI.transform); },
+            dropResource = () => { dewGameObject.transform.SetParent(null); },
+        };
 
+        taskSystem.AddTask(task);
     }
 
     // Update is called once per frame
@@ -96,5 +113,20 @@ public class TaskGameHandler : MonoBehaviour
                 return null;
             }        
         });
+    }
+
+    private GameObject SpawnResourceApple(Vector3 position)
+    {
+        GameObject gameObject = new GameObject("Apple", typeof(SpriteRenderer));
+        gameObject.GetComponent<SpriteRenderer>().sprite = appleSprite;
+        gameObject.transform.position = position;
+        return gameObject;
+    }
+    private GameObject SpawnResourceDew(Vector3 position)
+    {
+        GameObject gameObject = new GameObject("Dew", typeof(SpriteRenderer));
+        gameObject.GetComponent<SpriteRenderer>().sprite = dewSprite;
+        gameObject.transform.position = position;
+        return gameObject;
     }
 }

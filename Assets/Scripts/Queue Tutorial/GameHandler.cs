@@ -5,8 +5,8 @@ using CodeMonkey;
 
 public class GameHandler : MonoBehaviour
 {
-    
 
+   
     [SerializeField]
     private Transform QueueStartTransform; 
     [SerializeField]
@@ -39,6 +39,8 @@ public class GameHandler : MonoBehaviour
 
         List<Vector3> buildingPosList = new List<Vector3>() { new Vector3(20,-3.5f), new Vector3(25, -3.5f) };//toilet positions
         //TestBuilding testBuilding = new TestBuilding(waitingQueue, buildingPosList, toiletExit);
+       
+        
     }
 
     private void Update()
@@ -83,6 +85,6 @@ public class GameHandler : MonoBehaviour
     }
 
 
-
+   
 
 }

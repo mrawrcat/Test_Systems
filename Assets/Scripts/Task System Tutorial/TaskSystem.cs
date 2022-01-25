@@ -40,6 +40,14 @@ public class TaskSystem
             public Vector3 targetPosition;
             public Action cleanUpAction;
         }
+
+        public class TakeResourceToPosition : Task //grabs a resource and takes it to building? position
+        {
+            public Vector3 resourcePosition;
+            public Action<TaskWorkerAI> takeResource;
+            public Vector3 resourceDepositPosition; //position where worker deposits resource
+            public Action dropResource;
+        }
     }
 
     private List<Task> taskList;

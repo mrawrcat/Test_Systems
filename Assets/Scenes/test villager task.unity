@@ -1034,6 +1034,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcb57bb767ac42141b9a480e22f18443, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  appleSprite: {fileID: 2812310717692327187, guid: 180471c730b79614a912933e60a54a71, type: 3}
+  dewSprite: {fileID: 1319487967105498728, guid: 180471c730b79614a912933e60a54a71, type: 3}
   worker: {fileID: 4308305500318453584, guid: f98f17d16b8a2f040b607a252724bf2f, type: 3}
 --- !u!1001 &986878022
 PrefabInstance:
