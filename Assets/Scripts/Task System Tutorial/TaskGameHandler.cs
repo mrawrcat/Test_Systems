@@ -21,7 +21,7 @@ public class TaskGameHandler : MonoBehaviour
     [SerializeField] private Sprite appleSprite;
     [SerializeField] private Sprite dewSprite;
 
-
+    private DepositSlot depositSlot;
     private StartEmptyVillagerPool pool;
     [SerializeField]
     private GameObject worker;
@@ -39,10 +39,7 @@ public class TaskGameHandler : MonoBehaviour
         GameObject spawnedWorker2 = Instantiate(worker);
         spawnedWorker2.transform.position = new Vector3(3, -3f);
         spawnedWorker2.GetComponent<TaskWorkerAI>().SetUp(spawnedWorker2.GetComponent<Worker>(), taskSystem);
-        */
-
         GameObject dewGameObject = SpawnResourceDew(new Vector3(-7, -3.5f));
-        GameObject appleGameObject = SpawnResourceApple(new Vector3(7, -3.5f));
         TaskSystem.Task task = new TaskSystem.Task.TakeResourceToPosition
         {
             resourcePosition = dewGameObject.transform.position,
@@ -53,6 +50,10 @@ public class TaskGameHandler : MonoBehaviour
         taskSystem.AddTask(task);
         task = new TaskSystem.Task.MoveToPosition { targetPosition = new Vector3(-8, -3f) };
         taskSystem.AddTask(task);
+        */
+
+        GameObject appleGameObject = SpawnResourceApple(new Vector3(7, -3.5f));
+        depositSlot = new DepositSlot(appleGameObject.transform);
     }
 
     // Update is called once per frame
@@ -70,6 +71,7 @@ public class TaskGameHandler : MonoBehaviour
             //GameObject spawnedWorker = Instantiate(worker);
             //spawnedWorker.transform.position = new Vector3(UtilsClass.GetMouseWorldPosition().x, -3f);
             //spawnedWorker.GetComponent<TaskWorkerAI>().SetUp(spawnedWorker.GetComponent<Worker>(), taskSystem);
+            SpawnDewPickUp(new Vector3(UtilsClass.GetMouseWorldPosition().x, -3.5f));
         }
 
         if (Input.GetKeyDown(KeyCode.Q))
@@ -116,6 +118,39 @@ public class TaskGameHandler : MonoBehaviour
         });
     }
 
+    private void SpawnDewPickUp(Vector3 position)
+    {
+        GameObject dewGameObject = SpawnResourceDew(position);
+        
+        taskSystem.EnqueueTaskHelper(()=>
+        {
+            if (depositSlot.isEmpty())
+            {
+                depositSlot.SetDepositIncoming(true);
+                TaskSystem.Task task = new TaskSystem.Task.TakeResourceToPosition
+                {
+                    resourcePosition = dewGameObject.transform.position,
+                    resourceDepositPosition = depositSlot.GetPosition(),
+                    takeResource = (TaskWorkerAI dewtaskWorkerAI) => { dewGameObject.transform.SetParent(dewtaskWorkerAI.transform); },
+                    dropResource = () => 
+                    { 
+                        dewGameObject.transform.SetParent(null);
+                        depositSlot.SetDepositTransform(dewGameObject.transform);
+                    },
+                };
+                return task;
+            }
+            else
+            {
+                return null;
+            }
+
+
+        });
+        
+        
+    }
+
     private GameObject SpawnResourcePFCherry(Vector3 position)
     {
         GameObject gameObject = new GameObject("PFCherry", typeof(SpriteRenderer));
@@ -137,5 +172,53 @@ public class TaskGameHandler : MonoBehaviour
         gameObject.GetComponent<SpriteRenderer>().sprite = dewSprite;
         gameObject.transform.position = position;
         return gameObject;
+    }
+
+    public class DepositSlot
+    {
+        private Transform depositObjTransform;
+        private Transform depositSlotTransform;
+        private bool hasDepositIncoming;
+
+        public DepositSlot(Transform depositSlotTransform)
+        {
+            this.depositSlotTransform = depositSlotTransform;
+            SetDepositTransform(null);
+        }
+
+        public bool isEmpty()
+        {
+            return depositObjTransform == null && !hasDepositIncoming;
+        }
+
+        public void SetDepositIncoming(bool hasDepositIncoming)
+        {
+            this.hasDepositIncoming = hasDepositIncoming;
+        }
+
+        public void SetDepositTransform(Transform depositObjTransform)
+        {
+            this.depositObjTransform = depositObjTransform;
+            hasDepositIncoming = false;
+            UpdateSprite();
+            FunctionTimer.Create(()=> 
+            {
+                if(depositObjTransform != null)
+                {
+                    Destroy(depositObjTransform.gameObject);
+                    SetDepositTransform(null);
+                }
+            }, 1f);
+        }
+
+        public Vector3 GetPosition()
+        {
+            return depositSlotTransform.position;
+        }
+
+        public void UpdateSprite()
+        {
+            depositSlotTransform.GetComponent<SpriteRenderer>().color = isEmpty() ? Color.grey : Color.red;
+        }
     }
 }

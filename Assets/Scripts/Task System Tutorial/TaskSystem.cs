@@ -79,7 +79,7 @@ public class TaskSystem
         taskList.Add(task);
     }
 
-    public void EnqueueTask(QueuedTask queuedTask)
+    private void EnqueueTask(QueuedTask queuedTask)
     {
         queuedTaskList.Add(queuedTask);
 
