@@ -17,7 +17,6 @@ public class GameManager : MonoBehaviour
     public bool can_move_distance;
     
     
-    
     private void Awake()
     {
         if (manager == null)
