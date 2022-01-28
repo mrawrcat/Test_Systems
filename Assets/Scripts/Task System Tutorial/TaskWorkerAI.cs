@@ -81,7 +81,7 @@ public class TaskWorkerAI : MonoBehaviour
     private void ExecuteTask_MoveToPosition(TaskSystem.Task.MoveToPosition moveToPosTask)
     {
         Debug.Log("Execute MoveTo Task");
-        worker.MoveTo(new Vector3(moveToPosTask.targetPosition.x, -3f), () => { state = State.WaitingForNextTask; });
+        worker.MoveTo(new Vector3(moveToPosTask.targetPosition.x, moveToPosTask.targetPosition.y), () => { state = State.WaitingForNextTask; });
     }
 
     private void ExecuteTask_Victory(TaskSystem.Task.Victory victoryTask)
