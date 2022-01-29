@@ -35,7 +35,6 @@ public class WaitingQueue_VillagerAI
 
     public void SetQueuePosition(Vector3 position)
     {
-       
         villager.MoveTo(position, () => { waitingQueue.VillagerArrivedAtQueuePosition(this); });
     }
 

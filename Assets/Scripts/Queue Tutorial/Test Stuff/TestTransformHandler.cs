@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TestHandler : MonoBehaviour
+public class TestTransformHandler : MonoBehaviour
 {
     [SerializeField]
     private Transform QueueStartTransform;

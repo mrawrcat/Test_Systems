@@ -135,13 +135,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4506686539902224787, guid: 065a0f4b66a49ee4ea26207d47391d8e, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6072799198977146303, guid: 065a0f4b66a49ee4ea26207d47391d8e, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6722775549185074017, guid: 065a0f4b66a49ee4ea26207d47391d8e, type: 3}
       propertyPath: m_RootOrder
@@ -287,7 +283,7 @@ GameObject:
   - component: {fileID: 1679175757}
   - component: {fileID: 1679175756}
   m_Layer: 0
-  m_Name: Orbit
+  m_Name: Orbit Handler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -306,8 +302,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   followerSprite: {fileID: 1786035042557713704, guid: e452acd750bbccf4881863894d85c70b, type: 3}
-  animatorController: {fileID: 9100000, guid: 001d985887cb5e244ae0fc1a1d674e0b, type: 2}
+  animatorController: {fileID: 9100000, guid: c78e206854c62024aa4df561f1c3c351, type: 2}
   orbitTransform: {fileID: 711739689}
+  distanceFromCenter: 3
+  maxFollowers: 7
+  queuePositions: []
 --- !u!4 &1679175757
 Transform:
   m_ObjectHideFlags: 0
@@ -316,7 +315,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1679175755}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7, y: -3.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

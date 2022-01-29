@@ -19,19 +19,20 @@ public class Follower : MonoBehaviour, IWorker
         InBuilding,
 
     }
+    [SerializeField] private float speed = 7;
     [SerializeField]
     private Sprite tempWorkerSprite;
     [SerializeField]
     private State state;
+
     private QueuedState queuedState;
     
     private Rigidbody2D rb2d;
-    [SerializeField]
-    private Vector3 currentPos;
+    [SerializeField] private Vector3 currentPos;
+    [SerializeField] private Transform currentTransform;
     private Coroutine _currentRoutine;
     private Coroutine _animationRoutine;
     private float inverseMoveTime;
-    private Transform currentTransform;
     private Animator anim;
     public Sprite GetWorkerSprite()
     {
@@ -48,6 +49,7 @@ public class Follower : MonoBehaviour, IWorker
         //player = FindObjectOfType<PlayerMovement>();
         rb2d = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        currentTransform = transform;
         //Debug.Log(anim.runtimeAnimatorController.animationClips[1].name);
     }
 
@@ -60,7 +62,7 @@ public class Follower : MonoBehaviour, IWorker
             {
 
                 //StartCoroutine(SmoothMovement(currentTransform.position));
-                transform.position = Vector2.MoveTowards(transform.position, currentTransform.position, 5 * Time.deltaTime);
+                transform.position = Vector2.MoveTowards(transform.position, currentTransform.position, speed * Time.deltaTime);
                 //transform.position = Vector3.Lerp(transform.position, currentTransform.position, Time.deltaTime * 5);
                 //transform.position = Vector2.MoveTowards(transform.position, currentPos, 5 * Time.deltaTime);
                 //transform.Translate(dir * Time.deltaTime);
@@ -79,7 +81,7 @@ public class Follower : MonoBehaviour, IWorker
 
             if (!IsArrivedFree())
             {
-                transform.position = Vector2.MoveTowards(transform.position, currentPos, 5 * Time.deltaTime);
+                transform.position = Vector2.MoveTowards(transform.position, currentPos, speed * Time.deltaTime);
                 //transform.position = Vector3.Lerp(transform.position, currentPos, Time.deltaTime * 5);
             }
             else if (IsArrivedFree())
@@ -97,6 +99,10 @@ public class Follower : MonoBehaviour, IWorker
         }
     }
 
+    public void setCurrentTransformToNull()
+    {
+        currentTransform = transform;
+    }
 
     private bool IsArrived()//for go to transform
     {

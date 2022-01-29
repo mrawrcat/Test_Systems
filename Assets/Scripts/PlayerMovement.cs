@@ -80,7 +80,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (!IsArrivedFree())
             {
-                transform.position = Vector2.MoveTowards(transform.position, currentPos, 5 * Time.deltaTime);
+                transform.position = Vector2.MoveTowards(transform.position, currentPos, speed * Time.deltaTime);
                 //transform.position = Vector3.Lerp(transform.position, currentPos, 1 * Time.deltaTime);
             }
             else if (IsArrivedFree())

@@ -5,21 +5,24 @@ using UnityEngine;
 public class RallyVillagers : MonoBehaviour
 {
 
-    private bool foundVillager;
+    [SerializeField]private bool foundVillager;
     [SerializeField]
     private LayerMask whatIsVillager;
     [SerializeField]
     private Transform atkPos;
     [SerializeField]
     private Vector2 atkBoxSize;
+    [SerializeField]
+    private float circleSize;
     private GameHandler gameHandler;
-    private TestHandler testHandler;
-    private List<Villager> toRally = new List<Villager>(); 
+    private TestTransformHandler testHandler;
+    private OrbitHandler orbitHandler;
     // Start is called before the first frame update
     void Start()
     {
         gameHandler = FindObjectOfType<GameHandler>();
-        testHandler = FindObjectOfType<TestHandler>();
+        testHandler = FindObjectOfType<TestTransformHandler>();
+        orbitHandler = FindObjectOfType<OrbitHandler>();
     }
 
     // Update is called once per frame
@@ -33,7 +36,13 @@ public class RallyVillagers : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E))
         {
             //gameHandler.SendGuest();
-            testHandler.SendGuest();
+            //testHandler.SendGuest();
+        }
+        foundVillager = Physics2D.OverlapCircle((Vector2)atkPos.position, circleSize, 0, whatIsVillager);
+        Collider2D[] villagers = Physics2D.OverlapCircleAll((Vector2)atkPos.position, circleSize, 0, whatIsVillager);
+        if (foundVillager)
+        {
+            Debug.Log("follower in circle");
         }
     }
 
@@ -47,14 +56,11 @@ public class RallyVillagers : MonoBehaviour
             //Debug.Log(villagers.Length);
             foreach (Collider2D villager in villagers)
             {
-                /*
-                    add them into a list or dictionary, make them follow player
-                    maybe for follow best to make villager have 2 or 3 states -> set state to follow -> follow the guy in front? follow player at random length?
-                */
-                //toRally.Add(villager.GetComponent<Villager>());
                 //villager.GetComponent<Villager>().SetStateToFollow();
                 //gameHandler.DoAddGuest(villager.GetComponent<Villager>());
-                testHandler.DoAddGuest(villager.GetComponent<Villager>());
+                //testHandler.DoAddGuest(villager.GetComponent<Villager>());
+                orbitHandler.DoAddGuest(villager.GetComponent<Follower>());
+                Debug.Log("found follwer");
             }
         }
     }
@@ -62,6 +68,7 @@ public class RallyVillagers : MonoBehaviour
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere((Vector2)atkPos.position, circleSize);
         Gizmos.DrawWireCube((Vector2)atkPos.position, atkBoxSize);
 
     }

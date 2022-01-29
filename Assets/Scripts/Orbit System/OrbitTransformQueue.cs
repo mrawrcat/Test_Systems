@@ -4,19 +4,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using CodeMonkey.Utils;
 
-public class TestQueue
+public class OrbitTransformQueue
 {
-    public event EventHandler OnVillagerAdded;
-    public event EventHandler OnVillagerArrivedAtFrontofQueue;
-    private List<Villager> villagerList;
+    public event EventHandler OnFollowerAdded;
+    public event EventHandler OnFollowerArrivedAtFrontofQueue;
+    private List<Follower> followerList;
     private List<Transform> positionList;
     private Vector3 entrancePosition;
     //private Transform bleh;
-    public TestQueue (List<Transform> positionList)
+    public OrbitTransformQueue(List<Transform> positionList)
     {
         this.positionList = positionList;
         //bleh.position = positionList[positionList.Count - 1].position + new Vector3(-1.5f, 0);
-       
+
         //CalculateEntrancePosition();
         /*
         foreach (Transform position in positionList)
@@ -27,46 +27,46 @@ public class TestQueue
         */
         //World_Sprite.Create(bleh.position, new Vector3(1f, 1f), Color.magenta);
 
-        villagerList = new List<Villager>();
+        followerList = new List<Follower>();
     }
 
-    public bool canAddVillager()
+    public bool canAddFollower()
     {
-        return villagerList.Count < positionList.Count;
+        return followerList.Count < positionList.Count;
     }
 
-    public void AddVillager(Villager villagerObj)
+    public void AddFollower(Follower followerObj)
     {
-        if (!villagerList.Contains(villagerObj))
+        if (!followerList.Contains(followerObj))
         {
-            villagerList.Add(villagerObj);
-            //villagerObj.MoveToTransform(bleh, () => { villagerObj.MoveToTransform(positionList[villagerList.IndexOf(villagerObj)], () => { VillagerArrivedAtQueuePosition(villagerObj); }); });
-            villagerObj.MoveToTransform(positionList[villagerList.IndexOf(villagerObj)], () => { VillagerArrivedAtQueuePosition(villagerObj); });
-            if (OnVillagerAdded != null)
+            followerList.Add(followerObj);
+            //followerObj.MoveToTransform(bleh, () => { followerObj.MoveToTransform(positionList[followerList.IndexOf(followerObj)], () => { followerArrivedAtQueuePosition(followerObj); }); });
+            followerObj.MoveToTransform(positionList[followerList.IndexOf(followerObj)], () => { FollowerArrivedAtQueuePosition(followerObj); });
+            if (OnFollowerAdded != null)
             {
-                OnVillagerAdded(this, EventArgs.Empty);
+                OnFollowerAdded(this, EventArgs.Empty);
             }
 
         }
         else
         {
-            Debug.Log("villager already added to list");
+            Debug.Log("follower already added to list");
         }
-        Debug.Log(villagerList.Count);
+        Debug.Log(followerList.Count);
     }
 
-    public Villager GetFirstInQueue()
+    public Follower GetFirstInQueue()
     {
-        if (villagerList.Count == 0)
+        if (followerList.Count == 0)
         {
             return null;
         }
         else
         {
-            Villager villager = villagerList[0];
-            villagerList.RemoveAt(0);
-            RelocateAllRalliedVillagers();
-            return villager;
+            Follower follower = followerList[0];
+            followerList.RemoveAt(0);
+            RelocateAllRalliedfollowers();
+            return follower;
         }
     }
     private void CalculateEntrancePosition() //this calculates entrance position which we dont have yet
@@ -91,23 +91,23 @@ public class TestQueue
         CalculateEntrancePosition();
     }
 
-    private void RelocateAllRalliedVillagers()
+    private void RelocateAllRalliedfollowers()
     {
-        for (int i = 0; i < villagerList.Count; i++)
+        for (int i = 0; i < followerList.Count; i++)
         {
-            Villager villager = villagerList[i];
-            villager.MoveToTransform(positionList[i], () => { VillagerArrivedAtQueuePosition(villager); });
+            Follower follower = followerList[i];
+            follower.MoveToTransform(positionList[i], () => { FollowerArrivedAtQueuePosition(follower); });
         }
-        //Debug.Log(villagerList.Count);
+        //Debug.Log(followerList.Count);
     }
 
-    private void VillagerArrivedAtQueuePosition(Villager villager)
+    private void FollowerArrivedAtQueuePosition(Follower follower)
     {
-        if (villager == villagerList[0])
+        if (follower == followerList[0])
         {
-            if (OnVillagerArrivedAtFrontofQueue != null)
+            if (OnFollowerArrivedAtFrontofQueue != null)
             {
-                OnVillagerArrivedAtFrontofQueue(this, EventArgs.Empty);
+                OnFollowerArrivedAtFrontofQueue(this, EventArgs.Empty);
             }
             //Debug.Log("Arrived At front");
         }
