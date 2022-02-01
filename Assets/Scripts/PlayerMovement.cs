@@ -39,12 +39,12 @@ public class PlayerMovement : MonoBehaviour
         //rb2d.velocity = new Vector2(moveInput *= speed, rb2d.velocity.y);
         //transform.position += transform.forward * moveInputH * speed * Time.deltaTime;
         //transform.Translate(new Vector3(moveInputH, moveInputV) * speed * Time.deltaTime);
-        //transform.position += new Vector3(moveInputH, moveInputV) * speed * Time.deltaTime;
-        UpdateMovement();
+        transform.position += new Vector3(moveInputH, moveInputV) * speed * Time.deltaTime;
+        //UpdateMovement();
 
         if (Input.GetMouseButtonDown(0))
         {
-            MoveTo(UtilsClass.GetMouseWorldPosition());
+           //MoveTo(UtilsClass.GetMouseWorldPosition());
         }
     }
 

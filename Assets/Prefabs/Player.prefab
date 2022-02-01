@@ -38,7 +38,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6672853604531350729}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e88bf051e2fb29e43b143f434de285e7, type: 3}
   m_Name: 
@@ -60,7 +60,7 @@ GameObject:
   - component: {fileID: 6722775549185074020}
   m_Layer: 3
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -178,7 +178,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &6722775549185074021
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -204,12 +204,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c54777f5d4a83374db5c0e6409829ddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  foundVillager: 0
   whatIsVillager:
     serializedVersion: 2
     m_Bits: 64
   atkPos: {fileID: 6722775549185074017}
   atkBoxSize: {x: 2, y: 2}
-  circleSize: 3
+  circleSize: 1.5
 --- !u!1 &6722775549944523990
 GameObject:
   m_ObjectHideFlags: 0
