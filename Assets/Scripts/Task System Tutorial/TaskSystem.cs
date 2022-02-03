@@ -4,67 +4,42 @@ using System.Collections.Generic;
 using UnityEngine;
 using CodeMonkey.Utils;
 
-public class TaskSystem
+
+public abstract class TaskBase
 {
-    public class QueuedTask
+    
+}
+public class QueuedTask<TTask> where TTask : TaskBase
+{
+    private Func<TTask> tryGetTaskFunc;
+    public QueuedTask(Func<TTask> tryGetTaskFunc)
     {
-        private Func<Task> tryGetTaskFunc;
-        public QueuedTask(Func<Task> tryGetTaskFunc)
-        {
-            this.tryGetTaskFunc = tryGetTaskFunc;
-        }
-
-        public Task TryDequeueTasks()
-        {
-            return tryGetTaskFunc();
-        }
+        this.tryGetTaskFunc = tryGetTaskFunc;
     }
 
-    public abstract class Task
+    public TTask TryDequeueTasks()
     {
-        
-
-        public class MoveToPosition : Task
-        {
-            public Vector3 targetPosition;
-
-        }
-
-        public class Victory : Task
-        {
-
-        }
-
-        public class CleanUp : Task
-        {
-            public Vector3 targetPosition;
-            public Action cleanUpAction;
-        }
-
-        public class TakeResourceToPosition : Task //grabs a resource and takes it to building? position
-        {
-            public Vector3 resourcePosition;
-            public Action<TaskWorkerAI> takeResource;
-            public Vector3 resourceDepositPosition; //position where worker deposits resource
-            public Action dropResource;
-        }
+        return tryGetTaskFunc();
     }
-
-    private List<Task> taskList;
-    private List<QueuedTask> queuedTaskList; //any queued task must be validated before being dequeued
+}
+public class TaskSystem<TTask> where TTask : TaskBase
+{
+    
+    private List<TTask> taskList;
+    private List<QueuedTask<TTask>> queuedTaskList; //any queued task must be validated before being dequeued
     public TaskSystem()
     {
-        taskList = new List<Task>();
-        queuedTaskList = new List<QueuedTask>();
+        taskList = new List<TTask>();
+        queuedTaskList = new List<QueuedTask<TTask>>();
         FunctionPeriodic.Create(DequeueTasks, .2f);
     }
 
-    public Task RequestNextTask()
+    public TTask RequestNextTask()
     {
         if(taskList.Count > 0)
         {
             //give worker first task
-            Task task = taskList[0];
+            TTask task = taskList[0];
             taskList.RemoveAt(0);
             return task;
         }
@@ -74,20 +49,20 @@ public class TaskSystem
         }
     }
 
-    public void AddTask(Task task)
+    public void AddTask(TTask task)
     {
         taskList.Add(task);
     }
 
-    private void EnqueueTask(QueuedTask queuedTask)
+    public void EnqueueTask(QueuedTask<TTask> queuedTask)
     {
         queuedTaskList.Add(queuedTask);
 
     }
 
-    public void EnqueueTaskHelper(Func<Task> tryGetTaskFunc)
+    public void EnqueueTaskHelper(Func<TTask> tryGetTaskFunc)
     {
-        QueuedTask queuedTask = new QueuedTask(tryGetTaskFunc);
+        QueuedTask<TTask> queuedTask = new QueuedTask<TTask>(tryGetTaskFunc);
         queuedTaskList.Add(queuedTask);
     }
 
@@ -95,8 +70,8 @@ public class TaskSystem
     {
         for(int i = 0; i < queuedTaskList.Count; i++)
         {
-            QueuedTask queuedTask = queuedTaskList[i];
-            Task task = queuedTask.TryDequeueTasks();
+            QueuedTask<TTask> queuedTask = queuedTaskList[i];
+            TTask task = queuedTask.TryDequeueTasks();
             if(task != null)
             {
                 AddTask(task);
@@ -110,3 +85,5 @@ public class TaskSystem
         }
     }
 }
+
+

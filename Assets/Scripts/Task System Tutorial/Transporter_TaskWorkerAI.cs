@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TaskWorkerAI : MonoBehaviour
+public class Transporter_TaskWorkerAI : MonoBehaviour
 {
     private enum State
     {
@@ -10,12 +10,12 @@ public class TaskWorkerAI : MonoBehaviour
         ExecutingTask,
     }
     private IWorker worker;
-    private TaskSystem<TaskGameHandler.Task> taskSystem;
+    private TaskSystem<TaskGameHandler.TransporterTask> taskSystem;
     private State state;
     private float waitingTimer;
 
     
-    public void SetUp(IWorker worker, TaskSystem<TaskGameHandler.Task> taskSystem)
+    public void SetUp(IWorker worker, TaskSystem<TaskGameHandler.TransporterTask> taskSystem)
     {
         this.worker = worker;
         this.taskSystem = taskSystem;
@@ -45,7 +45,7 @@ public class TaskWorkerAI : MonoBehaviour
     private void RequestNextTask()
     {
         //Debug.Log("RequestNextTask");
-        TaskGameHandler.Task task = taskSystem.RequestNextTask();
+        TaskGameHandler.TransporterTask task = taskSystem.RequestNextTask();
         if(task == null)
         {
             state = State.WaitingForNextTask;
@@ -53,24 +53,14 @@ public class TaskWorkerAI : MonoBehaviour
         else
         {
             state = State.ExecutingTask;
-            if(task is TaskGameHandler.Task.MoveToPosition)
+            if (task is TaskGameHandler.TransporterTask.MoveToPosition)
             {
-                ExecuteTask_MoveToPosition(task as TaskGameHandler.Task.MoveToPosition);
+                ExecuteTask_MoveToPosition(task as TaskGameHandler.TransporterTask.MoveToPosition);
                 return;
             }
-            if(task is TaskGameHandler.Task.Victory)
+            if (task is TaskGameHandler.TransporterTask.TakeWeaponFromSlotToPosition)
             {
-                ExecuteTask_Victory(task as TaskGameHandler.Task.Victory);
-                return;
-            }
-            if(task is TaskGameHandler.Task.CleanUp)
-            {
-                ExecuteTask_CleanUp(task as TaskGameHandler.Task.CleanUp);
-                return;
-            }
-            if(task is TaskGameHandler.Task.TakeResourceToPosition)
-            {
-                ExecuteTask_TakeResourceToPosition(task as TaskGameHandler.Task.TakeResourceToPosition);
+                ExecuteTask_TakeResourceToPosition(task as TaskGameHandler.TransporterTask.TakeWeaponFromSlotToPosition);
                 return;
             }
 
@@ -78,24 +68,13 @@ public class TaskWorkerAI : MonoBehaviour
         }
     }
 
-    private void ExecuteTask_MoveToPosition(TaskGameHandler.Task.MoveToPosition moveToPosTask)
+    private void ExecuteTask_MoveToPosition(TaskGameHandler.TransporterTask.MoveToPosition moveToPosTask)
     {
         Debug.Log("Execute MoveTo Task");
         worker.MoveTo(new Vector3(moveToPosTask.targetPosition.x, moveToPosTask.targetPosition.y), () => { state = State.WaitingForNextTask; });
     }
 
-    private void ExecuteTask_Victory(TaskGameHandler.Task.Victory victoryTask)
-    {
-        Debug.Log("Execute Victory Task");
-        worker.PlayAnimation(() => { Debug.Log("Finished Executing Victory Task"); state = State.WaitingForNextTask; }); 
-    }
-    private void ExecuteTask_CleanUp(TaskGameHandler.Task.CleanUp cleanUpTask)
-    {
-        Debug.Log("Execute CleanUp Task");
-        worker.MoveTo(cleanUpTask.targetPosition, () => { cleanUpTask.cleanUpAction(); state = State.WaitingForNextTask; });
-
-    }
-    private void ExecuteTask_TakeResourceToPosition(TaskGameHandler.Task.TakeResourceToPosition takeResourceTask)
+    private void ExecuteTask_TakeResourceToPosition(TaskGameHandler.TransporterTask.TakeWeaponFromSlotToPosition takeResourceTask)
     {
         Debug.Log("Execute Take Resource To Position Task");
         worker.MoveTo(takeResourceTask.resourcePosition, () => 

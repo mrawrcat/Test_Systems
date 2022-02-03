@@ -1,7 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using CodeMonkey;
 using CodeMonkey.Utils;
 
 public class TaskGameHandler : MonoBehaviour
@@ -12,27 +12,27 @@ public class TaskGameHandler : MonoBehaviour
         return gameHandlerInstance;
     }
     
-    private TaskSystem taskSystem;
-    public TaskSystem GetTaskSystem()
-    {
-        return taskSystem;
-    }
+    private TaskSystem<Task> taskSystem;
+    private TaskSystem<TransporterTask> transporterTaskSystem;
+    
     [SerializeField] private Sprite PFCherrySprite;
     [SerializeField] private Sprite appleSprite;
     [SerializeField] private Sprite dewSprite;
 
     private DepositSlot depositSlot;
-    private StartEmptyVillagerPool pool;
     [SerializeField]
     private GameObject worker;
+    private GameObject spawnedWorkerSave;
+
     // Start is called before the first frame update
     void Start()
     {
         //Debug.Log(typeof(string).Assembly.ImageRuntimeVersion);
-        taskSystem = new TaskSystem();
-        pool = FindObjectOfType<StartEmptyVillagerPool>();
+        taskSystem = new TaskSystem<Task>();
+        transporterTaskSystem = new TaskSystem<TransporterTask>();
         GameObject spawnedWorker = Instantiate(worker);
         spawnedWorker.transform.position = new Vector3(-3, -3f);
+        spawnedWorkerSave = spawnedWorker.gameObject;
         spawnedWorker.GetComponent<TaskWorkerAI>().SetUp(spawnedWorker.GetComponent<Worker>(), taskSystem);
        
         /*
@@ -61,7 +61,7 @@ public class TaskGameHandler : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            TaskSystem.Task task = new TaskSystem.Task.MoveToPosition { targetPosition = new Vector3(UtilsClass.GetMouseWorldPosition().x, -3f) };
+            Task task = new Task.MoveToPosition { targetPosition = new Vector3(UtilsClass.GetMouseWorldPosition().x, -3f) };
             taskSystem.AddTask(task);
             Debug.Log("tried to add task go to: " + new Vector3(UtilsClass.GetMouseWorldPosition().x, -3f));
         }
@@ -85,18 +85,28 @@ public class TaskGameHandler : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            TaskSystem.Task task = new TaskSystem.Task.Victory { };
+            Task task = new Task.Victory { };
             taskSystem.AddTask(task);
             Debug.Log("tried to do victory");
+        }
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            spawnedWorkerSave.GetComponent<TaskWorkerAI>().enabled = false;
+            spawnedWorkerSave.GetComponent<Transporter_TaskWorkerAI>().enabled = true;
+            spawnedWorkerSave.GetComponent<Transporter_TaskWorkerAI>().SetUp(spawnedWorkerSave.GetComponent<Worker>(), transporterTaskSystem);
+        }
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            spawnedWorkerSave.GetComponent<Transporter_TaskWorkerAI>().enabled = false;
+            spawnedWorkerSave.GetComponent<TaskWorkerAI>().enabled = true;
+            //spawnedWorkerSave.GetComponent<TaskWorkerAI>().SetUp(spawnedWorkerSave.GetComponent<Worker>(), taskSystem);
         }
 
         
     }
 
-    public TaskSystem GetTasksystem()
-    {
-        return taskSystem;
-    }
+    
 
 
     private void SpawnPFCherryCleanUp(Vector3 position)
@@ -108,7 +118,7 @@ public class TaskGameHandler : MonoBehaviour
         { 
             if (Time.time > cleanupTime) 
             {
-                TaskSystem.Task task = new TaskSystem.Task.CleanUp { targetPosition = position, cleanUpAction = () => { PFCherryObj.SetActive(false); Debug.Log("Cleaned Up Cherry"); } };
+                Task task = new Task.CleanUp { targetPosition = position, cleanUpAction = () => { PFCherryObj.SetActive(false); Debug.Log("Cleaned Up Cherry"); } };
                 return task;
             }
             else
@@ -127,7 +137,7 @@ public class TaskGameHandler : MonoBehaviour
             if (depositSlot.isEmpty())
             {
                 depositSlot.SetDepositIncoming(true);
-                TaskSystem.Task task = new TaskSystem.Task.TakeResourceToPosition
+                Task task = new Task.TakeResourceToPosition
                 {
                     resourcePosition = dewGameObject.transform.position,
                     resourceDepositPosition = depositSlot.GetPosition(),
@@ -221,4 +231,52 @@ public class TaskGameHandler : MonoBehaviour
             depositSlotTransform.GetComponent<SpriteRenderer>().color = isEmpty() ? Color.grey : Color.red;
         }
     }
+
+
+    public class Task : TaskBase
+    {
+        public class MoveToPosition : Task
+        {
+            public Vector3 targetPosition;
+
+        }
+
+        public class Victory : Task
+        {
+
+        }
+
+        public class CleanUp : Task
+        {
+            public Vector3 targetPosition;
+            public Action cleanUpAction;
+        }
+
+        public class TakeResourceToPosition : Task //grabs a resource and takes it to building? position
+        {
+            public Vector3 resourcePosition;
+            public Action<TaskWorkerAI> takeResource;
+            public Vector3 resourceDepositPosition; //position where worker deposits resource
+            public Action dropResource;
+        }
+    }
+
+    public class TransporterTask : TaskBase
+    {
+        public class MoveToPosition : TransporterTask
+        {
+            public Vector3 targetPosition;
+
+        }
+
+        public class TakeWeaponFromSlotToPosition : TransporterTask
+        {
+            public Vector3 resourcePosition;
+            public Action<Transporter_TaskWorkerAI> takeResource;
+            public Vector3 resourceDepositPosition; //position where worker deposits resource
+            public Action dropResource;
+        }
+    }
 }
+ 
+

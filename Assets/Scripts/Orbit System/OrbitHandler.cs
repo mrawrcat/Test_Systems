@@ -15,7 +15,7 @@ public class OrbitHandler : MonoBehaviour
     private float radius = 1;
     private List<Transform> followerTransformList = new List<Transform>();
     private OrbitTransformQueue orbitQueue;
-    private TaskSystem taskSystem;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,7 +35,7 @@ public class OrbitHandler : MonoBehaviour
         orbitQueue = new OrbitTransformQueue(followerTransformList);
         orbitQueue.OnFollowerArrivedAtFrontofQueue += WaitingQueue_OnVillagerArrivedAtFrontOfQueue;
         orbitQueue.OnFollowerAdded += WaitingQueue_OnVillagerAdded;
-        taskSystem = new TaskSystem();
+        
     }
 
     // Update is called once per frame
@@ -138,7 +138,7 @@ public class OrbitHandler : MonoBehaviour
         gameObject.AddComponent<Animator>();
         gameObject.GetComponent<Animator>().runtimeAnimatorController = animatorController;
         gameObject.AddComponent<TaskWorkerAI>();
-        gameObject.GetComponent<TaskWorkerAI>().SetUp(gameObject.GetComponent<Follower>(), taskSystem);
+        //gameObject.GetComponent<TaskWorkerAI>().SetUp(gameObject.GetComponent<Follower>(), taskSystem);
         return gameObject;
     }
 
