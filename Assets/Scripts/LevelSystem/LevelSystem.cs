@@ -41,17 +41,14 @@ public class LevelSystem
     {
         return level;
     }
-
     public float GetExpNormalized()
     {
         return (float)experience / expToNextLvl;
     }
-
     public int GetExpToNextLvl()
     {
         return expToNextLvl;
     }
-
     public int GetExperience()
     {
         return experience;

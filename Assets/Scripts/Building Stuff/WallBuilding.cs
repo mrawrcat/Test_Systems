@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WallBuilding : MonoBehaviour
 {
@@ -11,25 +12,35 @@ public class WallBuilding : MonoBehaviour
     [SerializeField] private Sprite upgrade1H;
     [SerializeField] private Sprite upgrade2H;
 
-    private enum State
-    {
-        upgrade0,
-        upgrade1,
-        upgrade2,
-    }
+    [SerializeField]private RectTransform childUI;
+    //private float buildingHealth = 100f;
+   
 
-    private State state;
+
     [SerializeField] private bool stay;
     private int upgradeState = 0;
     private int maxUpgradeState = 2;
     private SpriteRenderer spriteRenderer;
+    private int currentUpgradeRequirements;
+    private bool canUpgrade()
+    {
+        if(GameResources.GetResourceAmount(GameResources.ResourceType.Gold) > currentUpgradeRequirements)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {
-        state = State.upgrade0;
         upgradeState = 0;
         spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.sprite = upgrade0;
+        currentUpgradeRequirements = 1;
+        //childUI = gameObject.GetComponentInChildren<RectTransform>();
     }
 
     // Update is called once per frame
@@ -39,13 +50,17 @@ public class WallBuilding : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.G))
             {
-                if(upgradeState < maxUpgradeState)
+                if(upgradeState < maxUpgradeState && canUpgrade())
                 {
+                    GameResources.RemoveResourceAmount(GameResources.ResourceType.Gold, 5);
                     upgradeState++;
                 }
             }
         }
+       
         IsStayHighlight();
+
+        
     }
 
     private void IsStayHighlight()
@@ -87,6 +102,7 @@ public class WallBuilding : MonoBehaviour
         if (collision.tag == "Player")
         {
             stay = true;
+            childUI.gameObject.SetActive(true);
         }
     }
 
@@ -103,6 +119,7 @@ public class WallBuilding : MonoBehaviour
         if (collision.tag == "Player")
         {
             stay = false;
+            childUI.gameObject.SetActive(false);
         }
     }
 

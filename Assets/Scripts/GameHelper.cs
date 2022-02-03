@@ -9,9 +9,6 @@ public class GameHelper : MonoBehaviour
     
     [Header("Text stuff")]
     public Text coins;
-    public Text distance;
-    public Text total_coins;
-    public Text best_distance;
     
 
     
@@ -41,9 +38,6 @@ public class GameHelper : MonoBehaviour
     public void ClearData()
     {
         GameManager.manager.coins = 0;
-        GameManager.manager.distance = 0;
-        GameManager.manager.total_coins = 0;
-        GameManager.manager.best_distance = 0;
     }
 
     public void Add_Coins()
@@ -57,7 +51,6 @@ public class GameHelper : MonoBehaviour
     public void New_Game()
     {
         GameManager.manager.coins = 0;
-        GameManager.manager.distance = 0;
     }
 
     public void SaveData()
@@ -68,10 +61,6 @@ public class GameHelper : MonoBehaviour
     private void show_text()
     {
         coins.text = "Coins: " + GameManager.manager.coins.ToString("F0");
-        distance.text = "Distance moved: " + GameManager.manager.distance.ToString("F0");
-        best_distance.text = "Total Distance moved: " + GameManager.manager.best_distance.ToString("F0");
-        total_coins.text = "Total Coins Gained: " + GameManager.manager.total_coins.ToString("F0");
-
     }
 
     public void Move_Continue()
