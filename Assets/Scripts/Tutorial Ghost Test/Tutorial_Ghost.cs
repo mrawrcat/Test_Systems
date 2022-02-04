@@ -18,7 +18,9 @@ public class Tutorial_Ghost : MonoBehaviour, IWorker
         InBuilding,
 
     }
-    
+
+    public event EventHandler onPlayerTriggerEnter;
+
     [SerializeField]
     private State state;
     private QueuedState queuedState;
@@ -28,6 +30,8 @@ public class Tutorial_Ghost : MonoBehaviour, IWorker
     private Coroutine _animationRoutine;
     private Animator anim;
    
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -150,6 +154,14 @@ public class Tutorial_Ghost : MonoBehaviour, IWorker
     public void setCurrentPos(Vector3 position)
     {
         currentPos = position;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.tag == "Player")
+        {
+            onPlayerTriggerEnter?.Invoke(this, EventArgs.Empty);
+        }
     }
 
 }

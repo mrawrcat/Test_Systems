@@ -285,6 +285,12 @@ public class TaskGameHandler : MonoBehaviour
             public Vector3 targetPosition;
 
         }
+
+        public class FinishTutorial : GhostTask
+        {
+            public Vector3 targetPosition;
+            public Action finishAction;
+        }
     }
 }
  

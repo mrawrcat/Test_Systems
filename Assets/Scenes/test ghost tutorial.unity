@@ -282,6 +282,8 @@ GameObject:
   m_Component:
   - component: {fileID: 335428175}
   - component: {fileID: 335428176}
+  - component: {fileID: 335428177}
+  - component: {fileID: 335428178}
   m_Layer: 0
   m_Name: Town Center
   m_TagString: Untagged
@@ -297,7 +299,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 335428174}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -3, z: 0}
+  m_LocalPosition: {x: 0, y: -3.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -343,7 +345,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 2126375068953053934, guid: 81d138ddf41a00d4495dca2e858e2b92, type: 3}
+  m_Sprite: {fileID: -6965120271151795929, guid: 8207ecb3ac65b084b9cd3ae1ad7bb7be, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -354,6 +356,51 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &335428177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 335428174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebc3754c36dd25a4d9c583faafd0fa20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  upgrade0: {fileID: -6965120271151795929, guid: 8207ecb3ac65b084b9cd3ae1ad7bb7be, type: 3}
+  upgrade1: {fileID: -8173585193672754854, guid: 8207ecb3ac65b084b9cd3ae1ad7bb7be, type: 3}
+  upgrade2: {fileID: -8822224170451844169, guid: 8207ecb3ac65b084b9cd3ae1ad7bb7be, type: 3}
+  upgrade0H: {fileID: -1156625027894096417, guid: 7387c2df7955d4543940c2060ecb9eeb, type: 3}
+  upgrade1H: {fileID: -6886552761986256262, guid: 7387c2df7955d4543940c2060ecb9eeb, type: 3}
+  upgrade2H: {fileID: -274924822235557244, guid: 7387c2df7955d4543940c2060ecb9eeb, type: 3}
+  stay: 0
+--- !u!61 &335428178
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 335428174}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 2}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!1 &716562237
 GameObject:
   m_ObjectHideFlags: 0
@@ -1568,6 +1615,8 @@ GameObject:
   m_Component:
   - component: {fileID: 867257683}
   - component: {fileID: 867257684}
+  - component: {fileID: 867257685}
+  - component: {fileID: 867257686}
   m_Layer: 0
   m_Name: Builder Station
   m_TagString: Untagged
@@ -1583,7 +1632,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 867257682}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10, y: -3, z: 0}
+  m_LocalPosition: {x: -10, y: -3.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1629,7 +1678,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 4196429148282800080, guid: 81d138ddf41a00d4495dca2e858e2b92, type: 3}
+  m_Sprite: {fileID: -6965120271151795929, guid: 8207ecb3ac65b084b9cd3ae1ad7bb7be, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1640,6 +1689,51 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &867257685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 867257682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ea9cd21f575b524c8825ca0c18da68d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  upgrade0: {fileID: -6965120271151795929, guid: 8207ecb3ac65b084b9cd3ae1ad7bb7be, type: 3}
+  upgrade1: {fileID: -8173585193672754854, guid: 8207ecb3ac65b084b9cd3ae1ad7bb7be, type: 3}
+  upgrade2: {fileID: -8822224170451844169, guid: 8207ecb3ac65b084b9cd3ae1ad7bb7be, type: 3}
+  upgrade0H: {fileID: -1156625027894096417, guid: 7387c2df7955d4543940c2060ecb9eeb, type: 3}
+  upgrade1H: {fileID: -6886552761986256262, guid: 7387c2df7955d4543940c2060ecb9eeb, type: 3}
+  upgrade2H: {fileID: -274924822235557244, guid: 7387c2df7955d4543940c2060ecb9eeb, type: 3}
+  stay: 0
+--- !u!61 &867257686
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 867257682}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 2}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!1 &989785341
 GameObject:
   m_ObjectHideFlags: 0
@@ -1845,6 +1939,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2092264594}
   - component: {fileID: 2092264595}
+  - component: {fileID: 2092264596}
+  - component: {fileID: 2092264597}
   m_Layer: 0
   m_Name: Archer Station
   m_TagString: Untagged
@@ -1860,7 +1956,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2092264593}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10, y: -3, z: 0}
+  m_LocalPosition: {x: 10, y: -3.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1906,7 +2002,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 4196429148282800080, guid: 81d138ddf41a00d4495dca2e858e2b92, type: 3}
+  m_Sprite: {fileID: -6965120271151795929, guid: 8207ecb3ac65b084b9cd3ae1ad7bb7be, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1917,3 +2013,48 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2092264596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2092264593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b670d2f1d6765464f96f4751960af0fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  upgrade0: {fileID: -6965120271151795929, guid: 8207ecb3ac65b084b9cd3ae1ad7bb7be, type: 3}
+  upgrade1: {fileID: -8173585193672754854, guid: 8207ecb3ac65b084b9cd3ae1ad7bb7be, type: 3}
+  upgrade2: {fileID: -8822224170451844169, guid: 8207ecb3ac65b084b9cd3ae1ad7bb7be, type: 3}
+  upgrade0H: {fileID: -1156625027894096417, guid: 7387c2df7955d4543940c2060ecb9eeb, type: 3}
+  upgrade1H: {fileID: -6886552761986256262, guid: 7387c2df7955d4543940c2060ecb9eeb, type: 3}
+  upgrade2H: {fileID: -274924822235557244, guid: 7387c2df7955d4543940c2060ecb9eeb, type: 3}
+  stay: 0
+--- !u!61 &2092264597
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2092264593}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 2}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
