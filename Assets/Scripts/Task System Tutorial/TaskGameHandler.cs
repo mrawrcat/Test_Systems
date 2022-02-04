@@ -277,6 +277,15 @@ public class TaskGameHandler : MonoBehaviour
             public Action dropResource;
         }
     }
+
+    public class GhostTask : TaskBase
+    {
+        public class MoveToPosition : GhostTask
+        {
+            public Vector3 targetPosition;
+
+        }
+    }
 }
  
 
