@@ -53,9 +53,9 @@ public class Builder_Station : MonoBehaviour
             {
                 if (upgradeState < maxUpgradeState)
                 {
-                    upgradeState++;
-                    if (ghostTutorialHandler.GetBuilder() == false)
+                    if (ghostTutorialHandler.GetArcher() == true)
                     {
+                        upgradeState++;
                         ghostTutorialHandler.Set_One_Builder();
                     }
                 }

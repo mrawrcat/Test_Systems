@@ -1796,6 +1796,54 @@ PolygonCollider2D:
       - {x: -45, y: -4.8}
       - {x: 45, y: -4.8}
       - {x: 45, y: 2}
+--- !u!1 &1077093831
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1077093833}
+  - component: {fileID: 1077093832}
+  m_Layer: 0
+  m_Name: Task Game Handler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1077093832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1077093831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcb57bb767ac42141b9a480e22f18443, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PFCherrySprite: {fileID: -4570538037665054336, guid: 8fb7b5a047c0d1144b88a20c64cc85eb, type: 3}
+  appleSprite: {fileID: 7293598183456022363, guid: 7925bd38de0dd2e4f8993e5f5a8cbda3, type: 3}
+  dewSprite: {fileID: 4138223980208024357, guid: 919307255cd1f6c45bd16ba103d23e5d, type: 3}
+  worker: {fileID: 4308305500318453584, guid: f98f17d16b8a2f040b607a252724bf2f, type: 3}
+  Archer_Station: {fileID: 2092264594}
+--- !u!4 &1077093833
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1077093831}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1251337467
 GameObject:
   m_ObjectHideFlags: 0

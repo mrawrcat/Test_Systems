@@ -19,10 +19,13 @@ public class TaskGameHandler : MonoBehaviour
     [SerializeField] private Sprite appleSprite;
     [SerializeField] private Sprite dewSprite;
 
+
     private DepositSlot depositSlot;
     [SerializeField]
     private GameObject worker;
     private GameObject spawnedWorkerSave;
+
+    [SerializeField] private Transform Archer_Station;
 
     // Start is called before the first frame update
     void Start()
@@ -30,12 +33,13 @@ public class TaskGameHandler : MonoBehaviour
         //Debug.Log(typeof(string).Assembly.ImageRuntimeVersion);
         taskSystem = new TaskSystem<Task>();
         transporterTaskSystem = new TaskSystem<TransporterTask>();
+
+        /*
         GameObject spawnedWorker = Instantiate(worker);
         spawnedWorker.transform.position = new Vector3(-3, -3f);
         spawnedWorkerSave = spawnedWorker.gameObject;
         spawnedWorker.GetComponent<TaskWorkerAI>().SetUp(spawnedWorker.GetComponent<Worker>(), taskSystem);
        
-        /*
         GameObject spawnedWorker2 = Instantiate(worker);
         spawnedWorker2.transform.position = new Vector3(3, -3f);
         spawnedWorker2.GetComponent<TaskWorkerAI>().SetUp(spawnedWorker2.GetComponent<Worker>(), taskSystem);
@@ -63,14 +67,13 @@ public class TaskGameHandler : MonoBehaviour
         {
             Task task = new Task.MoveToPosition { targetPosition = new Vector3(UtilsClass.GetMouseWorldPosition().x, -3f) };
             taskSystem.AddTask(task);
+            /*
             Debug.Log("tried to add task go to: " + new Vector3(UtilsClass.GetMouseWorldPosition().x, -3f));
+            */
         }
         
         if (Input.GetMouseButtonDown(1))
         {
-            //GameObject spawnedWorker = Instantiate(worker);
-            //spawnedWorker.transform.position = new Vector3(UtilsClass.GetMouseWorldPosition().x, -3f);
-            //spawnedWorker.GetComponent<TaskWorkerAI>().SetUp(spawnedWorker.GetComponent<Worker>(), taskSystem);
             SpawnDewPickUp(new Vector3(UtilsClass.GetMouseWorldPosition().x, -3.5f));
         }
 
@@ -82,6 +85,14 @@ public class TaskGameHandler : MonoBehaviour
             SpawnPFCherryCleanUp(new Vector3(UtilsClass.GetMouseWorldPosition().x, -3f));
 
         }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+
+            GameObject spawnedWorker = Instantiate(worker);
+            spawnedWorker.transform.position = new Vector3(UtilsClass.GetMouseWorldPosition().x, -3f);
+            spawnedWorker.GetComponent<TaskWorkerAI>().SetUp(spawnedWorker.GetComponent<Worker>(), taskSystem);
+        }
+
 
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -92,21 +103,21 @@ public class TaskGameHandler : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.T))
         {
-            spawnedWorkerSave.GetComponent<TaskWorkerAI>().enabled = false;
-            spawnedWorkerSave.GetComponent<Transporter_TaskWorkerAI>().enabled = true;
-            spawnedWorkerSave.GetComponent<Transporter_TaskWorkerAI>().SetUp(spawnedWorkerSave.GetComponent<Worker>(), transporterTaskSystem);
+            ConvertTaskWorkerToTransporter(Archer_Station.position);
+            //spawnedWorkerSave.GetComponent<TaskWorkerAI>().enabled = false;
+            //spawnedWorkerSave.GetComponent<Transporter_TaskWorkerAI>().enabled = true;
+            //spawnedWorkerSave.GetComponent<Transporter_TaskWorkerAI>().SetUp(spawnedWorkerSave.GetComponent<Worker>(), transporterTaskSystem);
         }
         if (Input.GetKeyDown(KeyCode.Y))
         {
-            spawnedWorkerSave.GetComponent<Transporter_TaskWorkerAI>().enabled = false;
-            spawnedWorkerSave.GetComponent<TaskWorkerAI>().enabled = true;
+            //spawnedWorkerSave.GetComponent<Transporter_TaskWorkerAI>().enabled = false;
+            //spawnedWorkerSave.GetComponent<TaskWorkerAI>().enabled = true;
             //spawnedWorkerSave.GetComponent<TaskWorkerAI>().SetUp(spawnedWorkerSave.GetComponent<Worker>(), taskSystem);
         }
 
         
     }
 
-    
 
 
     private void SpawnPFCherryCleanUp(Vector3 position)
@@ -156,6 +167,25 @@ public class TaskGameHandler : MonoBehaviour
             }
 
 
+        });
+        
+        
+    }
+    private void ConvertTaskWorkerToTransporter(Vector3 position)
+    {
+        taskSystem.EnqueueTaskHelper(()=>
+        {
+            Task task = new Task.ConvertToTransporterTask
+            {
+                buildingPosition = position,
+                convertAction = (TaskWorkerAI convertTaskWorkerAI) => 
+                { 
+                    convertTaskWorkerAI.GetComponent<TaskWorkerAI>().enabled = false; 
+                    convertTaskWorkerAI.GetComponent<Transporter_TaskWorkerAI>().enabled = true;
+                    convertTaskWorkerAI.GetComponent<Transporter_TaskWorkerAI>().SetUp(convertTaskWorkerAI.GetComponent<Worker>(), transporterTaskSystem);
+                },
+            };
+            return task;
         });
         
         
@@ -258,6 +288,12 @@ public class TaskGameHandler : MonoBehaviour
             public Action<TaskWorkerAI> takeResource;
             public Vector3 resourceDepositPosition; //position where worker deposits resource
             public Action dropResource;
+        }
+
+        public class ConvertToTransporterTask : Task
+        {
+            public Vector3 buildingPosition;
+            public Action<TaskWorkerAI> convertAction;
         }
     }
 

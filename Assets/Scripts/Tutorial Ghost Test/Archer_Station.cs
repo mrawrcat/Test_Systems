@@ -53,12 +53,17 @@ public class Archer_Station : MonoBehaviour
             {
                 if (upgradeState < maxUpgradeState)
                 {
-                    upgradeState++;
-                    if (ghostTutorialHandler.GetArcher() == false)
+                    if (ghostTutorialHandler.GetCampfire() == true)
                     {
+                        upgradeState++;
                         ghostTutorialHandler.Set_One_Archer();
                     }
                 }
+            }
+
+            if (Input.GetKeyDown(KeyCode.H))
+            {
+
             }
         }
 

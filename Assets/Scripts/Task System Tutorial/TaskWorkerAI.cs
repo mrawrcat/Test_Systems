@@ -73,6 +73,10 @@ public class TaskWorkerAI : MonoBehaviour
                 ExecuteTask_TakeResourceToPosition(task as TaskGameHandler.Task.TakeResourceToPosition);
                 return;
             }
+            if(task is TaskGameHandler.Task.ConvertToTransporterTask)
+            {
+                ExecuteTask_ConvertTaskWorkerToTransporter(task as TaskGameHandler.Task.ConvertToTransporterTask);
+            }
 
 
         }
@@ -107,6 +111,13 @@ public class TaskWorkerAI : MonoBehaviour
                 state = State.WaitingForNextTask; 
             }); 
         });
+
+    }
+
+    private void ExecuteTask_ConvertTaskWorkerToTransporter(TaskGameHandler.Task.ConvertToTransporterTask convertTask)
+    {
+        Debug.Log("Execute Convert Task");
+        worker.MoveTo(convertTask.buildingPosition, () => { convertTask.convertAction(this); state = State.WaitingForNextTask; });
 
     }
 }
