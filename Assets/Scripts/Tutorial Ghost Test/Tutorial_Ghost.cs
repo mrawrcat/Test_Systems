@@ -98,7 +98,6 @@ public class Tutorial_Ghost : MonoBehaviour, IWorker
         _currentRoutine = StartCoroutine(WaitUntilArrivedPosition(position, OnArrivedAtPosition));
 
     }
-
     public void PlayAnimation(Action OnFinishedPlaying = null)
     {
         //do play animation in this
@@ -106,13 +105,7 @@ public class Tutorial_Ghost : MonoBehaviour, IWorker
         if (_animationRoutine != null) StopCoroutine(_animationRoutine);
 
         _animationRoutine = StartCoroutine(WaitUntilFinishPlayAnimation(anim.runtimeAnimatorController.animationClips[1].length, OnFinishedPlaying));
-
-
-
     }
-
-
-
     private IEnumerator WaitUntilArrivedPosition(Vector3 position, Action OnArrivedAtPosition = null)
     {
         // yield return tells Unity "pause the routine here,

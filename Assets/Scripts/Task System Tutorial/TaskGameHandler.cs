@@ -13,8 +13,10 @@ public class TaskGameHandler : MonoBehaviour
     }
     
     private TaskSystem<Task> taskSystem;
-    private TaskSystem<TransporterTask> transporterTaskSystem;
+    public TaskSystem<TransporterTask> transporterTaskSystem;
+
     
+
     [SerializeField] private Sprite PFCherrySprite;
     [SerializeField] private Sprite appleSprite;
     [SerializeField] private Sprite dewSprite;
@@ -30,16 +32,15 @@ public class TaskGameHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //Debug.Log(typeof(string).Assembly.ImageRuntimeVersion);
         taskSystem = new TaskSystem<Task>();
         transporterTaskSystem = new TaskSystem<TransporterTask>();
 
-        /*
         GameObject spawnedWorker = Instantiate(worker);
-        spawnedWorker.transform.position = new Vector3(-3, -3f);
-        spawnedWorkerSave = spawnedWorker.gameObject;
+        spawnedWorker.transform.position = new Vector3(0, -3f);
         spawnedWorker.GetComponent<TaskWorkerAI>().SetUp(spawnedWorker.GetComponent<Worker>(), taskSystem);
        
+        /*
+        spawnedWorkerSave = spawnedWorker.gameObject;
         GameObject spawnedWorker2 = Instantiate(worker);
         spawnedWorker2.transform.position = new Vector3(3, -3f);
         spawnedWorker2.GetComponent<TaskWorkerAI>().SetUp(spawnedWorker2.GetComponent<Worker>(), taskSystem);
@@ -65,8 +66,8 @@ public class TaskGameHandler : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Task task = new Task.MoveToPosition { targetPosition = new Vector3(UtilsClass.GetMouseWorldPosition().x, -3f) };
-            taskSystem.AddTask(task);
+            //Task task = new Task.MoveToPosition { targetPosition = new Vector3(UtilsClass.GetMouseWorldPosition().x, -3f) };
+            //taskSystem.AddTask(task);
             /*
             Debug.Log("tried to add task go to: " + new Vector3(UtilsClass.GetMouseWorldPosition().x, -3f));
             */

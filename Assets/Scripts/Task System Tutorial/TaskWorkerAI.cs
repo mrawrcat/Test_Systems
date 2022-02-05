@@ -13,14 +13,28 @@ public class TaskWorkerAI : MonoBehaviour
     private TaskSystem<TaskGameHandler.Task> taskSystem;
     private State state;
     private float waitingTimer;
+    private Vector3 startingPos;
+    private Vector3 roamingPos;
 
-    
+    private Vector3 GetRandomLR()
+    {
+        return new Vector3(UnityEngine.Random.Range(-1, 1), 0).normalized;
+    }
+    private Vector3 GetRoamingPos()
+    {
+        return startingPos + GetRandomLR() * Random.Range(-5, 5);
+    }
+
     public void SetUp(IWorker worker, TaskSystem<TaskGameHandler.Task> taskSystem)
     {
         this.worker = worker;
         this.taskSystem = taskSystem;
     }
-
+    private void Start()
+    {
+        startingPos = FindObjectOfType<Town_Center>().transform.position;
+        roamingPos = GetRoamingPos();
+    }
     private void Update()
     {
         switch (state)
@@ -28,6 +42,13 @@ public class TaskWorkerAI : MonoBehaviour
             //worker waits to request a new task
             case State.WaitingForNextTask:
                 Debug.Log("no detected task");
+                worker.MoveTo(roamingPos);
+                float reachedPosDist = 1f;
+                if (Vector3.Distance(transform.position, roamingPos) < reachedPosDist)
+                {
+                    roamingPos = GetRoamingPos();
+                }
+
                 waitingTimer -= Time.deltaTime;
                 if(waitingTimer <= 0)
                 {
@@ -113,7 +134,6 @@ public class TaskWorkerAI : MonoBehaviour
         });
 
     }
-
     private void ExecuteTask_ConvertTaskWorkerToTransporter(TaskGameHandler.Task.ConvertToTransporterTask convertTask)
     {
         Debug.Log("Execute Convert Task");
