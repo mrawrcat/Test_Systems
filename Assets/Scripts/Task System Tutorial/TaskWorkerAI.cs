@@ -15,7 +15,7 @@ public class TaskWorkerAI : MonoBehaviour
     private float waitingTimer;
     private Vector3 startingPos;
     private Vector3 roamingPos;
-
+    private float nextRoamTime;
     private Vector3 GetRandomLR()
     {
         return new Vector3(UnityEngine.Random.Range(-1, 1), 0).normalized;
@@ -42,11 +42,17 @@ public class TaskWorkerAI : MonoBehaviour
             //worker waits to request a new task
             case State.WaitingForNextTask:
                 Debug.Log("no detected task");
-                worker.MoveTo(roamingPos);
-                float reachedPosDist = 1f;
-                if (Vector3.Distance(transform.position, roamingPos) < reachedPosDist)
+                if(Time.time > nextRoamTime)
                 {
-                    roamingPos = GetRoamingPos();
+                    worker.MoveTo(roamingPos);
+                    float reachedPosDist = 1f;
+                    if (Vector3.Distance(transform.position, roamingPos) < reachedPosDist)
+                    {
+                        roamingPos = GetRoamingPos();
+                        float chooseRate = Random.Range(.5f,.8f);
+                        nextRoamTime = Time.time + chooseRate; 
+                    }
+
                 }
 
                 waitingTimer -= Time.deltaTime;
