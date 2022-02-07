@@ -21,8 +21,8 @@ public class EnemyManager : MonoBehaviour
     {
         //EnemyActions.OnEnemyHit += EnemyHit;
         //EnemyActions.OnEnemyDie += EnemyDie;
-        EnemyActions.OnIEnemyHit += IEnemyHit;
-        EnemyActions.OnIEnemyDie += IEnemyDie;
+        //EnemyActions.OnIEnemyHit += IEnemyHit;
+        //EnemyActions.OnIEnemyDie += IEnemyDie;
 
     }
 
@@ -30,8 +30,8 @@ public class EnemyManager : MonoBehaviour
     {
         //EnemyActions.OnEnemyHit -= EnemyHit;
         //EnemyActions.OnEnemyDie -= EnemyDie;
-        EnemyActions.OnIEnemyHit -= IEnemyHit;
-        EnemyActions.OnIEnemyDie -= IEnemyDie;
+        //EnemyActions.OnIEnemyHit -= IEnemyHit;
+        //EnemyActions.OnIEnemyDie -= IEnemyDie;
     }
 
     public void EnemyHit(Enemy enemy)
@@ -61,4 +61,16 @@ public class EnemyManager : MonoBehaviour
         //lvlWindow.AddExp(20);
         Debug.Log("Enemy Died");
     }
+    public void OnHit(EnemySpearman enemy)
+    {
+        //probably bounce backwards
+        //hit animation, maybe blinking
+    }
+
+    public void OnDie(EnemySpearman enemy)
+    {
+        Debug.Log("Enemy Died");
+    }
+
+
 }

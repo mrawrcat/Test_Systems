@@ -27,7 +27,7 @@ public class Worker_Type : MonoBehaviour, IWorker
     private Vector3 currentPos;
     private Coroutine _currentRoutine;
     private Coroutine _animationRoutine;
-    private float inverseMoveTime;
+    
     private Animator anim;
     public Sprite GetWorkerSprite()
     {
@@ -39,7 +39,6 @@ public class Worker_Type : MonoBehaviour, IWorker
         state = State.Base;
         queuedState = QueuedState.Idle;
         currentPos = transform.position;
-        inverseMoveTime = 1 / .1f;
         anim = GetComponent<Animator>();
     }
 

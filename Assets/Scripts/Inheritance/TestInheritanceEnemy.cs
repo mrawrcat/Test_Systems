@@ -19,11 +19,11 @@ public class TestInheritanceEnemy : Characters
         {
             if (collision.collider.tag == tags[i])
             {
-                EnemyActions.OnIEnemyHit(this);
+                //EnemyActions.OnIEnemyHit(this);
                 if (health <= 0)
                 {
                     
-                    EnemyActions.OnIEnemyDie(this);
+                    //EnemyActions.OnIEnemyDie(this);
                     float rand = Random.Range(0, 4);
                     if (rand < 2)
                     {
