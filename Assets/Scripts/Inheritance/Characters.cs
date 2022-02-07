@@ -13,8 +13,8 @@ public class Characters : MonoBehaviour, IDamagable<int>, IKillable
 
     private void Start()
     {
-        dropPool = FindObjectOfType<DropPool>();
-        coinPool = FindObjectOfType<CoinPool>();
+        //dropPool = FindObjectOfType<DropPool>();
+        //coinPool = FindObjectOfType<CoinPool>();
     }
 
     public void SetHealth(int sethealth)
@@ -28,7 +28,11 @@ public class Characters : MonoBehaviour, IDamagable<int>, IKillable
         //gameObject.SetActive(false);
 
     }
-
+    public void SetPools()
+    {
+        dropPool = FindObjectOfType<DropPool>();
+        coinPool = FindObjectOfType<CoinPool>();
+    }
     public void TakeDmg(int dmgTaken)
     {
         health -= dmgTaken;

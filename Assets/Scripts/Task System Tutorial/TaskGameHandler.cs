@@ -329,6 +329,40 @@ public class TaskGameHandler : MonoBehaviour
             public Action finishAction;
         }
     }
+
+    public class Task_IEnemy_Unit : TaskBase
+    {
+        public class MoveToPosition : Task_IEnemy_Unit
+        {
+            public Vector3 targetPosition;
+
+        }
+
+        public class Victory : Task_IEnemy_Unit
+        {
+
+        }
+
+        public class CleanUp : Task_IEnemy_Unit
+        {
+            public Vector3 targetPosition;
+            public Action cleanUpAction;
+        }
+
+        public class TakeResourceToPosition : Task_IEnemy_Unit //grabs a resource and takes it to building? position
+        {
+            public Vector3 resourcePosition;
+            public Action<Enemy_Spearman_AI> takeResource;
+            public Vector3 resourceDepositPosition; //position where worker deposits resource
+            public Action dropResource;
+        }
+
+        public class ConvertToTransporterTask : Task_IEnemy_Unit
+        {
+            public Vector3 buildingPosition;
+            public Action<Enemy_Spearman_AI> convertAction;
+        }
+    }
 }
  
 

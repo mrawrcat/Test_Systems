@@ -10,6 +10,7 @@ public class EnemySpearman : Characters
     void Start()
     {
         SetHealth(100);
+        SetPools();
         walkToTargetTransform = FindObjectOfType<Town_Center>().transform;
     }
 

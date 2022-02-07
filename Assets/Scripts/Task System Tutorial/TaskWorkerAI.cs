@@ -42,19 +42,7 @@ public class TaskWorkerAI : MonoBehaviour
             //worker waits to request a new task
             case State.WaitingForNextTask:
                 Debug.Log("no detected task");
-                if(Time.time > nextRoamTime)
-                {
-                    worker.MoveTo(roamingPos);
-                    float reachedPosDist = 1f;
-                    if (Vector3.Distance(transform.position, roamingPos) < reachedPosDist)
-                    {
-                        roamingPos = GetRoamingPos();
-                        float chooseRate = Random.Range(.5f,.8f);
-                        nextRoamTime = Time.time + chooseRate; 
-                    }
-
-                }
-
+                Roam();
                 waitingTimer -= Time.deltaTime;
                 if(waitingTimer <= 0)
                 {
@@ -66,6 +54,22 @@ public class TaskWorkerAI : MonoBehaviour
             case State.ExecutingTask:
                 Debug.Log("trying to do task");
                 break;
+        }
+    }
+
+    private void Roam()
+    {
+        if (Time.time > nextRoamTime)
+        {
+            worker.MoveTo(roamingPos);
+            float reachedPosDist = 1f;
+            if (Vector3.Distance(transform.position, roamingPos) < reachedPosDist)
+            {
+                roamingPos = GetRoamingPos();
+                float chooseRate = Random.Range(.5f, .8f);
+                nextRoamTime = Time.time + chooseRate;
+            }
+
         }
     }
 
