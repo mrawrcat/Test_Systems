@@ -27,7 +27,7 @@ public class GhostTutorial_TaskSystemAI : MonoBehaviour
         {
             //worker waits to request a new task
             case State.WaitingForNextTask:
-                Debug.Log("no detected task");
+                Debug.Log("ghost no detected task");
                 waitingTimer -= Time.deltaTime;
                 if (waitingTimer <= 0)
                 {
@@ -37,7 +37,7 @@ public class GhostTutorial_TaskSystemAI : MonoBehaviour
                 }
                 break;
             case State.ExecutingTask:
-                Debug.Log("trying to do task");
+                Debug.Log("ghost trying to do task");
                 break;
         }
     }

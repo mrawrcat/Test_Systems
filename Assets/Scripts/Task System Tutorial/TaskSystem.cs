@@ -49,6 +49,22 @@ public class TaskSystem<TTask> where TTask : TaskBase
         }
     }
 
+    public TTask GetCurrentTask()
+    {
+        if (taskList.Count > 0)
+        {
+            //give worker first task
+            TTask task = taskList[0];
+            //taskList.RemoveAt(0);
+            return task;
+        }
+        else //no task available
+        {
+            return null;
+        }
+    }
+    
+
     public void AddTask(TTask task)
     {
         taskList.Add(task);

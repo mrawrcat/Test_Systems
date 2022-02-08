@@ -14,7 +14,7 @@ public class TaskGameHandler : MonoBehaviour
     
     private TaskSystem<Task> taskSystem;
     public TaskSystem<TransporterTask> transporterTaskSystem;
-
+    //public TaskSystem<Task_IEnemy_Unit> enemyUnitTaskSystem;
     
 
     [SerializeField] private Sprite PFCherrySprite;
@@ -34,10 +34,10 @@ public class TaskGameHandler : MonoBehaviour
     {
         taskSystem = new TaskSystem<Task>();
         transporterTaskSystem = new TaskSystem<TransporterTask>();
-
-        GameObject spawnedWorker = Instantiate(worker);
-        spawnedWorker.transform.position = new Vector3(0, -3f);
-        spawnedWorker.GetComponent<TaskWorkerAI>().SetUp(spawnedWorker.GetComponent<Worker>(), taskSystem);
+        //enemyUnitTaskSystem = new TaskSystem<Task_IEnemy_Unit>();
+        //GameObject spawnedWorker = Instantiate(worker);
+        //spawnedWorker.transform.position = new Vector3(0, -3f);
+        //spawnedWorker.GetComponent<TaskWorkerAI>().SetUp(spawnedWorker.GetComponent<Worker>(), taskSystem);
        
         /*
         spawnedWorkerSave = spawnedWorker.gameObject;
@@ -361,6 +361,11 @@ public class TaskGameHandler : MonoBehaviour
         {
             public Vector3 buildingPosition;
             public Action<Enemy_Spearman_AI> convertAction;
+        }
+
+        public class GetHitThenContinueToTarget : Task_IEnemy_Unit
+        {
+            public Action<Enemy_Spearman_AI> stopAction;
         }
     }
 }

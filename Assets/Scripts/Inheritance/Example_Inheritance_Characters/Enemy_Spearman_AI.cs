@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy_Spearman_AI : BaseEnemy
+public class Enemy_Spearman_AI : MonoBehaviour
 {
     private enum State
     {
@@ -14,6 +14,7 @@ public class Enemy_Spearman_AI : BaseEnemy
     private State state;
     private float waitingTimer;
     private Vector3 startingPos;
+    private TestStateAnimation testStateAnim;
     private Vector3 GetRandomLR()
     {
         return new Vector3(UnityEngine.Random.Range(-1, 1), 0).normalized;
@@ -28,13 +29,17 @@ public class Enemy_Spearman_AI : BaseEnemy
         this.enemy = enemy;
         this.taskSystem = taskSystem;
     }
-    /*
-    public override Start()
+    
+    public void Start()
     {
-        startingPos = FindObjectOfType<Town_Center>().transform.position;
-        roamingPos = GetRoamingPos();
+
+        //startingPos = FindObjectOfType<Town_Center>().transform.position;
+        startingPos = transform.position;
+        testStateAnim = GetComponent<TestStateAnimation>();
+        //roamingPos = GetRoamingPos();
+
     }
-    */
+    
     private void Update()
     {
         switch (state)
@@ -58,7 +63,6 @@ public class Enemy_Spearman_AI : BaseEnemy
 
     private void RequestNextTask()
     {
-        //Debug.Log("RequestNextTask");
         TaskGameHandler.Task_IEnemy_Unit task = taskSystem.RequestNextTask();
         if (task == null)
         {
@@ -91,6 +95,10 @@ public class Enemy_Spearman_AI : BaseEnemy
             if (task is TaskGameHandler.Task_IEnemy_Unit.ConvertToTransporterTask)
             {
                 ExecuteTask_ConvertTaskWorkerToTransporter(task as TaskGameHandler.Task_IEnemy_Unit.ConvertToTransporterTask);
+            } 
+            if (task is TaskGameHandler.Task_IEnemy_Unit.GetHitThenContinueToTarget)
+            {
+                ExecuteTask_GetHitThenContinueToTarget(task as TaskGameHandler.Task_IEnemy_Unit.GetHitThenContinueToTarget);
             }
            
 
@@ -100,7 +108,8 @@ public class Enemy_Spearman_AI : BaseEnemy
     private void ExecuteTask_MoveToPosition(TaskGameHandler.Task_IEnemy_Unit.MoveToPosition moveToPosTask)
     {
         Debug.Log("Execute MoveTo Task");
-        enemy.MoveTo(new Vector3(moveToPosTask.targetPosition.x, moveToPosTask.targetPosition.y), () => { state = State.WaitingForNextTask; });
+        testStateAnim.SetStateRun(); 
+        enemy.MoveTo(new Vector3(moveToPosTask.targetPosition.x, moveToPosTask.targetPosition.y), () => { state = State.WaitingForNextTask; testStateAnim.SetStateIdle(); });
     }
 
     private void ExecuteTask_Victory(TaskGameHandler.Task_IEnemy_Unit.Victory victoryTask)
@@ -135,5 +144,16 @@ public class Enemy_Spearman_AI : BaseEnemy
         enemy.MoveTo(convertTask.buildingPosition, () => { convertTask.convertAction(this); state = State.WaitingForNextTask; });
 
     }
+    private void ExecuteTask_GetHitThenContinueToTarget(TaskGameHandler.Task_IEnemy_Unit.GetHitThenContinueToTarget stopStartTask)
+    {
+        Debug.Log("Execute stop continue Task");
+        //testStateAnim.SetStateHurt();
+        enemy.MoveTo(transform.position, () => { stopStartTask.stopAction(this); state = State.WaitingForNextTask; });
+
+    }
     
+    public void SetStateWaiting()//maybe this is interupt task
+    {
+        state = State.WaitingForNextTask;
+    }
 }

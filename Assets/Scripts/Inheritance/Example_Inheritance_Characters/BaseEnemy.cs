@@ -13,18 +13,22 @@ public class BaseEnemy : MonoBehaviour, IEnemy_Unit, IDmg_By_Ally<int>
     [SerializeField] private Animator anim;
     [SerializeField] private Coroutine _currentRoutine;
     [SerializeField] private Coroutine _animationRoutine;
+    private bool faceR = false;
     // Start is called before the first frame update
-    public void Start()
+    public virtual void Start()
     {
         health = 100;
-        dropPool = FindObjectOfType<DropPool>();
-        coinPool = FindObjectOfType<CoinPool>();
+        //dropPool = FindObjectOfType<DropPool>();
+        //coinPool = FindObjectOfType<CoinPool>();
+        currentPos = transform.position;
         anim = GetComponent<Animator>();
+
     }
 
     // Update is called once per frame
     private void Update()
     {
+        Facing();
         if (!IsArrivedFree())
         {
             transform.position = Vector2.MoveTowards(transform.position, currentPos, 5 * Time.deltaTime);
@@ -35,6 +39,11 @@ public class BaseEnemy : MonoBehaviour, IEnemy_Unit, IDmg_By_Ally<int>
             //state = State.Base;
             //Debug.Log("arrived, should be able to change pos and be not arrived");
         }
+    }
+    public void GetPools()
+    {
+        dropPool = FindObjectOfType<DropPool>();
+        coinPool = FindObjectOfType<CoinPool>();
     }
     public void SetHealthFull()
     {
@@ -98,5 +107,23 @@ public class BaseEnemy : MonoBehaviour, IEnemy_Unit, IDmg_By_Ally<int>
         _animationRoutine = null;
         OnFinishPlayingAnimation?.Invoke();
 
+    }
+    private void Facing()
+    {
+        if (faceR && currentPos.x < transform.position.x)
+        {
+            Flip();
+        }
+        else if (!faceR && currentPos.x > transform.position.x)
+        {
+            Flip();
+        }
+    }
+    private void Flip()
+    {
+        faceR = !faceR;
+        Vector3 scaler = transform.localScale;
+        scaler.x *= -1;
+        transform.localScale = scaler;
     }
 }

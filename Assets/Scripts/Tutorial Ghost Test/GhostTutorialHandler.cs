@@ -30,7 +30,7 @@ public class GhostTutorialHandler : MonoBehaviour
     {
         ghostTaskSytem = new TaskSystem<TaskGameHandler.GhostTask>();
         GameObject spawnedWorker = Instantiate(ghost);
-        spawnedWorker.transform.position = player.transform.position + new Vector3(-3, 0); //ghost in kingdom spawns at monument which you have to pass
+        spawnedWorker.transform.position = player.transform.position + new Vector3(3, 0); //ghost in kingdom spawns at monument which you have to pass
         spawnedWorker.GetComponent<GhostTutorial_TaskSystemAI>().SetUp(spawnedWorker.GetComponent<Tutorial_Ghost>(), ghostTaskSytem);
         ghostSave = spawnedWorker;
         tutorial_Ghost = ghostSave.GetComponent<Tutorial_Ghost>();
