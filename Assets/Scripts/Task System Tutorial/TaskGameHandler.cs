@@ -85,15 +85,19 @@ public class TaskGameHandler : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            TestTask task = new TestTask.MoveToPositionThenDie 
-            { 
-                targetPosition = new Vector3(UtilsClass.GetMouseWorldPosition().x, -4f), DieAction = (TaskTestNewWorkerAI)=>
+            foreach(TaskTestNewWorkerAI worker in TaskTestWorkerAIList)
+            {
+                TestTask task = new TestTask.MoveToPositionThenDie
                 {
-                    TaskTestWorkerAIList.RemoveAt(TaskTestWorkerAIList.IndexOf(TaskTestNewWorkerAI));
-                    TaskTestNewWorkerAI.gameObject.SetActive(false);
-                } 
-            };
-            testTaskSystem.AddTask(task);
+                    targetPosition = new Vector3(UtilsClass.GetMouseWorldPosition().x, -4f),
+                    DieAction = (TaskTestNewWorkerAI) =>
+                    {
+                        TaskTestWorkerAIList.RemoveAt(TaskTestWorkerAIList.IndexOf(TaskTestNewWorkerAI));
+                        TaskTestNewWorkerAI.gameObject.SetActive(false);
+                    }
+                };
+                testTaskSystem.AddTask(task);
+            }
             //TaskSystem.Task task = new TaskSystem.Task.CleanUp { targetPosition = new Vector3(4, -3), cleanUpAction =  ()=> { Debug.Log("Cleaned Up Stuff"); } };
             //taskSystem.AddTask(task);
             //taskSystem.EnqueueTaskHelper()
