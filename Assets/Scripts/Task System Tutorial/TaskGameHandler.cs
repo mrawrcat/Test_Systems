@@ -14,8 +14,8 @@ public class TaskGameHandler : MonoBehaviour
     
     private TaskSystem<Task> taskSystem;
     public TaskSystem<TransporterTask> transporterTaskSystem;
+    private TaskSystem<TestTask> testTaskSystem;
     //public TaskSystem<Task_IEnemy_Unit> enemyUnitTaskSystem;
-    
 
     [SerializeField] private Sprite PFCherrySprite;
     [SerializeField] private Sprite appleSprite;
@@ -28,12 +28,15 @@ public class TaskGameHandler : MonoBehaviour
     private GameObject spawnedWorkerSave;
 
     [SerializeField] private Transform Archer_Station;
+    [SerializeField] private List<TaskTestNewWorkerAI> TaskTestWorkerAIList;
 
     // Start is called before the first frame update
     void Start()
     {
+        TaskTestWorkerAIList = new List<TaskTestNewWorkerAI>();
         taskSystem = new TaskSystem<Task>();
         transporterTaskSystem = new TaskSystem<TransporterTask>();
+        testTaskSystem = new TaskSystem<TestTask>();
         //enemyUnitTaskSystem = new TaskSystem<Task_IEnemy_Unit>();
         //GameObject spawnedWorker = Instantiate(worker);
         //spawnedWorker.transform.position = new Vector3(0, -3f);
@@ -66,13 +69,15 @@ public class TaskGameHandler : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
+            TestTask task = new TestTask.MoveToPosition { targetPosition = new Vector3(UtilsClass.GetMouseWorldPosition().x, -4f) };
+            testTaskSystem.AddTask(task);
             //Task task = new Task.MoveToPosition { targetPosition = new Vector3(UtilsClass.GetMouseWorldPosition().x, -3f) };
             //taskSystem.AddTask(task);
             /*
             Debug.Log("tried to add task go to: " + new Vector3(UtilsClass.GetMouseWorldPosition().x, -3f));
             */
         }
-        
+
         if (Input.GetMouseButtonDown(1))
         {
             SpawnDewPickUp(new Vector3(UtilsClass.GetMouseWorldPosition().x, -3.5f));
@@ -80,18 +85,28 @@ public class TaskGameHandler : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
+            TestTask task = new TestTask.MoveToPositionThenDie 
+            { 
+                targetPosition = new Vector3(UtilsClass.GetMouseWorldPosition().x, -4f), DieAction = (TaskTestNewWorkerAI)=>
+                {
+                    TaskTestWorkerAIList.RemoveAt(TaskTestWorkerAIList.IndexOf(TaskTestNewWorkerAI));
+                    TaskTestNewWorkerAI.gameObject.SetActive(false);
+                } 
+            };
+            testTaskSystem.AddTask(task);
             //TaskSystem.Task task = new TaskSystem.Task.CleanUp { targetPosition = new Vector3(4, -3), cleanUpAction =  ()=> { Debug.Log("Cleaned Up Stuff"); } };
             //taskSystem.AddTask(task);
             //taskSystem.EnqueueTaskHelper()
-            SpawnPFCherryCleanUp(new Vector3(UtilsClass.GetMouseWorldPosition().x, -3f));
+            //SpawnPFCherryCleanUp(new Vector3(UtilsClass.GetMouseWorldPosition().x, -3f));
 
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
 
             GameObject spawnedWorker = Instantiate(worker);
-            spawnedWorker.transform.position = new Vector3(UtilsClass.GetMouseWorldPosition().x, -3f);
-            spawnedWorker.GetComponent<TaskWorkerAI>().SetUp(spawnedWorker.GetComponent<Worker>(), taskSystem);
+            spawnedWorker.transform.position = new Vector3(UtilsClass.GetMouseWorldPosition().x, -4f);
+            spawnedWorker.GetComponent<TaskTestNewWorkerAI>().SetUp(spawnedWorker.GetComponent<BaseUnit>(), testTaskSystem);
+            TaskTestWorkerAIList.Add(spawnedWorker.GetComponent<TaskTestNewWorkerAI>());
         }
 
 
@@ -366,6 +381,21 @@ public class TaskGameHandler : MonoBehaviour
         public class GetHitThenContinueToTarget : Task_IEnemy_Unit
         {
             public Action<Enemy_Spearman_AI> stopAction;
+        }
+    }
+
+    public class TestTask : TaskBase
+    {
+        public class MoveToPosition : TestTask
+        {
+            public Vector3 targetPosition;
+
+        }
+        public class MoveToPositionThenDie : TestTask
+        {
+            public Vector3 targetPosition;
+            public Action<TaskTestNewWorkerAI> DieAction;
+
         }
     }
 }
