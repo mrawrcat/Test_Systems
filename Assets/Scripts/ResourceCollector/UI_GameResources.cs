@@ -10,8 +10,8 @@ public class UI_GameResources : MonoBehaviour
 
     private void Awake()
     {
-        GameResources.Init();//put this in game handler later
-        GameResources.OnResourceAmountChanged += OnResourceAmountChanged;
+        GameObtainableResources.Init();//put this in game handler later
+        GameObtainableResources.OnResourceAmountChanged += OnResourceAmountChanged;
         UpdateResourceText();
     }
 
@@ -19,17 +19,17 @@ public class UI_GameResources : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.I))
         {
-            GameResources.AddResourceAmount(GameResources.ResourceType.Gold, 1);
+            GameObtainableResources.AddResourceAmount(GameObtainableResources.ResourceType.Gold, 1);
         }
         if (Input.GetKeyDown(KeyCode.O))
         {
-            GameResources.AddResourceAmount(GameResources.ResourceType.Gold, 10);
+            GameObtainableResources.AddResourceAmount(GameObtainableResources.ResourceType.Gold, 10);
         }
     }
 
     private void UpdateResourceText()
     {
-        goldAmtTxt.text = "Gold: " + GameResources.GetResourceAmount(GameResources.ResourceType.Gold);
+        goldAmtTxt.text = "Gold: " + GameObtainableResources.GetResourceAmount(GameObtainableResources.ResourceType.Gold);
     }
 
     private void OnResourceAmountChanged(object sender, System.EventArgs e)

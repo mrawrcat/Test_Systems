@@ -24,7 +24,7 @@ public class WallBuilding : MonoBehaviour
     private int currentUpgradeRequirements;
     private bool canUpgrade()
     {
-        if(GameResources.GetResourceAmount(GameResources.ResourceType.Gold) > currentUpgradeRequirements)
+        if(GameObtainableResources.GetResourceAmount(GameObtainableResources.ResourceType.Gold) > currentUpgradeRequirements)
         {
             return true;
         }
@@ -52,7 +52,7 @@ public class WallBuilding : MonoBehaviour
             {
                 if(upgradeState < maxUpgradeState && canUpgrade())
                 {
-                    GameResources.RemoveResourceAmount(GameResources.ResourceType.Gold, 5);
+                    GameObtainableResources.RemoveResourceAmount(GameObtainableResources.ResourceType.Gold, 5);
                     upgradeState++;
                 }
             }

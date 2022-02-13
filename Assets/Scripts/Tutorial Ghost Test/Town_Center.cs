@@ -25,7 +25,7 @@ public class Town_Center : MonoBehaviour
     private GhostTutorialHandler ghostTutorialHandler;
     private bool canUpgrade()
     {
-        if (GameResources.GetResourceAmount(GameResources.ResourceType.Gold) > currentUpgradeRequirements)
+        if (GameObtainableResources.GetResourceAmount(GameObtainableResources.ResourceType.Gold) > currentUpgradeRequirements)
         {
             return true;
         }
