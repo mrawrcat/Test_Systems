@@ -86,7 +86,6 @@ public class Enemy_Spearman_AI : MonoBehaviour
                 ExecuteTask_CleanUp(task as TaskGameHandler.Task_IEnemy_Unit.CleanUp);
                 return;
             }
-          
             if (task is TaskGameHandler.Task_IEnemy_Unit.TakeResourceToPosition)
             {
                 ExecuteTask_TakeResourceToPosition(task as TaskGameHandler.Task_IEnemy_Unit.TakeResourceToPosition);
@@ -108,8 +107,8 @@ public class Enemy_Spearman_AI : MonoBehaviour
     private void ExecuteTask_MoveToPosition(TaskGameHandler.Task_IEnemy_Unit.MoveToPosition moveToPosTask)
     {
         Debug.Log("Execute MoveTo Task");
-        testStateAnim.SetStateRun(); 
-        enemy.MoveTo(new Vector3(moveToPosTask.targetPosition.x, moveToPosTask.targetPosition.y), () => { state = State.WaitingForNextTask; testStateAnim.SetStateIdle(); });
+        //testStateAnim.SetStateRun(); 
+        enemy.MoveTo(new Vector3(moveToPosTask.targetPosition.x, moveToPosTask.targetPosition.y), () => { state = State.WaitingForNextTask; /*testStateAnim.SetStateIdle(); */});
     }
 
     private void ExecuteTask_Victory(TaskGameHandler.Task_IEnemy_Unit.Victory victoryTask)

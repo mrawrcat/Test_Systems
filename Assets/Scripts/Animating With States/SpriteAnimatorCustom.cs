@@ -9,17 +9,24 @@ public class SpriteAnimatorCustom : MonoBehaviour
 
     public event EventHandler OnAnimationLoopedFirstTime;
     public event EventHandler OnAnimationLooped;
+    public event EventHandler OnAnimationLoopedStopPlaying;
     [SerializeField]private Sprite[] frameArray;
     private int currentFrame;
     private float timer;
     private float frameRate;
     private bool loop = false;
-    private bool isPlaying = true;
+    [SerializeField] private bool isPlaying = true;
     private int loopCounter = 0;
     private SpriteRenderer spriteRenderer;
+    public bool GetIsPlayingBool()
+    {
+        return isPlaying;
+    }
+
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        
         /*
         if (frameArray != null)
         {
@@ -70,7 +77,10 @@ public class SpriteAnimatorCustom : MonoBehaviour
     private void StopPlaying()
     {
         isPlaying = false;
+        OnAnimationLoopedStopPlaying?.Invoke(this, EventArgs.Empty);
     }
+
+
 
     public void SetFrameArray(Sprite[] frameArray)
     {
@@ -82,9 +92,9 @@ public class SpriteAnimatorCustom : MonoBehaviour
         this.frameArray = frameArray;
         this.frameRate = frameRate;
         this.loop = loop;
+        isPlaying = true;
         currentFrame = 0;
         timer = 0;
         spriteRenderer.sprite = frameArray[currentFrame];
-        isPlaying = true;
     }
 }

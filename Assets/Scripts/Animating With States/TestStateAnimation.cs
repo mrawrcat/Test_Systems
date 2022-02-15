@@ -5,62 +5,111 @@ using UnityEngine;
 
 public class TestStateAnimation : MonoBehaviour
 {
-    private enum State
+    private enum AnimationType
     {
         Idle,
-        Combat_Pose,
-        Run,
-        Jump,
+        Walk,
         Attack,
         Hurt,
-        Death,
-        Recover,
+        Die,
+    }
+    [SerializeField] private Sprite[] idleAnim;
+    [SerializeField] private Sprite[] walkAnim;
+    [SerializeField] private Sprite[] atkAnim;
+    [SerializeField] private Sprite[] hurtAnim;
+    [SerializeField] private Sprite[] dieAnim;
+    [SerializeField] private AnimationType activeAnimType;
+    private SpriteAnimatorCustom anim;
+    private bool isIdle;
+
+    private void Start()
+    {
+        anim = GetComponentInChildren<SpriteAnimatorCustom>();
+        anim.OnAnimationLoopedFirstTime += OnAnimationLooped_SingleLoop;
+        anim.OnAnimationLooped += OnAnimationLooped_ContinuousLoop;
+        anim.OnAnimationLoopedStopPlaying += OnAnimationLooped_StoppedPlaying;
+        anim.SetFrameArray(idleAnim);
+        activeAnimType = AnimationType.Idle;
+        anim.PlayAnimationCustom(idleAnim, .1f);
     }
 
-    private State state;
-    private Animator anim;
-
-    // Start is called before the first frame update
-    void Start()
+    private void Update()
     {
-        anim = GetComponent<Animator>();
-    }
+        
 
-    // Update is called once per frame
-    void Update()
-    {
-        switch (state)
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            case State.Idle:
-                anim.SetInteger("AnimState", 0);
-                break;
-            case State.Run:
-                anim.SetInteger("AnimState", 2);
-                break;
-            case State.Combat_Pose:
-                anim.SetInteger("AnimState", 1);
-                break;
-            case State.Hurt:
-                anim.SetTrigger("Hurt");
-                break;
+            PlayCharacterAnimation(AnimationType.Attack);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            PlayCharacterAnimation(AnimationType.Idle);
+        }
+        
+        
+    }
+
+    private IEnumerator AttackToIdle()
+    {
+        isIdle = false;
+        PlayCharacterAnimation(AnimationType.Attack);
+        yield return new WaitForSeconds(3f);
+        isIdle = true;
+    }
+
+    private void Walk()
+    {
+        PlayCharacterAnimation(AnimationType.Walk);
+    }
+
+    private void OnAnimationLooped_SingleLoop(object sender, EventArgs e)
+    {
+        Debug.Log("animation played once");
+    }
+
+    private void OnAnimationLooped_ContinuousLoop(object sender, EventArgs e)
+    {
+        Debug.Log("animation playing multiple times");
+    }
+
+    private void OnAnimationLooped_StoppedPlaying(object sender, EventArgs e)
+    {
+        if (activeAnimType == AnimationType.Attack)
+        {
+            Debug.Log("animationType is attack, go to idle");
+            PlayCharacterAnimation(AnimationType.Idle);
         }
     }
 
-    public void SetStateIdle()
+    private void PlayCharacterAnimation(AnimationType animType)
     {
-        state = State.Idle;
-    }
-    public void SetStateRun()
-    {
-        state = State.Run;
-    }
-    public void SetStateCombat()
-    {
-        state = State.Combat_Pose;
-    }
-
-    public void SetStateHurt()
-    {
-        state = State.Hurt;
+        if (animType != activeAnimType)
+        {
+            activeAnimType = animType;
+            switch (animType)
+            {
+                default:
+                case AnimationType.Idle:
+                    //spriteAnim.SetFrameArray(idleAnim);
+                    anim.PlayAnimationCustom(idleAnim, .1f);
+                    break;
+                case AnimationType.Walk:
+                    //spriteAnim.SetFrameArray(walkAnim);
+                    anim.PlayAnimationCustom(walkAnim, .1f);
+                    break;
+                case AnimationType.Attack:
+                    //spriteAnim.SetFrameArray(walkAnim);
+                    anim.PlayAnimationCustom(atkAnim, .1f, false);
+                    break;
+                case AnimationType.Hurt:
+                    //spriteAnim.SetFrameArray(walkAnim);
+                    anim.PlayAnimationCustom(hurtAnim, .1f, false);
+                    break;
+                case AnimationType.Die:
+                    //spriteAnim.SetFrameArray(walkAnim);
+                    anim.PlayAnimationCustom(dieAnim, .1f, false);
+                    break;
+            }
+        }
     }
 }

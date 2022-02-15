@@ -52,6 +52,10 @@ public class BaseEnemy : MonoBehaviour, IEnemy_Unit, IDmg_By_Ally<int>
     public void DamageTaken(int dmgTaken)
     {
         health -= dmgTaken;
+        if(health <= 0)
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     private bool IsArrivedFree()//for not go to transform

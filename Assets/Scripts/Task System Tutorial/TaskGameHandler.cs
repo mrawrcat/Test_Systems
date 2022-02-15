@@ -14,7 +14,7 @@ public class TaskGameHandler : MonoBehaviour
     
     private TaskSystem<Task> taskSystem;
     public TaskSystem<TransporterTask> transporterTaskSystem;
-    private TaskSystem<TestTask> testTaskSystem;
+    public TaskSystem<TestTask> testTaskSystem;
     //public TaskSystem<Task_IEnemy_Unit> enemyUnitTaskSystem;
 
     [SerializeField] private Sprite PFCherrySprite;
@@ -31,7 +31,7 @@ public class TaskGameHandler : MonoBehaviour
     [SerializeField] private List<TaskTestNewWorkerAI> TaskTestWorkerAIList;
 
     // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
         TaskTestWorkerAIList = new List<TaskTestNewWorkerAI>();
         taskSystem = new TaskSystem<Task>();
@@ -400,6 +400,10 @@ public class TaskGameHandler : MonoBehaviour
             public Vector3 targetPosition;
             public Action<TaskTestNewWorkerAI> DieAction;
 
+        } 
+        public class StopAndAttack : TestTask
+        {
+            public Action<TaskTestNewWorkerAI> AttackAction;
         }
     }
 }

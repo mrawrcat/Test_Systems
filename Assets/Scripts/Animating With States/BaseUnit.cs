@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class BaseUnit : MonoBehaviour, IUnit
 {
-    private enum AnimationType
+    public enum AnimationType
     {
         Idle,
         Walk,
@@ -13,44 +13,53 @@ public class BaseUnit : MonoBehaviour, IUnit
         Hurt,
         Die,
     }
+    public AnimationType activeAnimType; 
+    public AnimationType GetActiveAnimType()
+    {
+        return activeAnimType;
+    }
+
+    //just make animationType public and move state to another script?
+   
     [SerializeField] private Sprite[] idleAnim;
     [SerializeField] private Sprite[] walkAnim;
     [SerializeField] private Sprite[] atkAnim;
     [SerializeField] private Sprite[] hurtAnim;
     [SerializeField] private Sprite[] dieAnim;
+    private SpriteAnimatorCustom anim;
+
     [SerializeField] private Vector3 currentPos;
     [SerializeField] private Coroutine _currentRoutine;
     [SerializeField] private Coroutine _animationRoutine;
-    [SerializeField] private AnimationType activeAnimType;
-    private SpriteAnimatorCustom anim;
     private bool faceR = true;
-
     private void Start()
     {
         currentPos = transform.position;
         anim = GetComponentInChildren<SpriteAnimatorCustom>();
+        anim.OnAnimationLoopedStopPlaying += OnAnimationLooped_StopPlaying;
         anim.SetFrameArray(idleAnim);
         activeAnimType = AnimationType.Idle;
         anim.PlayAnimationCustom(idleAnim, .1f);
+       
+        
     }
 
     private void Update()
     {
         Facing();
         if (!IsArrivedAtPosition())
-        {
+        { 
             transform.position = Vector2.MoveTowards(transform.position, currentPos, 5 * Time.deltaTime);
-            PlayCharacterAnimation(AnimationType.Walk);
+            //PlayCharacterAnimation(AnimationType.Walk);
             //transform.position = Vector3.Lerp(transform.position, currentPos, Time.deltaTime * 5);
         }
         else if (IsArrivedAtPosition())
         {
-            //activeAnimType = AnimationType.Idle;
-            PlayCharacterAnimation(AnimationType.Idle);
+            //PlayCharacterAnimation(AnimationType.Idle);
         }
     }
 
-    private bool IsArrivedAtPosition()//for not go to transform
+    public bool IsArrivedAtPosition()//for not go to transform
     {
         // Instead of setting a field directly return the value
         return Vector3.Distance(transform.position, currentPos) <= 0.0f;
@@ -82,7 +91,12 @@ public class BaseUnit : MonoBehaviour, IUnit
         _animationRoutine = StartCoroutine(WaitUntilFinishPlayAnimation(animLength, OnFinishedPlaying));
     }
 
-    private void PlayCharacterAnimation(AnimationType animType)
+    private void OnAnimationLooped_StopPlaying(object sender, EventArgs e)
+    {
+       
+    }
+
+    public void PlayCharacterAnimation(AnimationType animType)
     {
         if (animType != activeAnimType)
         {
@@ -113,6 +127,28 @@ public class BaseUnit : MonoBehaviour, IUnit
             }
         }
     }
+    /*
+    public void PlayIdleAnimation()
+    {
+        PlayCharacterAnimation(AnimationType.Idle);
+    }
+    public void PlayWalkAnimation()
+    {
+        PlayCharacterAnimation(AnimationType.Walk);
+    }
+    public void PlayAttackAnimation()
+    {
+        PlayCharacterAnimation(AnimationType.Attack);
+    }
+    public void PlayHurtAnimation()
+    {
+        PlayCharacterAnimation(AnimationType.Hurt);
+    }
+    public void PlayDieAnimation()
+    {
+        PlayCharacterAnimation(AnimationType.Die);
+    }
+    */
 
     private IEnumerator WaitUntilArrivedPosition(Vector3 position, Action OnArrivedAtPosition = null)
     {
@@ -146,12 +182,16 @@ public class BaseUnit : MonoBehaviour, IUnit
     private void Flip()
     {
         faceR = !faceR;
-        //Vector3 scaler = transform.localScale;
-        //scaler.x *= -1;
-        //transform.localScale = scaler;
+        /*
+        Vector3 scaler = transform.localScale;
+        scaler.x *= -1;
+        transform.localScale = scaler;
+        */
         Vector3 spriteScaler = GetComponentInChildren<SpriteRenderer>().transform.localScale;
         spriteScaler.x *= -1;
         GetComponentInChildren<SpriteRenderer>().transform.localScale = spriteScaler;
 
     }
+
+    
 }
