@@ -114,7 +114,7 @@ public class Enemy_Spearman_AI : MonoBehaviour
     private void ExecuteTask_Victory(TaskGameHandler.Task_IEnemy_Unit.Victory victoryTask)
     {
         Debug.Log("Execute Victory Task");
-        enemy.PlayAnimation(() => { Debug.Log("Finished Executing Victory Task"); state = State.WaitingForNextTask; });
+        //enemy.PlayAnimation(() => { Debug.Log("Finished Executing Victory Task"); state = State.WaitingForNextTask; });
     }
     private void ExecuteTask_CleanUp(TaskGameHandler.Task_IEnemy_Unit.CleanUp cleanUpTask)
     {

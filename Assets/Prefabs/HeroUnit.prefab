@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4500781042767825396}
   - component: {fileID: 2611175104074742757}
   - component: {fileID: 445664803155443489}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: HeroUnit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -137,6 +137,7 @@ MonoBehaviour:
     m_Bits: 128
   detectSize: 5
   atkRate: 1
+  detectedEnemyList: []
 --- !u!114 &445664803155443489
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -149,6 +150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 244f7179ab1e2f7478b04f08161af250, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  state: 0
 --- !u!1 &4500781043971022805
 GameObject:
   m_ObjectHideFlags: 0

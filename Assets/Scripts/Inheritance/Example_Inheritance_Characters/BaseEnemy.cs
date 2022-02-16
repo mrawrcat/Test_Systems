@@ -5,23 +5,59 @@ using UnityEngine;
 
 public class BaseEnemy : MonoBehaviour, IEnemy_Unit, IDmg_By_Ally<int>
 {
+    public static void Create_BaseUnit(Vector3 spawnPos, Vector3 targetPos)
+    {
+        Transform baseEnemyTransform = Instantiate(GameResources.instance.Bandit, spawnPos, Quaternion.identity);
+        BaseEnemy baseEnemy = baseEnemyTransform.GetComponent<BaseEnemy>();
+        baseEnemy.SetUp(targetPos);
+    }
+
+    public enum AnimationType
+    {
+        Idle,
+        Walk,
+        Attack,
+        Hurt,
+        Die,
+    }
+    public AnimationType activeAnimType;
+    public AnimationType GetActiveAnimType()
+    {
+        return activeAnimType;
+    }
+
+    [SerializeField] private Sprite[] idleAnim;
+    [SerializeField] private Sprite[] walkAnim;
+    [SerializeField] private Sprite[] atkAnim;
+    [SerializeField] private Sprite[] hurtAnim;
+    [SerializeField] private Sprite[] dieAnim;
+    private SpriteAnimatorCustom anim;
 
     public int health;
     private DropPool dropPool;
     private CoinPool coinPool;
     [SerializeField] private Vector3 currentPos;
-    [SerializeField] private Animator anim;
     [SerializeField] private Coroutine _currentRoutine;
     [SerializeField] private Coroutine _animationRoutine;
     private bool faceR = false;
+   
+
+    private void SetUp(Vector3 targetPos)
+    {
+        this.currentPos = targetPos;
+    }
+
     // Start is called before the first frame update
     public virtual void Start()
     {
         health = 100;
         //dropPool = FindObjectOfType<DropPool>();
         //coinPool = FindObjectOfType<CoinPool>();
-        currentPos = transform.position;
-        anim = GetComponent<Animator>();
+        //currentPos = transform.position;
+        anim = GetComponentInChildren<SpriteAnimatorCustom>();
+        anim.SetFrameArray(idleAnim);
+        activeAnimType = AnimationType.Idle;
+        anim.PlayAnimationCustom(idleAnim, .1f);
 
     }
 
@@ -29,12 +65,12 @@ public class BaseEnemy : MonoBehaviour, IEnemy_Unit, IDmg_By_Ally<int>
     private void Update()
     {
         Facing();
-        if (!IsArrivedFree())
+        if (!IsArrivedAtPosition())
         {
             transform.position = Vector2.MoveTowards(transform.position, currentPos, 5 * Time.deltaTime);
             //transform.position = Vector3.Lerp(transform.position, currentPos, Time.deltaTime * 5);
         }
-        else if (IsArrivedFree())
+        else if (IsArrivedAtPosition())
         {
             //state = State.Base;
             //Debug.Log("arrived, should be able to change pos and be not arrived");
@@ -58,7 +94,7 @@ public class BaseEnemy : MonoBehaviour, IEnemy_Unit, IDmg_By_Ally<int>
         }
     }
 
-    private bool IsArrivedFree()//for not go to transform
+    public bool IsArrivedAtPosition()//for not go to transform
     {
         // Instead of setting a field directly return the value
         return Vector3.Distance(transform.position, currentPos) <= 0.0f;
@@ -82,12 +118,12 @@ public class BaseEnemy : MonoBehaviour, IEnemy_Unit, IDmg_By_Ally<int>
         _currentRoutine = StartCoroutine(WaitUntilArrivedPosition(position, OnArrivedAtPosition));
 
     }
-    public void PlayAnimation(Action OnFinishedPlaying = null)
+    public void PlayAnimation(float animLength, Action OnFinishedPlaying = null)
     {
         //do play animation in this
-        //anim.Play(anim.runtimeAnimatorController.animationClips[1].name);
+        //anim.Play(animClip.name);
         if (_animationRoutine != null) StopCoroutine(_animationRoutine);
-        _animationRoutine = StartCoroutine(WaitUntilFinishPlayAnimation(anim.runtimeAnimatorController.animationClips[1].length, OnFinishedPlaying));
+        _animationRoutine = StartCoroutine(WaitUntilFinishPlayAnimation(animLength, OnFinishedPlaying));
     }
 
     private IEnumerator WaitUntilArrivedPosition(Vector3 position, Action OnArrivedAtPosition = null)
@@ -96,7 +132,7 @@ public class BaseEnemy : MonoBehaviour, IEnemy_Unit, IDmg_By_Ally<int>
         // render this frame and continue from here in the next frame"
         // WaitWhile does what the name suggests
         // waits until the given condition is true
-        yield return new WaitUntil(IsArrivedFree);
+        yield return new WaitUntil(IsArrivedAtPosition);
 
         _currentRoutine = null;
         OnArrivedAtPosition?.Invoke();
@@ -106,12 +142,44 @@ public class BaseEnemy : MonoBehaviour, IEnemy_Unit, IDmg_By_Ally<int>
     {
         //float animationLength = anim.length;
         //anim.Play(anim.runtimeAnimatorController.animationClips[1].name);
-        anim.SetTrigger("PlayPlaceholder");
         yield return new WaitForSeconds(animationClip);
         _animationRoutine = null;
         OnFinishPlayingAnimation?.Invoke();
 
     }
+
+    public void PlayCharacterAnimation(AnimationType animType)
+    {
+        if (animType != activeAnimType)
+        {
+            activeAnimType = animType;
+            switch (animType)
+            {
+                default:
+                case AnimationType.Idle:
+                    //spriteAnim.SetFrameArray(idleAnim);
+                    anim.PlayAnimationCustom(idleAnim, .1f);
+                    break;
+                case AnimationType.Walk:
+                    //spriteAnim.SetFrameArray(walkAnim);
+                    anim.PlayAnimationCustom(walkAnim, .1f);
+                    break;
+                case AnimationType.Attack:
+                    //spriteAnim.SetFrameArray(walkAnim);
+                    anim.PlayAnimationCustom(atkAnim, .1f, false);
+                    break;
+                case AnimationType.Hurt:
+                    //spriteAnim.SetFrameArray(walkAnim);
+                    anim.PlayAnimationCustom(hurtAnim, .1f, false);
+                    break;
+                case AnimationType.Die:
+                    //spriteAnim.SetFrameArray(walkAnim);
+                    anim.PlayAnimationCustom(dieAnim, .1f, false);
+                    break;
+            }
+        }
+    }
+
     private void Facing()
     {
         if (faceR && currentPos.x < transform.position.x)

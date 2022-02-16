@@ -3,8 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseUnit : MonoBehaviour, IUnit
+public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
 {
+
+    public static void Create_BaseUnit(Vector3 spawnPos)
+    {
+        //Transform baseUnitTransform = Instantiate(GameResources.instance.Bandit, spawnPos, Quaternion.identity);
+    }
+
     public enum AnimationType
     {
         Idle,
@@ -32,11 +38,13 @@ public class BaseUnit : MonoBehaviour, IUnit
     [SerializeField] private Coroutine _currentRoutine;
     [SerializeField] private Coroutine _animationRoutine;
     private bool faceR = true;
+
+    [SerializeField]private int health;
     private void Start()
     {
+        health = 100;
         currentPos = transform.position;
         anim = GetComponentInChildren<SpriteAnimatorCustom>();
-        anim.OnAnimationLoopedStopPlaying += OnAnimationLooped_StopPlaying;
         anim.SetFrameArray(idleAnim);
         activeAnimType = AnimationType.Idle;
         anim.PlayAnimationCustom(idleAnim, .1f);
@@ -65,6 +73,15 @@ public class BaseUnit : MonoBehaviour, IUnit
         return Vector3.Distance(transform.position, currentPos) <= 0.0f;
     }
 
+    public void TakeDmg(int dmgAmt)
+    {
+        health -= dmgAmt;
+        if(health <= 0)
+        {
+            gameObject.SetActive(false);
+        }
+    }
+
     public void MoveTo(Vector3 position, Action OnArrivedAtPosition = null)
     {
         // Here can/have to decide
@@ -89,11 +106,6 @@ public class BaseUnit : MonoBehaviour, IUnit
         //anim.Play(animClip.name);
         if (_animationRoutine != null) StopCoroutine(_animationRoutine);
         _animationRoutine = StartCoroutine(WaitUntilFinishPlayAnimation(animLength, OnFinishedPlaying));
-    }
-
-    private void OnAnimationLooped_StopPlaying(object sender, EventArgs e)
-    {
-       
     }
 
     public void PlayCharacterAnimation(AnimationType animType)

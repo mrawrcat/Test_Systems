@@ -12,8 +12,9 @@ public class Enemy_Spawner : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GameObject spawnedEnemy = Instantiate(prefab);
-        spawnedEnemy.transform.position = new Vector3(-8, -3f);
+        //GameObject spawnedEnemy = Instantiate(prefab);
+        //spawnedEnemy.transform.position = new Vector3(-8, -3f);
+        
         /*
         enemyUnitTaskSystem = new TaskSystem<TaskGameHandler.Task_IEnemy_Unit>();
         spawnedEnemy.GetComponent<Enemy_Spearman_AI>().SetUp(spawnedEnemy.GetComponent<BaseEnemy>(), enemyUnitTaskSystem);
@@ -24,6 +25,10 @@ public class Enemy_Spawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            BaseEnemy.Create_BaseUnit(transform.position, new Vector3(-3, -3));
+        }
         /*
         if (Input.GetKeyDown(KeyCode.B))
         {
@@ -41,14 +46,6 @@ public class Enemy_Spawner : MonoBehaviour
                 TaskGameHandler.Task_IEnemy_Unit task = new TaskGameHandler.Task_IEnemy_Unit.MoveToPosition { targetPosition = savedTargetPos };
                 enemyUnitTaskSystem.AddTask(task);
             }, .3f);
-
-        }
-        if (Input.GetKeyDown(KeyCode.N))
-        {
-            savedTargetPos = new Vector3(0f, -3f);
-            TaskGameHandler.Task_IEnemy_Unit task = new TaskGameHandler.Task_IEnemy_Unit.MoveToPosition { targetPosition = savedTargetPos };
-            enemyUnitTaskSystem.AddTask(task);
-            
 
         }
         if (Input.GetKeyDown(KeyCode.M))

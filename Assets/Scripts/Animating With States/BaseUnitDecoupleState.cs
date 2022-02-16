@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TestDecoupleState : MonoBehaviour
+public class BaseUnitDecoupleState : MonoBehaviour
 {
     public event EventHandler OnFoundEnemy;
     private enum State
@@ -28,6 +28,9 @@ public class TestDecoupleState : MonoBehaviour
     private BaseUnit baseUnit;
     [SerializeField]private List<BaseEnemy> detectedEnemyList;
     private TaskTestNewWorkerAI ttworkerAI;
+    private Vector3 enemyTargetPos;
+    private float calculateDist;
+    private float storedSmallestDist = 20f;
     // Start is called before the first frame update
     void Start()
     {
@@ -65,22 +68,14 @@ public class TestDecoupleState : MonoBehaviour
         if (foundEnemy)
         {
             //Debug.Log("found the enemy");
-            if (state == State.Walk)
+            if (state == State.Walk || state == State.Idle)
             {
                 OnFoundEnemy?.Invoke(this, EventArgs.Empty);
-                //Debug.Log("try to stop moving as soon as found enemy");
-                //baseUnit.MoveTo(new Vector3(0, transform.position.y), () => { Debug.Log("found enemy, execute stop moving (not task)"); });
-                /*
-                TaskGameHandler.TestTask testTask = new TaskGameHandler.TestTask.MoveToPosition
-                {
-                    targetPosition = transform.position
-                };
-                taskGameHandler.testTaskSystem.AddTask(testTask);
-                */
                 state = State.AttackingMode;
-
-
             }
+            
+
+
         }
 
         if (state == State.AttackingMode)
@@ -128,11 +123,17 @@ public class TestDecoupleState : MonoBehaviour
             }
             if(detectedEnemyList.Count > 0)
             {
-
-                for(int i = 0; i<detectedEnemyList.Count; i++)
+                for(int i = 0; i < detectedEnemyList.Count; i++)
                 {
-                    float closestdistance = detectedEnemyList[i].transform.position.x - transform.position.x;
-                    Debug.Log(closestdistance);
+                    calculateDist = Vector3.Distance(transform.position, detectedEnemyList[i].transform.position);
+                    Debug.Log("calculated distance: " + calculateDist);
+                    if(calculateDist < storedSmallestDist)
+                    {
+                        storedSmallestDist = calculateDist;
+                        enemyTargetPos = detectedEnemyList[i].transform.position;
+                    }
+                    //calculate distance from enemy, if this one's calculateDist is smaller than the previous one this one's calculateDist is the smallest one
+                    Debug.Log("enemy target pos: " + enemyTargetPos);
                 }
                 Arrow.Create_Arrow(atkPos.position, detectedEnemyList[0].transform.position, 25f);
             }
