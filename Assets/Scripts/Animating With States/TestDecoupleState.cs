@@ -128,6 +128,12 @@ public class TestDecoupleState : MonoBehaviour
             }
             if(detectedEnemyList.Count > 0)
             {
+
+                for(int i = 0; i<detectedEnemyList.Count; i++)
+                {
+                    float closestdistance = detectedEnemyList[i].transform.position.x - transform.position.x;
+                    Debug.Log(closestdistance);
+                }
                 Arrow.Create_Arrow(atkPos.position, detectedEnemyList[0].transform.position, 25f);
             }
             detectedEnemyList.Clear();
