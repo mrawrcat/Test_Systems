@@ -34,6 +34,21 @@ public class Arrow : MonoBehaviour
         Vector3 movePos = new Vector3(nextX, baseY + height, transform.position.z);
         transform.rotation = LookAtTarget(movePos - transform.position);
         transform.position = movePos;
+        /*
+        */
+        float hitDetection = 1f;
+        BaseEnemy closestBaseEnemy = BaseEnemy.GetClosestEnemy(transform.position, hitDetection);
+        if (closestBaseEnemy != null)
+        {
+            if(Vector3.Distance(transform.position, closestBaseEnemy.transform.position) < 1f)
+            {
+                Debug.Log("hit enemy #" + closestBaseEnemy.GetIndexPositionInActiveBaseEnemyList());
+                closestBaseEnemy.DamageTaken(50);
+                Destroy(gameObject);
+                //gameObject.SetActive(false);
+
+            }
+        }
     }
 
     public static Quaternion LookAtTarget(Vector2 rotation)
@@ -43,15 +58,15 @@ public class Arrow : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        IDmg_By_Ally<int> objToDmg = collision.gameObject.GetComponent<IDmg_By_Ally<int>>();
-        if (objToDmg != null)
+        if (collision.collider.tag == "Ground")
         {
-            Debug.Log("arrow hit ally");
-            //objToDmg.TakeDmg(50); this is the IDmgByAlly
-            objToDmg.DamageTaken(50); //this is the IDmg_By_Ally
+            Debug.Log("arrow hit ground");
             gameObject.SetActive(false);
         }
+    }
 
+    private void OnCollisionStay2D(Collision2D collision)
+    {
         if (collision.collider.tag == "Ground")
         {
             Debug.Log("arrow hit ground");

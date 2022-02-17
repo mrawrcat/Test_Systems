@@ -12,6 +12,40 @@ public class BaseEnemy : MonoBehaviour, IEnemy_Unit, IDmg_By_Ally<int>
         baseEnemy.SetUp(targetPos);
     }
 
+    private static List<BaseEnemy> activeBaseEnemyList;
+
+    public static BaseEnemy GetClosestEnemy(Vector3 position, float maxRange)
+    {
+        BaseEnemy closest = null;
+        foreach(BaseEnemy baseEnemy in activeBaseEnemyList)
+        {
+            if(closest == null)
+            {
+                closest = baseEnemy;
+            }
+            else
+            {
+                float currentClosest = Vector3.Distance(position, closest.transform.position);
+                float currentChecking = Vector3.Distance(position, baseEnemy.transform.position);
+                if (currentChecking < currentClosest)
+                {
+                    closest = baseEnemy;
+                }
+            }
+        }
+        return closest;
+    }
+
+    public void RemoveThisFromActiveBaseEnemyList()
+    {
+        activeBaseEnemyList.RemoveAt(GetIndexPositionInActiveBaseEnemyList());
+    }
+
+    public int GetIndexPositionInActiveBaseEnemyList()
+    {
+        return activeBaseEnemyList.IndexOf(this);
+    }
+
     public enum AnimationType
     {
         Idle,
@@ -47,6 +81,14 @@ public class BaseEnemy : MonoBehaviour, IEnemy_Unit, IDmg_By_Ally<int>
         this.currentPos = targetPos;
     }
 
+    private void Awake()
+    {
+        if(activeBaseEnemyList == null)
+        {
+            activeBaseEnemyList = new List<BaseEnemy>();
+        }
+        activeBaseEnemyList.Add(this);
+    }
     // Start is called before the first frame update
     public virtual void Start()
     {
@@ -64,6 +106,7 @@ public class BaseEnemy : MonoBehaviour, IEnemy_Unit, IDmg_By_Ally<int>
     // Update is called once per frame
     private void Update()
     {
+        Debug.Log(activeBaseEnemyList.Count);
         Facing();
         if (!IsArrivedAtPosition())
         {
@@ -90,7 +133,9 @@ public class BaseEnemy : MonoBehaviour, IEnemy_Unit, IDmg_By_Ally<int>
         health -= dmgTaken;
         if(health <= 0)
         {
-            gameObject.SetActive(false);
+            RemoveThisFromActiveBaseEnemyList();
+            Destroy(gameObject);
+            //gameObject.SetActive(false);
         }
     }
 

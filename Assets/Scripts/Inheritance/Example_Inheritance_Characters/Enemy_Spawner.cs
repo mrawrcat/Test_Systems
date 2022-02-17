@@ -5,15 +5,14 @@ using CodeMonkey.Utils;
 
 public class Enemy_Spawner : MonoBehaviour
 {
-    [SerializeField] private GameObject prefab;
+    private List<BaseEnemy> allEnemyList = new List<BaseEnemy>();
     //private TaskSystem<TaskGameHandler.Task_IEnemy_Unit> enemyUnitTaskSystem;
     //private GameObject spawnEnemySave;
     //private Vector3 savedTargetPos;
     // Start is called before the first frame update
     void Start()
     {
-        //GameObject spawnedEnemy = Instantiate(prefab);
-        //spawnedEnemy.transform.position = new Vector3(-8, -3f);
+        //allEnemyList = new List<BaseEnemy>();
         
         /*
         enemyUnitTaskSystem = new TaskSystem<TaskGameHandler.Task_IEnemy_Unit>();
@@ -27,7 +26,8 @@ public class Enemy_Spawner : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.W))
         {
-            BaseEnemy.Create_BaseUnit(transform.position, new Vector3(-3, -3));
+           BaseEnemy.Create_BaseUnit(transform.position, new Vector3(-3, -3));
+
         }
         /*
         if (Input.GetKeyDown(KeyCode.B))

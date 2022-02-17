@@ -11,6 +11,40 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
         //Transform baseUnitTransform = Instantiate(GameResources.instance.Bandit, spawnPos, Quaternion.identity);
     }
 
+    private static List<BaseUnit> activeBaseUnitList;
+
+    public static BaseUnit GetClosestEnemy(Vector3 position, float maxRange)
+    {
+        BaseUnit closest = null;
+        foreach (BaseUnit baseUnit in activeBaseUnitList)
+        {
+            if (closest == null)
+            {
+                closest = baseUnit;
+            }
+            else
+            {
+                float currentClosest = Vector3.Distance(position, closest.transform.position);
+                float currentChecking = Vector3.Distance(position, baseUnit.transform.position);
+                if (currentChecking < currentClosest)
+                {
+                    closest = baseUnit;
+                }
+            }
+        }
+        return closest;
+    }
+
+    public void RemoveThisFromActiveBaseEnemyList()
+    {
+        activeBaseUnitList.RemoveAt(GetIndexPositionInActiveBaseUnitList());
+    }
+
+    public int GetIndexPositionInActiveBaseUnitList()
+    {
+        return activeBaseUnitList.IndexOf(this);
+    }
+
     public enum AnimationType
     {
         Idle,
@@ -40,6 +74,16 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
     private bool faceR = true;
 
     [SerializeField]private int health;
+
+    private void Awake()
+    {
+        if (activeBaseUnitList == null)
+        {
+            activeBaseUnitList = new List<BaseUnit>();
+        }
+        activeBaseUnitList.Add(this);
+    }
+
     private void Start()
     {
         health = 100;

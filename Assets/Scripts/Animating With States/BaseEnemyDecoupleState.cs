@@ -27,9 +27,6 @@ public class BaseEnemyDecoupleState : MonoBehaviour
     private BaseEnemy baseEnemyUnit;
     [SerializeField]private List<BaseUnit> detectedEnemyList;
     //private TaskTestNewWorkerAI ttworkerAI; //need to find the tasksystem of this unit
-    private Vector3 enemyTargetPos;
-    private float calculateDist;
-    private float storedSmallestDist = 20f;
     // Start is called before the first frame update
     void Start()
     {

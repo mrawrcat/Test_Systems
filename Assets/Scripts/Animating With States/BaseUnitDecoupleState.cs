@@ -28,9 +28,6 @@ public class BaseUnitDecoupleState : MonoBehaviour
     private BaseUnit baseUnit;
     [SerializeField]private List<BaseEnemy> detectedEnemyList;
     private TaskTestNewWorkerAI ttworkerAI;
-    private Vector3 enemyTargetPos;
-    private float calculateDist;
-    private float storedSmallestDist = 20f;
     // Start is called before the first frame update
     void Start()
     {
@@ -84,7 +81,6 @@ public class BaseUnitDecoupleState : MonoBehaviour
             {
                 //TryDoAttack();
                 testdoAtk();
-                Debug.Log("Try do Attack");
                 nextAtkTime = Time.time + atkRate;
             }
             /*
@@ -103,7 +99,7 @@ public class BaseUnitDecoupleState : MonoBehaviour
     {
         Debug.Log("try to stop moving as soon as found enemy");
         ttworkerAI.FinishTaskEarly();
-        baseUnit.MoveTo(transform.position, () => { Debug.Log("found enemy, execute stop moving (not task)"); });
+        baseUnit.MoveTo(transform.position);
     }
 
     private void testdoAtk()
@@ -111,6 +107,7 @@ public class BaseUnitDecoupleState : MonoBehaviour
         state = State.Attack;
         if(state == State.Attack)
         {
+            /*
             //calculate which enemy to target -> shoot arrow
             Collider2D[] detectedEnemies = Physics2D.OverlapCircleAll(detectPos.position, detectSize, whatIsEnemy);
             foreach (Collider2D enemy in detectedEnemies)
@@ -135,9 +132,16 @@ public class BaseUnitDecoupleState : MonoBehaviour
                     //calculate distance from enemy, if this one's calculateDist is smaller than the previous one this one's calculateDist is the smallest one
                     Debug.Log("enemy target pos: " + enemyTargetPos);
                 }
-                Arrow.Create_Arrow(atkPos.position, detectedEnemyList[0].transform.position, 25f);
             }
             detectedEnemyList.Clear();
+            */
+            //float hitDetection = 5f;
+            BaseEnemy closestBaseEnemy = BaseEnemy.GetClosestEnemy(transform.position, detectSize);
+            if (closestBaseEnemy != null)
+            {
+                Debug.Log("found enemy #" + closestBaseEnemy.GetIndexPositionInActiveBaseEnemyList());
+                Arrow.Create_Arrow(atkPos.position, closestBaseEnemy.transform.position, 25f);
+            }
             baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Attack);
         }
     }

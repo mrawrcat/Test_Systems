@@ -69,7 +69,7 @@ public class TaskGameHandler : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            TestTask task = new TestTask.MoveToPosition { targetPosition = new Vector3(UtilsClass.GetMouseWorldPosition().x, -4f) };
+            TestTask task = new TestTask.MoveToPosition { targetPosition = new Vector3(UtilsClass.GetMouseWorldPosition().x, -3f) };
             testTaskSystem.AddTask(task);
             //Task task = new Task.MoveToPosition { targetPosition = new Vector3(UtilsClass.GetMouseWorldPosition().x, -3f) };
             //taskSystem.AddTask(task);
@@ -80,7 +80,7 @@ public class TaskGameHandler : MonoBehaviour
 
         if (Input.GetMouseButtonDown(1))
         {
-            SpawnDewPickUp(new Vector3(UtilsClass.GetMouseWorldPosition().x, -3.5f));
+            //SpawnDewPickUp(new Vector3(UtilsClass.GetMouseWorldPosition().x, -3.5f));
         }
 
         if (Input.GetKeyDown(KeyCode.Q))
@@ -89,11 +89,13 @@ public class TaskGameHandler : MonoBehaviour
             {
                 TestTask task = new TestTask.MoveToPositionThenDie
                 {
-                    targetPosition = new Vector3(UtilsClass.GetMouseWorldPosition().x, -4f),
+                    targetPosition = new Vector3(UtilsClass.GetMouseWorldPosition().x, -3f),
                     DieAction = (TaskTestNewWorkerAI) =>
                     {
+                        TaskTestNewWorkerAI.GetComponent<BaseUnit>().RemoveThisFromActiveBaseEnemyList();
                         TaskTestWorkerAIList.RemoveAt(TaskTestWorkerAIList.IndexOf(TaskTestNewWorkerAI));
-                        TaskTestNewWorkerAI.gameObject.SetActive(false);
+                        Destroy(TaskTestNewWorkerAI.gameObject);
+                        //TaskTestNewWorkerAI.gameObject.SetActive(false);
                     }
                 };
                 testTaskSystem.AddTask(task);
@@ -108,9 +110,10 @@ public class TaskGameHandler : MonoBehaviour
         {
 
             GameObject spawnedWorker = Instantiate(worker);
-            spawnedWorker.transform.position = new Vector3(UtilsClass.GetMouseWorldPosition().x, -4f);
+            spawnedWorker.transform.position = new Vector3(UtilsClass.GetMouseWorldPosition().x, -3f);
             spawnedWorker.GetComponent<TaskTestNewWorkerAI>().SetUp(spawnedWorker.GetComponent<BaseUnit>(), testTaskSystem);
             TaskTestWorkerAIList.Add(spawnedWorker.GetComponent<TaskTestNewWorkerAI>());
+
         }
 
 
