@@ -28,6 +28,8 @@ public class BaseUnitDecoupleState : MonoBehaviour
     private BaseUnit baseUnit;
     [SerializeField]private List<BaseEnemy> detectedEnemyList;
     private TaskTestNewWorkerAI ttworkerAI;
+    [SerializeField] private Vector3 saveGoToPos;
+    public TaskGameHandler.TestTask savedTestTask;
     // Start is called before the first frame update
     void Start()
     {
@@ -37,10 +39,13 @@ public class BaseUnitDecoupleState : MonoBehaviour
         baseUnit = GetComponent<BaseUnit>();
         anim = GetComponentInChildren<SpriteAnimatorCustom>();
         anim.OnAnimationLoopedStopPlaying += OnAnimationLooped_StopPlaying;
+        anim.OnAnimationLooped += OnAnimationLooped_Looped;
+        anim.OnAnimationLoopedFirstTime += OnAnimationLooped_LoopedFirstTime;
         foundEnemy = false;
         taskGameHandler = FindObjectOfType<TaskGameHandler>();
         nextAtkTime = 0;
         atkRate = 2f;
+        saveGoToPos = new Vector3(0, -20);
     }
 
     // Update is called once per frame
@@ -55,13 +60,14 @@ public class BaseUnitDecoupleState : MonoBehaviour
                 state = State.Walk;
                 baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Walk);
             }
+            /*
             else if(baseUnit.IsArrivedAtPosition())
             {
                 state = State.Idle;
                 baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Idle);
             }
+            */
         }
-
         if (foundEnemy)
         {
             //Debug.Log("found the enemy");
@@ -83,21 +89,14 @@ public class BaseUnitDecoupleState : MonoBehaviour
                 testdoAtk();
                 nextAtkTime = Time.time + atkRate;
             }
-            /*
-            if (foundEnemy)
-            {
-            }
-            else
-            {
-                state = State.Idle;
-                baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Idle);
-            }*/
         }
     }
 
     private void OnFoundEnemy_EnemyFound(object sender, EventArgs e)
     {
         Debug.Log("try to stop moving as soon as found enemy");
+        //need to save task here
+        saveGoToPos = baseUnit.GetMoveToCurrentPos();
         ttworkerAI.FinishTaskEarly();
         baseUnit.MoveTo(transform.position);
     }
@@ -107,36 +106,7 @@ public class BaseUnitDecoupleState : MonoBehaviour
         state = State.Attack;
         if(state == State.Attack)
         {
-            /*
-            //calculate which enemy to target -> shoot arrow
-            Collider2D[] detectedEnemies = Physics2D.OverlapCircleAll(detectPos.position, detectSize, whatIsEnemy);
-            foreach (Collider2D enemy in detectedEnemies)
-            {
-                BaseEnemy baseEnemy = enemy.GetComponent<BaseEnemy>();
-                if (baseEnemy != null)
-                {
-                    detectedEnemyList.Add(baseEnemy);
-                }
-            }
-            if(detectedEnemyList.Count > 0)
-            {
-                for(int i = 0; i < detectedEnemyList.Count; i++)
-                {
-                    calculateDist = Vector3.Distance(transform.position, detectedEnemyList[i].transform.position);
-                    Debug.Log("calculated distance: " + calculateDist);
-                    if(calculateDist < storedSmallestDist)
-                    {
-                        storedSmallestDist = calculateDist;
-                        enemyTargetPos = detectedEnemyList[i].transform.position;
-                    }
-                    //calculate distance from enemy, if this one's calculateDist is smaller than the previous one this one's calculateDist is the smallest one
-                    Debug.Log("enemy target pos: " + enemyTargetPos);
-                }
-            }
-            detectedEnemyList.Clear();
-            */
-            //float hitDetection = 5f;
-            BaseEnemy closestBaseEnemy = BaseEnemy.GetClosestEnemy(transform.position, detectSize);
+            BaseEnemy closestBaseEnemy = BaseEnemy.GetClosestEnemy(transform.position, detectSize);//maybe detectSize might not be right but still works for now + no way of visualizing
             if (closestBaseEnemy != null)
             {
                 Debug.Log("found enemy #" + closestBaseEnemy.GetIndexPositionInActiveBaseEnemyList());
@@ -145,44 +115,79 @@ public class BaseUnitDecoupleState : MonoBehaviour
             baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Attack);
         }
     }
-
-    private void TryDoAttack()
+    private void OnAnimationLooped_LoopedFirstTime(object sender, EventArgs e)
     {
-        state = State.Attack;
-        if (state == State.Attack)
+        if (!foundEnemy)
+        {
+            if (baseUnit.GetComponent<TaskTestNewWorkerAI>().GetSavedTestTask() != null)
+            {
+                baseUnit.GetComponent<TaskTestNewWorkerAI>().DoSavedTask();
+            }
+
+            if (!baseUnit.IsArrivedAtPosition())
+            {
+                state = State.Walk;
+                baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Walk);
+            }
+            else if (baseUnit.IsArrivedAtPosition())
+            {
+                state = State.Idle;
+                baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Idle);
+            }
+        }
+    }
+
+    private void OnAnimationLooped_Looped(object sender, EventArgs e)
+    {
+        if (!foundEnemy)
         {
 
-            TaskGameHandler.TestTask testTask = new TaskGameHandler.TestTask.StopAndAttack
+            if(baseUnit.GetComponent<TaskTestNewWorkerAI>().GetSavedTestTask() != null)
             {
-                AttackAction = (TaskTestNewWorkerAI) =>
-                {
-                    Debug.Log("try to attack enemy");
-                    //PlayCharacterAnimation(AnimationType.Attack);
-                }
-            };
-            taskGameHandler.testTaskSystem.AddTask(testTask);
+                baseUnit.GetComponent<TaskTestNewWorkerAI>().DoSavedTask();
 
-            Debug.Log("Try to do attack");
+            }
+
+            if (!baseUnit.IsArrivedAtPosition())
+            {
+                state = State.Walk;
+                baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Walk);
+            }
+            else if (baseUnit.IsArrivedAtPosition())
+            {
+                state = State.Idle;
+                baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Idle);
+            }
         }
-
-
     }
 
     private void OnAnimationLooped_StopPlaying(object sender, EventArgs e)
     {
-        if(baseUnit.activeAnimType == BaseUnit.AnimationType.Attack)//dont think will attack without enemy found but this code still works
+        //basically without enemy being found attack animation never starts playing
+        if(baseUnit.activeAnimType == BaseUnit.AnimationType.Attack)
         {
             if (foundEnemy)
             {
                 state = State.AttackingMode;
                 baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Idle);
+                Debug.Log("Shot arrow at an enemy go back to idle pos");
             }
             else
             {
-                state = State.Idle;
-                baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Idle);
+                if (baseUnit.GetComponent<TaskTestNewWorkerAI>().GetSavedTestTask() != null)
+                {
+                    baseUnit.GetComponent<TaskTestNewWorkerAI>().DoSavedTask();
+                }
+                else
+                {
+                    state = State.Idle;
+                    baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Idle);
+                    Debug.Log("Killed all enemies and no saved task, go back to idle pos");
+
+                }
             }
-        } 
+        }
+        
     }
 
     private void OnDrawGizmos()

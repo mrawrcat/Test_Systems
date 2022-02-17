@@ -81,6 +81,9 @@ public class TaskGameHandler : MonoBehaviour
         if (Input.GetMouseButtonDown(1))
         {
             //SpawnDewPickUp(new Vector3(UtilsClass.GetMouseWorldPosition().x, -3.5f));
+            //TaskTestNewWorkerAI specificWorker = TaskTestWorkerAIList[0].GetComponent<TaskTestNewWorkerAI>();
+            
+           
         }
 
         if (Input.GetKeyDown(KeyCode.Q))

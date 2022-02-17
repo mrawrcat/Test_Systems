@@ -139,6 +139,7 @@ MonoBehaviour:
   detectSize: 5
   atkRate: 1
   detectedEnemyList: []
+  saveGoToPos: {x: 0, y: 0, z: 0}
 --- !u!114 &445664803155443489
 MonoBehaviour:
   m_ObjectHideFlags: 0

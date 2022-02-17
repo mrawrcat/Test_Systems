@@ -45,6 +45,11 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
         return activeBaseUnitList.IndexOf(this);
     }
 
+    public Vector3 GetMoveToCurrentPos()
+    {
+        return currentPos;
+    }
+
     public enum AnimationType
     {
         Idle,

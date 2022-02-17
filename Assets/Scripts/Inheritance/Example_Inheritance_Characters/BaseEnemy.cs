@@ -88,6 +88,7 @@ public class BaseEnemy : MonoBehaviour, IEnemy_Unit, IDmg_By_Ally<int>
             activeBaseEnemyList = new List<BaseEnemy>();
         }
         activeBaseEnemyList.Add(this);
+        Debug.Log(activeBaseEnemyList.Count);
     }
     // Start is called before the first frame update
     public virtual void Start()
@@ -106,7 +107,7 @@ public class BaseEnemy : MonoBehaviour, IEnemy_Unit, IDmg_By_Ally<int>
     // Update is called once per frame
     private void Update()
     {
-        Debug.Log(activeBaseEnemyList.Count);
+        
         Facing();
         if (!IsArrivedAtPosition())
         {
