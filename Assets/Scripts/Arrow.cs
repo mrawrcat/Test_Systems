@@ -13,7 +13,6 @@ public class Arrow : MonoBehaviour
 
     private Vector3 targetPosition;
     private Vector3 spawnPosition;
-    //private float startTime;
     private float journeyTime;
 
     private void SetUp(Vector3 spawnPos, Vector3 targetPos, float speed)

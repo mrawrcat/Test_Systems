@@ -6,7 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
 public class SpriteAnimatorCustom : MonoBehaviour
 {
-
+    public event EventHandler OnAnimationFrameCounterIncrease;
     public event EventHandler OnAnimationLoopedFirstTime;
     public event EventHandler OnAnimationLooped;
     public event EventHandler OnAnimationLoopedStopPlaying;
@@ -51,6 +51,7 @@ public class SpriteAnimatorCustom : MonoBehaviour
         {
             timer -= frameRate;
             currentFrame = (currentFrame + 1) % frameArray.Length;
+            OnAnimationFrameCounterIncrease?.Invoke(this, EventArgs.Empty);
             if (!loop && currentFrame == 0)
             {
                 StopPlaying();

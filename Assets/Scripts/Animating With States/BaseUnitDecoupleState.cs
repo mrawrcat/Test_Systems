@@ -38,6 +38,7 @@ public class BaseUnitDecoupleState : MonoBehaviour
         OnFoundEnemy += OnFoundEnemy_EnemyFound;
         baseUnit = GetComponent<BaseUnit>();
         anim = GetComponentInChildren<SpriteAnimatorCustom>();
+        anim.OnAnimationFrameCounterIncrease += OnAnimationFrameCounterIncrease_DoStuff;
         anim.OnAnimationLoopedStopPlaying += OnAnimationLooped_StopPlaying;
         anim.OnAnimationLooped += OnAnimationLooped_Looped;
         anim.OnAnimationLoopedFirstTime += OnAnimationLooped_LoopedFirstTime;
@@ -115,6 +116,24 @@ public class BaseUnitDecoupleState : MonoBehaviour
             baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Attack);
         }
     }
+
+    private void OnAnimationFrameCounterIncrease_DoStuff(object sender, EventArgs e)
+    {
+        if (!foundEnemy)
+        {
+            if (!baseUnit.IsArrivedAtPosition())
+            {
+                state = State.Walk;
+                baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Walk);
+            }
+            else if (baseUnit.IsArrivedAtPosition())
+            {
+                state = State.Idle;
+                baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Idle);
+            }
+        }
+    }
+
     private void OnAnimationLooped_LoopedFirstTime(object sender, EventArgs e)
     {
         if (!foundEnemy)
@@ -172,7 +191,7 @@ public class BaseUnitDecoupleState : MonoBehaviour
                 baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Idle);
                 Debug.Log("Shot arrow at an enemy go back to idle pos");
             }
-            else
+            else //i think this usually never gets called because foundEnemy is always true because arrow didnt kill it before animation stopped
             {
                 if (baseUnit.GetComponent<TaskTestNewWorkerAI>().GetSavedTestTask() != null)
                 {
