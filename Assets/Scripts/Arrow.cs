@@ -43,11 +43,21 @@ public class Arrow : MonoBehaviour
             {
                 Debug.Log("hit enemy #" + closestBaseEnemy.GetIndexPositionInActiveBaseEnemyList());
                 closestBaseEnemy.DamageTaken(50);
-                Destroy(gameObject);
+                Destroy(this.gameObject);
                 //gameObject.SetActive(false);
-
+            }
+            else if (transform.position.y <= -3.9f)
+            {
+                Debug.Log("targeted something but it is too far away");
+                Destroy(this.gameObject);
             }
         }
+        else if (transform.position.y <= -3.9f)
+        {
+            Debug.Log("hit or under ground");
+            Destroy(this.gameObject);
+        }
+
     }
 
     public static Quaternion LookAtTarget(Vector2 rotation)

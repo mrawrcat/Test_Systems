@@ -27,7 +27,6 @@ public class Enemy_Spawner : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.W))
         {
            BaseEnemy.Create_BaseUnit(transform.position, new Vector3(-3, -3));
-
         }
         /*
         if (Input.GetKeyDown(KeyCode.B))
