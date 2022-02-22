@@ -46,3 +46,4 @@ MonoBehaviour:
   arrowPrefab: {fileID: 9074107398119402158, guid: 0a820c4a0fe7a5a49a2f5653c5d16acc, type: 3}
   arrow: {fileID: 9074107398119402158, guid: 0a820c4a0fe7a5a49a2f5653c5d16acc, type: 3}
   Bandit: {fileID: 3089332527454125551, guid: 3c6d8d1eae8e99d4ab9178fe8f1f152b, type: 3}
+  AllyUnit: {fileID: 4500781042767825394, guid: f2ade826dfca2ab45a10f99c4b0e37e5, type: 3}

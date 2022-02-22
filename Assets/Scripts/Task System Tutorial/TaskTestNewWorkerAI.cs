@@ -34,7 +34,7 @@ public class TaskTestNewWorkerAI : MonoBehaviour
         {
             //worker waits to request a new task
             case State.WaitingForNextTask:
-                Debug.Log("no detected task");
+                //Debug.Log("no detected task");
                 waitingTimer -= Time.deltaTime;
                 if (waitingTimer <= 0)
                 {

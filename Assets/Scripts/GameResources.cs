@@ -20,4 +20,5 @@ public class GameResources : MonoBehaviour
     public Transform arrowPrefab;
     public Transform arrow;
     public Transform Bandit;
+    public Transform AllyUnit;
 }

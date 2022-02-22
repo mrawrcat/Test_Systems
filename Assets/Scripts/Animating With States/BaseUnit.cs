@@ -6,13 +6,40 @@ using UnityEngine;
 public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
 {
 
-    public static void Create_BaseUnit(Vector3 spawnPos)
+    public static void Create_BaseUnit(Vector3 spawnPos, Vector3 hoboStartPos)
     {
-        //Transform baseUnitTransform = Instantiate(GameResources.instance.Bandit, spawnPos, Quaternion.identity);
+        Transform baseUnitTransform = Instantiate(GameResources.instance.AllyUnit, spawnPos, Quaternion.identity);
+        BaseUnit baseUnit = baseUnitTransform.GetComponent<BaseUnit>();       
+        baseUnit.SetUp(hoboStartPos);
+        
+        //TaskTestNewWorkerAI testNewWorker = baseUnitTransform.GetComponent<TaskTestNewWorkerAI>();
+        //testNewWorker.SetUp(baseUnit, TaskGameHandler.GetInstance().testTaskSystem);
+
+        /*
+        TaskTestHoboAI hoboAI = baseUnitTransform.GetComponent<TaskTestHoboAI>();
+        hoboAI.SetUp(baseUnit, TaskGameHandler.GetInstance().hoboTaskSystem, hoboStartPos);
+        TaskTestVillagerAI villagerAI = baseUnitTransform.GetComponent<TaskTestVillagerAI>();
+        villagerAI.SetUp(baseUnit, TaskGameHandler.GetInstance().villagerTaskSystem);
+        villagerAI.enabled = false;
+        */
+    }
+
+    private TaskGameHandler taskGameHandler;
+    private void SetUp(Vector3 hoboStartPos)
+    {
+        taskGameHandler = FindObjectOfType<TaskGameHandler>();
+        TaskTestNewWorkerAI testNewWorker = gameObject.GetComponent<TaskTestNewWorkerAI>();
+        testNewWorker.SetUp(gameObject.GetComponent<BaseUnit>(), taskGameHandler.testTaskSystem);
+        TaskTestHoboAI hoboAI = gameObject.GetComponent<TaskTestHoboAI>();
+        hoboAI.SetUp(gameObject.GetComponent<BaseUnit>(), taskGameHandler.hoboTaskSystem, hoboStartPos);
+        TaskTestVillagerAI villagerAI = gameObject.GetComponent<TaskTestVillagerAI>();
+        villagerAI.SetUp(gameObject.GetComponent<BaseUnit>(), taskGameHandler.villagerTaskSystem);
+        hoboAI.enabled = false;
+        villagerAI.enabled = false;
+
     }
 
     private static List<BaseUnit> activeBaseUnitList;
-
     public static BaseUnit GetClosestEnemy(Vector3 position, float maxRange)
     {
         BaseUnit closest = null;
@@ -50,6 +77,15 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
         return currentPos;
     }
 
+    public enum UnitType
+    {
+        Hobo,
+        Villager,
+        Archer,
+        Builder,
+    }
+    public UnitType unitType;
+
     public enum AnimationType
     {
         Idle,
@@ -80,6 +116,7 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
 
     [SerializeField]private int health;
 
+    private TaskTestNewWorkerAI newWorkerAI;
     private void Awake()
     {
         if (activeBaseUnitList == null)
@@ -97,8 +134,7 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
         anim.SetFrameArray(idleAnim);
         activeAnimType = AnimationType.Idle;
         anim.PlayAnimationCustom(idleAnim, .1f);
-       
-        
+        unitType = UnitType.Hobo;
     }
 
     private void Update()
@@ -120,6 +156,11 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
     {
         // Instead of setting a field directly return the value
         return Vector3.Distance(transform.position, currentPos) <= 0.0f;
+    }
+
+    public void SetUnitType(UnitType setUnitType)
+    {
+        unitType = setUnitType;
     }
 
     public void TakeDmg(int dmgAmt)

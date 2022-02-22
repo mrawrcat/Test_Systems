@@ -107,6 +107,7 @@ public class TaskWorkerAI : MonoBehaviour
             if(task is TaskGameHandler.Task.ConvertToTransporterTask)
             {
                 ExecuteTask_ConvertTaskWorkerToTransporter(task as TaskGameHandler.Task.ConvertToTransporterTask);
+                return;
             }
 
 

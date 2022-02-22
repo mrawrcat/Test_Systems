@@ -6,15 +6,11 @@ using CodeMonkey.Utils;
 
 public class TaskGameHandler : MonoBehaviour
 {
-    private static TaskGameHandler gameHandlerInstance;
-    public static TaskGameHandler GetInstance()
-    {
-        return gameHandlerInstance;
-    }
-    
     private TaskSystem<Task> taskSystem;
     public TaskSystem<TransporterTask> transporterTaskSystem;
     public TaskSystem<TestTask> testTaskSystem;
+    public TaskSystem<TestTaskHobo> hoboTaskSystem;
+    public TaskSystem<TestTaskVillager> villagerTaskSystem;
     //public TaskSystem<Task_IEnemy_Unit> enemyUnitTaskSystem;
 
     [SerializeField] private Sprite PFCherrySprite;
@@ -33,20 +29,15 @@ public class TaskGameHandler : MonoBehaviour
     // Start is called before the first frame update
     private void Awake()
     {
+
         TaskTestWorkerAIList = new List<TaskTestNewWorkerAI>();
         taskSystem = new TaskSystem<Task>();
         transporterTaskSystem = new TaskSystem<TransporterTask>();
         testTaskSystem = new TaskSystem<TestTask>();
-        //enemyUnitTaskSystem = new TaskSystem<Task_IEnemy_Unit>();
-        //GameObject spawnedWorker = Instantiate(worker);
-        //spawnedWorker.transform.position = new Vector3(0, -3f);
-        //spawnedWorker.GetComponent<TaskWorkerAI>().SetUp(spawnedWorker.GetComponent<Worker>(), taskSystem);
+        hoboTaskSystem = new TaskSystem<TestTaskHobo>();
+        villagerTaskSystem = new TaskSystem<TestTaskVillager>();
        
         /*
-        spawnedWorkerSave = spawnedWorker.gameObject;
-        GameObject spawnedWorker2 = Instantiate(worker);
-        spawnedWorker2.transform.position = new Vector3(3, -3f);
-        spawnedWorker2.GetComponent<TaskWorkerAI>().SetUp(spawnedWorker2.GetComponent<Worker>(), taskSystem);
         GameObject dewGameObject = SpawnResourceDew(new Vector3(-7, -3.5f));
         TaskSystem.Task task = new TaskSystem.Task.TakeResourceToPosition
         {
@@ -111,11 +102,12 @@ public class TaskGameHandler : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
-
+            /*
             GameObject spawnedWorker = Instantiate(worker);
             spawnedWorker.transform.position = new Vector3(UtilsClass.GetMouseWorldPosition().x, -3f);
             spawnedWorker.GetComponent<TaskTestNewWorkerAI>().SetUp(spawnedWorker.GetComponent<BaseUnit>(), testTaskSystem);
             TaskTestWorkerAIList.Add(spawnedWorker.GetComponent<TaskTestNewWorkerAI>());
+            */
 
         }
 
@@ -410,6 +402,44 @@ public class TaskGameHandler : MonoBehaviour
         public class StopAndAttack : TestTask
         {
             public Action<TaskTestNewWorkerAI> AttackAction;
+        }
+    }
+    public class TestTaskHobo : TaskBase
+    {
+        public class MoveToPosition : TestTaskHobo
+        {
+            public Vector3 targetPosition;
+        }
+        public class ConvertToVillager : TestTaskHobo
+        {
+            public Vector3 targetPosition;
+            public Action convertAction;
+
+        }
+    }
+    public class TestTaskVillager : TaskBase
+    {
+        public class MoveToPosition : TestTaskVillager
+        {
+            public Vector3 targetPosition;
+        }
+        public class TakeResourceFromSlotToPosition : TestTaskVillager
+        {
+            public Vector3 resourcePosition;
+            public Action<TaskTestVillagerAI> takeResource;
+            public Vector3 resourceDepositPosition; //position where worker deposits resource
+            public Action dropResource;
+        }
+        public class ConvertToBuilder : TestTaskVillager
+        {
+            public Vector3 targetPosition;
+            public Action<TaskTestVillagerAI> convertAction;
+
+        }
+        public class ConvertToArcher : TestTaskVillager
+        {
+            public Vector3 targetPosition;
+            public Action<TaskTestVillagerAI> convertAction;
         }
     }
 }

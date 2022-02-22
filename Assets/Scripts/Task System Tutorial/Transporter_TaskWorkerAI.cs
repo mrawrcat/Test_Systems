@@ -86,6 +86,6 @@ public class Transporter_TaskWorkerAI : MonoBehaviour
                 state = State.WaitingForNextTask; 
             }); 
         });
-
     }
+
 }

@@ -12,6 +12,8 @@ public class BaseUnitDecoupleState : MonoBehaviour
         Walk,
         Attack,
         AttackingMode,
+        FearRun,
+        Cower,
         Hurt,
         Die,
     }
@@ -22,18 +24,20 @@ public class BaseUnitDecoupleState : MonoBehaviour
     [SerializeField] private Transform detectPos;
     [SerializeField] private LayerMask whatIsEnemy;
     [SerializeField] private float detectSize;
-    private TaskGameHandler taskGameHandler;
     [SerializeField] private float atkRate;
     private float nextAtkTime;
     private BaseUnit baseUnit;
     [SerializeField]private List<BaseEnemy> detectedEnemyList;
-    private TaskTestNewWorkerAI ttworkerAI;
-    [SerializeField] private Vector3 saveGoToPos;
+    private TaskTestHoboAI hoboAI;
+    private TaskTestVillagerAI villagerAI;
+    private TaskTestNewWorkerAI ttworkerAI; //needs all of the worker AI
     public TaskGameHandler.TestTask savedTestTask;
     // Start is called before the first frame update
     void Start()
     {
         detectedEnemyList = new List<BaseEnemy>();
+        hoboAI = GetComponent<TaskTestHoboAI>();
+        villagerAI = GetComponent<TaskTestVillagerAI>();
         ttworkerAI = GetComponent<TaskTestNewWorkerAI>();
         OnFoundEnemy += OnFoundEnemy_EnemyFound;
         baseUnit = GetComponent<BaseUnit>();
@@ -43,10 +47,8 @@ public class BaseUnitDecoupleState : MonoBehaviour
         anim.OnAnimationLooped += OnAnimationLooped_Looped;
         anim.OnAnimationLoopedFirstTime += OnAnimationLooped_LoopedFirstTime;
         foundEnemy = false;
-        taskGameHandler = FindObjectOfType<TaskGameHandler>();
         nextAtkTime = 0;
         atkRate = 2f;
-        saveGoToPos = new Vector3(0, -20);
     }
 
     // Update is called once per frame
@@ -75,7 +77,14 @@ public class BaseUnitDecoupleState : MonoBehaviour
             if (state == State.Walk || state == State.Idle)
             {
                 OnFoundEnemy?.Invoke(this, EventArgs.Empty);
-                state = State.AttackingMode;
+                if(baseUnit.unitType == BaseUnit.UnitType.Archer)
+                {
+                    state = State.AttackingMode;
+                }
+                else
+                {
+                    //run or cower
+                }
             }
             
 
@@ -93,16 +102,32 @@ public class BaseUnitDecoupleState : MonoBehaviour
         }
     }
 
+    
+
     private void OnFoundEnemy_EnemyFound(object sender, EventArgs e)
     {
         Debug.Log("try to stop moving as soon as found enemy");
         //need to save task here
-        saveGoToPos = baseUnit.GetMoveToCurrentPos();
-        ttworkerAI.FinishTaskEarly();
-        baseUnit.MoveTo(transform.position);
+        if(baseUnit.unitType == BaseUnit.UnitType.Archer)
+        {
+            ttworkerAI.FinishTaskEarly();//for now worker is archer need to make new ai for archer and builder
+            baseUnit.MoveTo(transform.position);
+        }
+        if(baseUnit.unitType == BaseUnit.UnitType.Hobo)
+        {
+            //cower
+            hoboAI.FinishTaskEarly();
+            baseUnit.MoveTo(transform.position);
+        }
+        if(baseUnit.unitType == BaseUnit.UnitType.Villager)
+        {
+            //run if can else cower
+            villagerAI.FinishTaskEarly();
+            baseUnit.MoveTo(transform.position);
+        }
     }
 
-    private void testdoAtk()
+    private void testdoAtk()//might need a whole seperate attack system later
     {
         state = State.Attack;
         if(state == State.Attack)
