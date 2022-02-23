@@ -1856,7 +1856,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   detectSize: {x: 10, y: 3}
-  prefab: {fileID: 4500781042767825393, guid: f2ade826dfca2ab45a10f99c4b0e37e5, type: 3}
 --- !u!4 &1953094326
 Transform:
   m_ObjectHideFlags: 0
@@ -1865,7 +1864,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1953094324}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 16, y: -3, z: 0}
+  m_LocalPosition: {x: 4, y: -3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2037265675}
@@ -2073,6 +2072,10 @@ PrefabInstance:
     - target: {fileID: 4939976203090237551, guid: a5bf69a1613d29542a07316fef26b055, type: 3}
       propertyPath: m_Name
       value: Test Enemy Structure
+      objectReference: {fileID: 0}
+    - target: {fileID: 4939976203090237551, guid: a5bf69a1613d29542a07316fef26b055, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4939976203090237553, guid: a5bf69a1613d29542a07316fef26b055, type: 3}
       propertyPath: m_RootOrder

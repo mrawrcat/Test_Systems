@@ -28,14 +28,18 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
     private void SetUp(Vector3 hoboStartPos)
     {
         taskGameHandler = FindObjectOfType<TaskGameHandler>();
-        TaskTestNewWorkerAI testNewWorker = gameObject.GetComponent<TaskTestNewWorkerAI>();
-        testNewWorker.SetUp(gameObject.GetComponent<BaseUnit>(), taskGameHandler.testTaskSystem);
+
+        //base unit starts as hobo
         TaskTestHoboAI hoboAI = gameObject.GetComponent<TaskTestHoboAI>();
         hoboAI.SetUp(gameObject.GetComponent<BaseUnit>(), taskGameHandler.hoboTaskSystem, hoboStartPos);
+
         TaskTestVillagerAI villagerAI = gameObject.GetComponent<TaskTestVillagerAI>();
         villagerAI.SetUp(gameObject.GetComponent<BaseUnit>(), taskGameHandler.villagerTaskSystem);
-        hoboAI.enabled = false;
         villagerAI.enabled = false;
+
+        TaskTestNewWorkerAI testNewWorker = gameObject.GetComponent<TaskTestNewWorkerAI>();
+        testNewWorker.SetUp(gameObject.GetComponent<BaseUnit>(), taskGameHandler.testTaskSystem);
+        testNewWorker.enabled = false;
 
     }
 

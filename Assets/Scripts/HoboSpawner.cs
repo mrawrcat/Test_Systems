@@ -11,7 +11,6 @@ public class HoboSpawner : MonoBehaviour
     private float nextSpawnTime;
     private float spawnRate;
     private BoxCollider2D detectEnterExit;
-    [SerializeField] private GameObject prefab;
     private TaskGameHandler taskHandler;
     // Start is called before the first frame update
     void Start()
@@ -22,7 +21,8 @@ public class HoboSpawner : MonoBehaviour
         taskHandler = FindObjectOfType<TaskGameHandler>();
         nextSpawnTime = 0f;
         spawnRate = 3f;
-        BaseUnit.Create_BaseUnit(transform.position, transform.position);
+        //BaseUnit.Create_BaseUnit(transform.position + new Vector3(3,0), transform.position);
+        //BaseUnit.Create_BaseUnit(transform.position + new Vector3(-3, 0), transform.position);
         
     }
 
@@ -30,28 +30,34 @@ public class HoboSpawner : MonoBehaviour
     void Update()
     {
         //hasHobo = Physics2D.OverlapBox(transform.position, detectSize, whatIsHobo);
-        /*
+        
         Collider2D[] hobos = Physics2D.OverlapBoxAll(transform.position, detectSize, 0, whatIsHobo);
         foreach(Collider2D hobo in hobos)
         {
             TaskTestHoboAI hoboAI = hobo.GetComponent<TaskTestHoboAI>();
             if(hoboAI != null)
             {
-                hoboList.Add(hoboAI);
+                if(hoboAI.enabled == true)
+                {
+                    hoboList.Add(hoboAI);
+                }
             }
         }
-        if(hoboList.Count < 1)
+        Debug.Log("current hobos before count spawn " + hoboList.Count);
+        if(hoboList.Count < 2)
         {
             //new Vector3(transform.position.x + Random.Range(-5,5), transform.position.y)
             if (Time.time > nextSpawnTime)
             {
-                BaseUnit.Create_BaseUnit(transform.position, transform.position);
+                BaseUnit.Create_BaseUnit(transform.position + new Vector3(Random.Range(-3, 3), 0), transform.position);
                 nextSpawnTime = Time.time + spawnRate;
             }
         }
-        */
-       
-        
+        Debug.Log("current hobos after count spawn code " + hoboList.Count);
+        hoboList.Clear();
+        Debug.Log("current hobos after clear " + hoboList.Count);
+
+
 
     }
 
@@ -71,7 +77,8 @@ public class HoboSpawner : MonoBehaviour
                 TaskTestHoboAI hoboAI = hobo.GetComponent<TaskTestHoboAI>();
                 if (hoboAI != null)
                 {
-                    hoboList.Add(hoboAI);
+                    //hoboList.Add(hoboAI);
+                    //Debug.Log("current hobos" + hoboList.Count);
                 }
             }
         }

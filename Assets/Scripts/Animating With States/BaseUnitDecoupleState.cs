@@ -81,9 +81,10 @@ public class BaseUnitDecoupleState : MonoBehaviour
                 {
                     state = State.AttackingMode;
                 }
-                else
+                else if(baseUnit.unitType == BaseUnit.UnitType.Hobo)
                 {
                     //run or cower
+                    state = State.Cower;
                 }
             }
             

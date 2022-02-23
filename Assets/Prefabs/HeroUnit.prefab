@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 4500781042767825395}
   - component: {fileID: 4500781042767825396}
   - component: {fileID: 2611175104074742757}
-  - component: {fileID: 445664803155443489}
   - component: {fileID: -469085262229490658}
   - component: {fileID: -7693018316666997410}
+  - component: {fileID: 445664803155443489}
   m_Layer: 6
   m_Name: HeroUnit
   m_TagString: Ally
@@ -142,6 +142,33 @@ MonoBehaviour:
   detectSize: 5
   atkRate: 1
   detectedEnemyList: []
+--- !u!114 &-469085262229490658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4500781042767825393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6049d9f2a599d654bbe12fd8ca34911e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  state: 0
+  startingPos: {x: 0, y: 0, z: 0}
+--- !u!114 &-7693018316666997410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4500781042767825393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ac7b2063451e3b46b5c4a9e8d1c0b6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  state: 0
 --- !u!114 &445664803155443489
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,32 +179,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 244f7179ab1e2f7478b04f08161af250, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  state: 0
---- !u!114 &-469085262229490658
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4500781042767825393}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6049d9f2a599d654bbe12fd8ca34911e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  state: 0
---- !u!114 &-7693018316666997410
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4500781042767825393}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ac7b2063451e3b46b5c4a9e8d1c0b6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   state: 0

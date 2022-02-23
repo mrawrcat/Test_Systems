@@ -14,7 +14,7 @@ public class TaskTestHoboAI : MonoBehaviour
     private TaskSystem<TaskGameHandler.TestTaskHobo> taskSystem;
     [SerializeField] private State state;
     private float waitingTimer;
-    private Vector3 startingPos;
+    [SerializeField] private Vector3 startingPos;
     private Vector3 roamingPos;
     private float nextRoamTime;
     private TaskGameHandler.TestTaskHobo savedTestTask;
@@ -35,7 +35,8 @@ public class TaskTestHoboAI : MonoBehaviour
     {
         this.worker = worker;
         this.taskSystem = taskSystem;
-        this.startingPos = startingRoamPos;
+        startingPos = startingRoamPos;
+        nextRoamTime = 0;
     }
     private void Roam()
     {
@@ -46,7 +47,7 @@ public class TaskTestHoboAI : MonoBehaviour
             if (Vector3.Distance(transform.position, roamingPos) < reachedPosDist)
             {
                 roamingPos = GetRoamingPos();
-                float chooseRate = Random.Range(.5f, .8f);
+                float chooseRate = Random.Range(1f, 1.5f);
                 nextRoamTime = Time.time + chooseRate;
             }
 
