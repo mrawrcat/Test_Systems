@@ -21,6 +21,10 @@ public class BaseUnitDecoupleState : MonoBehaviour
     [SerializeField] private State state;
     private SpriteAnimatorCustom anim;
     [SerializeField] private bool foundEnemy;
+    public bool GetFoundEnemy()
+    {
+        return foundEnemy;
+    }
     [SerializeField] private Transform atkPos;
     [SerializeField] private Transform detectPos;
     [SerializeField] private LayerMask whatIsEnemy;

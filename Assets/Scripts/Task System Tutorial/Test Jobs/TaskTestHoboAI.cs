@@ -14,7 +14,14 @@ public class TaskTestHoboAI : MonoBehaviour
         nextRoamTime = 0;
         roamingPos = GetRoamingPos();
     }
-
+    private void Update()
+    {
+        if(decoupleState.GetFoundEnemy() == false)
+        {
+            Roam();
+        }
+       
+    }
     public void SetUp(Vector3 startRoamingPos)
     {
         SetStartPos(startRoamingPos);

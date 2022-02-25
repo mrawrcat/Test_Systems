@@ -47,4 +47,10 @@ public class BasePlayerCommand : MonoBehaviour
             }
         }
     }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(transform.position, detectSize);
+    }
 }
