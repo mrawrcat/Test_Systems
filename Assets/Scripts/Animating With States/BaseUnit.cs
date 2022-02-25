@@ -5,12 +5,11 @@ using UnityEngine;
 
 public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
 {
-
-    public static void Create_BaseUnit(Vector3 spawnPos, Vector3 hoboStartPos)
+    public static void Create_BaseUnit(Vector3 spawnPos, Vector3 startingRoamPos)
     {
         Transform baseUnitTransform = Instantiate(GameResources.instance.AllyUnit, spawnPos, Quaternion.identity);
         BaseUnit baseUnit = baseUnitTransform.GetComponent<BaseUnit>();       
-        baseUnit.SetUp(hoboStartPos);
+        baseUnit.SetUp(startingRoamPos, BaseUnit.UnitType.Hobo);
         
         //TaskTestNewWorkerAI testNewWorker = baseUnitTransform.GetComponent<TaskTestNewWorkerAI>();
         //testNewWorker.SetUp(baseUnit, TaskGameHandler.GetInstance().testTaskSystem);
@@ -25,22 +24,40 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
     }
 
     private TaskGameHandler taskGameHandler;
-    private void SetUp(Vector3 hoboStartPos)
+    private void SetUp(Vector3 startingRoamPos, UnitType onCreateUnitType)
     {
         taskGameHandler = FindObjectOfType<TaskGameHandler>();
+        decoupleState.SetStartPos(new Vector3(startingRoamPos.x, decoupleState.transform.position.y)); 
 
         //base unit starts as hobo
         TaskTestHoboAI hoboAI = gameObject.GetComponent<TaskTestHoboAI>();
-        hoboAI.SetUp(gameObject.GetComponent<BaseUnit>(), taskGameHandler.hoboTaskSystem, hoboStartPos);
+        //hoboAI.SetUp(startingRoamPos);
 
         TaskTestVillagerAI villagerAI = gameObject.GetComponent<TaskTestVillagerAI>();
         villagerAI.SetUp(gameObject.GetComponent<BaseUnit>(), taskGameHandler.villagerTaskSystem);
         villagerAI.enabled = false;
-
         TaskTestNewWorkerAI testNewWorker = gameObject.GetComponent<TaskTestNewWorkerAI>();
         testNewWorker.SetUp(gameObject.GetComponent<BaseUnit>(), taskGameHandler.testTaskSystem);
         testNewWorker.enabled = false;
-
+        /*
+        if(onCreateUnitType == UnitType.Hobo)
+        {
+            villagerAI.enabled = false;
+            testNewWorker.enabled = false;
+        }
+        else if (onCreateUnitType == UnitType.Villager)
+        {
+            hoboAI.enabled = false;
+            villagerAI.enabled = true;
+            testNewWorker.enabled = false;
+        }
+        else if(onCreateUnitType == UnitType.Archer)
+        {
+            hoboAI.enabled = false;
+            villagerAI.enabled = false;
+            testNewWorker.enabled = true;
+        }
+        */
     }
 
     private static List<BaseUnit> activeBaseUnitList;
@@ -120,7 +137,7 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
 
     [SerializeField]private int health;
 
-    private TaskTestNewWorkerAI newWorkerAI;
+    private BaseUnitDecoupleState decoupleState;
     private void Awake()
     {
         if (activeBaseUnitList == null)
@@ -139,6 +156,8 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
         activeAnimType = AnimationType.Idle;
         anim.PlayAnimationCustom(idleAnim, .1f);
         unitType = UnitType.Hobo;
+        decoupleState = GetComponent<BaseUnitDecoupleState>();
+
     }
 
     private void Update()

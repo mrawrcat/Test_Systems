@@ -67,7 +67,7 @@ public class TaskTestHoboAI : MonoBehaviour
             //worker waits to request a new task
             case State.WaitingForNextTask:
                 Debug.Log("no detected task");
-                Roam();
+                //Roam();
                 waitingTimer -= Time.deltaTime;
                 if (waitingTimer <= 0)
                 {
