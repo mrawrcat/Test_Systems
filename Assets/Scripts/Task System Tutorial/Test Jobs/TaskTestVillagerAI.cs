@@ -85,10 +85,6 @@ public class TaskTestVillagerAI : MonoBehaviour
     {
         state = State.TemporaryDontWaitNextTask;
     }
-    public void SetBackToWaiting()
-    {
-        state = State.WaitingForNextTask;
-    }
 
     public void DoSavedTask()
     {

@@ -98,11 +98,7 @@ public class TaskTestHoboAI : MonoBehaviour
             ExecuteTask_MoveToPosition(savedTestTask as TaskGameHandler.TestTaskHobo.MoveToPosition);
             return;
         }
-        if (savedTestTask is TaskGameHandler.TestTaskHobo.ConvertToVillager)
-        {
-            ExecuteTask_ConvertToVillager(savedTestTask as TaskGameHandler.TestTaskHobo.ConvertToVillager);
-            return;
-        }
+       
         savedTestTask = null;
     }
 
@@ -125,13 +121,7 @@ public class TaskTestHoboAI : MonoBehaviour
                 ExecuteTask_MoveToPosition(task as TaskGameHandler.TestTaskHobo.MoveToPosition);
                 return;
             }
-            if (task is TaskGameHandler.TestTaskHobo.ConvertToVillager)
-            {
-                savedTestTask = task;
-                Debug.Log("saved test task = " + GetSavedTestTask());
-                ExecuteTask_ConvertToVillager(task as TaskGameHandler.TestTaskHobo.ConvertToVillager);
-                return;
-            }
+          
 
         }
     }
@@ -141,11 +131,5 @@ public class TaskTestHoboAI : MonoBehaviour
         Debug.Log("Execute MoveTo Task");
         worker.MoveTo(new Vector3(moveToPosTask.targetPosition.x, moveToPosTask.targetPosition.y), () => { state = State.WaitingForNextTask; savedTestTask = null; });
     }
-
-    private void ExecuteTask_ConvertToVillager(TaskGameHandler.TestTaskHobo.ConvertToVillager convertToVillagerTask)
-    {
-        Debug.Log("Execute Convert To Villager Task");
-        worker.MoveTo(convertToVillagerTask.targetPosition, () => { convertToVillagerTask.convertAction(); state = State.WaitingForNextTask; });
-    }
-
+    
 }
