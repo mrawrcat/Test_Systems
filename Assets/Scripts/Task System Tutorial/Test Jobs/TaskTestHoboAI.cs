@@ -18,7 +18,10 @@ public class TaskTestHoboAI : MonoBehaviour
     {
         if(decoupleState.GetFoundEnemy() == false)
         {
-            Roam();
+            if(startingPos.y == -3)
+            {
+                Roam();
+            }
         }
        
     }

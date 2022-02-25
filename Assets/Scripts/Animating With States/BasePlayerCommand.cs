@@ -5,13 +5,14 @@ using UnityEngine;
 public class BasePlayerCommand : MonoBehaviour
 {
 
-    [SerializeField] private LayerMask whatIsHobo;
+    private LayerMask whatIsHobo;
     [SerializeField] private Vector2 detectSize;
     private TaskGameHandler taskGameHandler;
     // Start is called before the first frame update
     void Start()
     {
         taskGameHandler = FindObjectOfType<TaskGameHandler>();
+        whatIsHobo = LayerMask.GetMask("Villager");
     }
 
     // Update is called once per frame

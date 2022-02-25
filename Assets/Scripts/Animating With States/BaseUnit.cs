@@ -5,32 +5,38 @@ using UnityEngine;
 
 public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
 {
-    public static void Create_BaseUnit(Vector3 spawnPos, Vector3 startingRoamPos, BaseUnit.UnitType createUnitType)
+    public static void Create_BaseUnit(Vector3 spawnPos, Vector3 startingRoamPos, BaseUnit.UnitType createUnitType, Vector3 targetPos, bool roam = false)
     {
         Transform baseUnitTransform = Instantiate(GameResources.instance.AllyUnit, spawnPos, Quaternion.identity);
         BaseUnit baseUnit = baseUnitTransform.GetComponent<BaseUnit>();       
-        baseUnit.SetUp(startingRoamPos, createUnitType);
+        baseUnit.SetUp(startingRoamPos, createUnitType, targetPos, roam);
         
-        //TaskTestNewWorkerAI testNewWorker = baseUnitTransform.GetComponent<TaskTestNewWorkerAI>();
-        //testNewWorker.SetUp(baseUnit, TaskGameHandler.GetInstance().testTaskSystem);
-
-        /*
-        TaskTestHoboAI hoboAI = baseUnitTransform.GetComponent<TaskTestHoboAI>();
-        hoboAI.SetUp(baseUnit, TaskGameHandler.GetInstance().hoboTaskSystem, hoboStartPos);
-        TaskTestVillagerAI villagerAI = baseUnitTransform.GetComponent<TaskTestVillagerAI>();
-        villagerAI.SetUp(baseUnit, TaskGameHandler.GetInstance().villagerTaskSystem);
-        villagerAI.enabled = false;
-        */
     }
+    public static void Create_BaseUnit(Vector3 spawnPos, Vector3 startingRoamPos, BaseUnit.UnitType createUnitType, bool roam = false)
+    {
+        Transform baseUnitTransform = Instantiate(GameResources.instance.AllyUnit, spawnPos, Quaternion.identity);
+        BaseUnit baseUnit = baseUnitTransform.GetComponent<BaseUnit>();       
+        baseUnit.SetUp(startingRoamPos, createUnitType, roam);
+    }
+    
 
     private TaskGameHandler taskGameHandler;
-    private void SetUp(Vector3 startingRoamPos, UnitType onCreateUnitType)
+    
+
+    private void SetUp(Vector3 startingRoamPos, UnitType onCreateUnitType, bool roam = false)
     {
         taskGameHandler = FindObjectOfType<TaskGameHandler>();
 
         //base unit starts as hobo
         TaskTestHoboAI hoboAI = gameObject.GetComponent<TaskTestHoboAI>();
-        hoboAI.SetUp(startingRoamPos);
+        if (roam == true)
+        {
+            hoboAI.SetUp(startingRoamPos);
+        }
+        else
+        {
+            hoboAI.SetUp(new Vector3(0, 5));
+        }
 
         TaskTestVillagerAI villagerAI = gameObject.GetComponent<TaskTestVillagerAI>();
         villagerAI.SetUp(gameObject.GetComponent<BaseUnit>(), taskGameHandler.villagerTaskSystem);
@@ -56,7 +62,49 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
             villagerAI.enabled = false;
             testNewWorker.enabled = true;
         }
+        currentPos = transform.position;
+    }
+
+    private void SetUp(Vector3 startingRoamPos, UnitType onCreateUnitType, Vector3 targetPos, bool roam = false)
+    {
+        taskGameHandler = FindObjectOfType<TaskGameHandler>();
+
+        //base unit starts as hobo
+        TaskTestHoboAI hoboAI = gameObject.GetComponent<TaskTestHoboAI>();
+        if(roam == true)
+        {
+            hoboAI.SetUp(startingRoamPos);
+        }
+        else
+        {
+            hoboAI.SetUp(new Vector3(0, 5));
+        }
+
+        TaskTestVillagerAI villagerAI = gameObject.GetComponent<TaskTestVillagerAI>();
+        villagerAI.SetUp(gameObject.GetComponent<BaseUnit>(), taskGameHandler.villagerTaskSystem);
         
+        TaskTestNewWorkerAI testNewWorker = gameObject.GetComponent<TaskTestNewWorkerAI>();
+        testNewWorker.SetUp(gameObject.GetComponent<BaseUnit>(), taskGameHandler.testTaskSystem);
+       
+
+        if (onCreateUnitType == UnitType.Hobo)
+        {
+            villagerAI.enabled = false;
+            testNewWorker.enabled = false;
+        }
+        else if (onCreateUnitType == UnitType.Villager)
+        {
+            hoboAI.enabled = false;
+            villagerAI.enabled = true;
+            testNewWorker.enabled = false;
+        }
+        else if (onCreateUnitType == UnitType.Archer)
+        {
+            hoboAI.enabled = false;
+            villagerAI.enabled = false;
+            testNewWorker.enabled = true;
+        }
+        currentPos = targetPos;
     }
 
     private static List<BaseUnit> activeBaseUnitList;
@@ -149,7 +197,7 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
     private void Start()
     {
         health = 100;
-        currentPos = transform.position;
+        //currentPos = transform.position;
         anim = GetComponentInChildren<SpriteAnimatorCustom>();
         anim.SetFrameArray(idleAnim);
         activeAnimType = AnimationType.Idle;
