@@ -27,11 +27,10 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
     private void SetUp(Vector3 startingRoamPos, UnitType onCreateUnitType)
     {
         taskGameHandler = FindObjectOfType<TaskGameHandler>();
-        decoupleState.SetStartPos(new Vector3(startingRoamPos.x, decoupleState.transform.position.y)); 
 
         //base unit starts as hobo
         TaskTestHoboAI hoboAI = gameObject.GetComponent<TaskTestHoboAI>();
-        //hoboAI.SetUp(startingRoamPos);
+        hoboAI.SetUp(startingRoamPos);
 
         TaskTestVillagerAI villagerAI = gameObject.GetComponent<TaskTestVillagerAI>();
         villagerAI.SetUp(gameObject.GetComponent<BaseUnit>(), taskGameHandler.villagerTaskSystem);

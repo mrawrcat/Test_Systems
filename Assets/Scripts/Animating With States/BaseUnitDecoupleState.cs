@@ -32,36 +32,7 @@ public class BaseUnitDecoupleState : MonoBehaviour
     private TaskTestHoboAI hoboAI;
     private TaskTestVillagerAI villagerAI;
     private TaskTestNewWorkerAI ttworkerAI; //needs all of the worker AI
-    [SerializeField] private Vector3 startingPos;
-    private Vector3 roamingPos;
-    private float nextRoamTime;
-    public void SetStartPos(Vector3 startRoamPos)
-    {
-        startingPos = startRoamPos;
-    }
-    private Vector3 GetRandomLR()
-    {
-        return new Vector3(UnityEngine.Random.Range(-1, 1), 0).normalized;
-    }
-    private Vector3 GetRoamingPos()
-    {
-        return startingPos + GetRandomLR() * UnityEngine.Random.Range(-5, 5);
-    }
-    private void Roam()
-    {
-        if (Time.time > nextRoamTime)
-        {
-            baseUnit.MoveTo(roamingPos);
-            float reachedPosDist = 1f;
-            if (Vector3.Distance(transform.position, roamingPos) < reachedPosDist)
-            {
-                roamingPos = GetRoamingPos();
-                float chooseRate = UnityEngine.Random.Range(1f, 1.5f);
-                nextRoamTime = Time.time + chooseRate;
-            }
-
-        }
-    }
+   
     // Start is called before the first frame update
     void Start()
     {
@@ -79,9 +50,6 @@ public class BaseUnitDecoupleState : MonoBehaviour
         foundEnemy = false;
         nextAtkTime = 0;
         atkRate = 2f;
-        startingPos = transform.position;
-        nextRoamTime = 0;
-        roamingPos = GetRoamingPos();
     }
 
     // Update is called once per frame
@@ -93,7 +61,7 @@ public class BaseUnitDecoupleState : MonoBehaviour
         {
             if(baseUnit.unitType == BaseUnit.UnitType.Hobo)
             {
-                Roam();
+                //Roam();
             }
             if (!baseUnit.IsArrivedAtPosition())
             {
