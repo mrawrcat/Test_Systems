@@ -49,7 +49,7 @@ public class HoboSpawner : MonoBehaviour
             //new Vector3(transform.position.x + Random.Range(-5,5), transform.position.y)
             if (Time.time > nextSpawnTime)
             {
-                BaseUnit.Create_BaseUnit(transform.position + new Vector3(Random.Range(-3, 3), 0), transform.position);
+                BaseUnit.Create_BaseUnit(transform.position + new Vector3(Random.Range(-3, 3), 0), transform.position, BaseUnit.UnitType.Hobo);
                 nextSpawnTime = Time.time + spawnRate;
             }
         }

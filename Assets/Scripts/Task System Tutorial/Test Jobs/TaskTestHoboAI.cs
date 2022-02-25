@@ -10,7 +10,7 @@ public class TaskTestHoboAI : MonoBehaviour
     {
         baseUnit = GetComponent<BaseUnit>();
         decoupleState = GetComponent<BaseUnitDecoupleState>();
-        startingPos = transform.position;
+        //startingPos = transform.position;
         nextRoamTime = 0;
         roamingPos = GetRoamingPos();
     }

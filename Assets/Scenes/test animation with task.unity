@@ -1879,6 +1879,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1354f59854d0cd74384a12b1d3b22cfc, type: 3}
+--- !u!1 &1828989210 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5445329018700711153, guid: 1354f59854d0cd74384a12b1d3b22cfc, type: 3}
+  m_PrefabInstance: {fileID: 1763865700}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1828989211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1828989210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35549ab463620c54082f63b9ea74db8a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  whatIsHobo:
+    serializedVersion: 2
+    m_Bits: 64
+  detectSize: {x: 0, y: 0}
 --- !u!1 &1953094324
 GameObject:
   m_ObjectHideFlags: 0

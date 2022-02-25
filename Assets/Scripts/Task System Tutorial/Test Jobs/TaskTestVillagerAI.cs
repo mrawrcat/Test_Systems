@@ -81,6 +81,10 @@ public class TaskTestVillagerAI : MonoBehaviour
         }
     }
 
+    public void SetBackToWaiting()
+    {
+        state = State.WaitingForNextTask;
+    }
     public void FinishTaskEarly()
     {
         state = State.TemporaryDontWaitNextTask;
