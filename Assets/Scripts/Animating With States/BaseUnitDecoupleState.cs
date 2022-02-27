@@ -65,6 +65,7 @@ public class BaseUnitDecoupleState : MonoBehaviour
         atkRate = 2f;
         baseUnit.OnTakeDamage += OnTakeDamage_PlayHurtAnimation;
         baseUnit.OnKilled += OnKilled_PlayDeathAnimation;
+        whatIsEnemy = LayerMask.GetMask("Enemy");
     }
 
     // Update is called once per frame
@@ -72,6 +73,7 @@ public class BaseUnitDecoupleState : MonoBehaviour
     {
         foundEnemy = Physics2D.OverlapCircle(detectPos.position, detectSize, whatIsEnemy);
         enemyNear = Physics2D.OverlapBox(transform.position, detectBoxSize, whatIsEnemy);
+
         if (!enemyNear)
         {
             if(baseUnit.unitType == BaseUnit.UnitType.Hobo)
@@ -99,7 +101,7 @@ public class BaseUnitDecoupleState : MonoBehaviour
                 else if(baseUnit.unitType == BaseUnit.UnitType.Hobo)
                 {
                     //run or cower
-                    state = State.Cower;
+                    //state = State.Cower;
                 }
             }
         }
@@ -116,7 +118,7 @@ public class BaseUnitDecoupleState : MonoBehaviour
                 else if (baseUnit.unitType == BaseUnit.UnitType.Hobo)
                 {
                     //run or cower
-                    state = State.Cower;
+                    //state = State.Cower;
                 }
                 else if(baseUnit.unitType == BaseUnit.UnitType.Villager)
                 {
@@ -161,13 +163,13 @@ public class BaseUnitDecoupleState : MonoBehaviour
         if(baseUnit.unitType == BaseUnit.UnitType.Hobo)
         {
             //cower
-            baseUnit.MoveTo(transform.position);
+            //baseUnit.MoveTo(transform.position);
         }
         if(baseUnit.unitType == BaseUnit.UnitType.Villager)
         {
             //run if can else cower
             villagerAI.FinishTaskEarly();
-            baseUnit.MoveTo(transform.position);
+            //baseUnit.MoveTo(transform.position);
         }
     }
 
@@ -194,13 +196,13 @@ public class BaseUnitDecoupleState : MonoBehaviour
         if (baseUnit.unitType == BaseUnit.UnitType.Hobo)
         {
             //cower
-            baseUnit.MoveTo(transform.position);
+            //baseUnit.MoveTo(transform.position);
         }
         if (baseUnit.unitType == BaseUnit.UnitType.Villager)
         {
             //run if can else cower
-            villagerAI.FinishTaskEarly();
-            baseUnit.MoveTo(transform.position);
+            //villagerAI.FinishTaskEarly();
+            //baseUnit.MoveTo(transform.position);
         }
 
     }

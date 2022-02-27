@@ -73,7 +73,7 @@ public class SpriteAnimatorCustom : MonoBehaviour
                 OnAnimationLooped?.Invoke(this, EventArgs.Empty);
                 //if (OnAnimationLooped != null) OnAnimationLooped(this, EventArgs.Empty);
             }
-            if(currentFrame == Mathf.RoundToInt(frameArray.Length * .7f))
+            if(currentFrame == Mathf.RoundToInt(frameArray.Length * .6f))
             {
                 OnAnimationFrameCounterAlmostFinished?.Invoke(this, EventArgs.Empty);
             }

@@ -89,6 +89,15 @@ public class TaskTestVillagerAI : MonoBehaviour
     {
         state = State.TemporaryDontWaitNextTask;
     }
+    public void Directly_Do_Task(TaskGameHandler.TestTaskVillager directTask)
+    {
+        state = State.ExecutingTask;
+        if(directTask is TaskGameHandler.TestTaskVillager.MoveToPosition)
+        {
+            ExecuteTask_MoveToPosition(directTask as TaskGameHandler.TestTaskVillager.MoveToPosition);
+            return;
+        }
+    }
 
     public void DoSavedTask()
     {
@@ -157,11 +166,9 @@ public class TaskTestVillagerAI : MonoBehaviour
                 ExecuteTask_ConvertToBuilder(task as TaskGameHandler.TestTaskVillager.ConvertToBuilder);
                 return;
             }
-            
-
-
         }
     }
+
 
     private void ExecuteTask_MoveToPosition(TaskGameHandler.TestTaskVillager.MoveToPosition moveToPosTask)
     {

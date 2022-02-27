@@ -32,20 +32,26 @@ public class BasePlayerCommand : MonoBehaviour
         foreach (Collider2D hobo in hobos)
         {
             TaskTestHoboAI hoboAI = hobo.GetComponent<TaskTestHoboAI>();
+            TaskTestVillagerAI villagerAI = hobo.GetComponent<TaskTestVillagerAI>();
             if (hoboAI != null)
             {
                 if (hoboAI.enabled == true)
                 {
-                    TaskTestVillagerAI villagerAI = hobo.GetComponent<TaskTestVillagerAI>();
+                    hobo.GetComponent<BaseUnit>().MoveTo(new Vector3(-10, -3));
                     villagerAI.enabled = true;
-                    hobo.GetComponent<TaskTestHoboAI>().enabled = false;
-                    villagerAI.FinishTaskEarly();
-                    hobo.GetComponent<BaseUnit>().MoveTo(new Vector3(-5, -3), () => { villagerAI.SetBackToWaiting(); });
+                    //villagerAI.FinishTaskEarly();
                     //inject the task to villager -> make him move to keep -> then he should roam until he gets new task
                     Debug.Log("found first Hobo, make him villager, subtract resource");
-                    return;
+                    hobo.GetComponent<TaskTestHoboAI>().enabled = false;
                 }
             }
+            //villagerAI.GetComponent<BaseUnit>().MoveTo(new Vector3(-10, -3), () => { villagerAI.SetBackToWaiting(); });
+            TaskGameHandler.TestTaskVillager directTask = new TaskGameHandler.TestTaskVillager.MoveToPosition
+            {
+                targetPosition = new Vector3(-10,-3)
+            };
+            villagerAI.Directly_Do_Task(directTask);
+            return;
         }
     }
 

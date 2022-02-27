@@ -5,11 +5,12 @@ using UnityEngine;
 public class HoboSpawner : MonoBehaviour
 {
     //private bool hasHobo;
+    [SerializeField] private int maxHobos;
     [SerializeField] private LayerMask whatIsHobo;
     [SerializeField] private Vector2 detectSize;
     private List<TaskTestHoboAI> hoboList;
     private float nextSpawnTime;
-    private float spawnRate;
+    [SerializeField]private float spawnRate;
     private BoxCollider2D detectEnterExit;
     private TaskGameHandler taskHandler;
     // Start is called before the first frame update
@@ -30,7 +31,6 @@ public class HoboSpawner : MonoBehaviour
     void Update()
     {
         //hasHobo = Physics2D.OverlapBox(transform.position, detectSize, whatIsHobo);
-        
         Collider2D[] hobos = Physics2D.OverlapBoxAll(transform.position, detectSize, 0, whatIsHobo);
         foreach(Collider2D hobo in hobos)
         {
@@ -44,13 +44,14 @@ public class HoboSpawner : MonoBehaviour
             }
         }
         Debug.Log("current hobos before count spawn " + hoboList.Count);
-        if(hoboList.Count < 2)
+        if(hoboList.Count < maxHobos)
         {
+            nextSpawnTime -= Time.deltaTime;
             //new Vector3(transform.position.x + Random.Range(-5,5), transform.position.y)
-            if (Time.time > nextSpawnTime)
+            if (nextSpawnTime <= 0)
             {
                 BaseUnit.Create_BaseUnit(transform.position + new Vector3(Random.Range(-3, 3), 0), transform.position, BaseUnit.UnitType.Hobo, true);
-                nextSpawnTime = Time.time + spawnRate;
+                nextSpawnTime = spawnRate;
             }
         }
         Debug.Log("current hobos after count spawn code " + hoboList.Count);
