@@ -6,7 +6,7 @@ using UnityEngine;
 public class BaseUnitDecoupleState : MonoBehaviour
 {
     public event EventHandler OnFoundEnemy;
-
+    public event EventHandler OnEnemyNear;
     private enum State
     {
         Idle,
@@ -18,17 +18,24 @@ public class BaseUnitDecoupleState : MonoBehaviour
         Hurt,
         Die,
     }
-    [SerializeField] private State state;
     private SpriteAnimatorCustom anim;
+    [Header("State Of Ally Unit")]
+    [SerializeField] private State state;
     [SerializeField] private bool foundEnemy;
+    [SerializeField] private bool enemyNear;
     public bool GetFoundEnemy()
     {
         return foundEnemy;
+    }
+    public bool GetEnemyNear()
+    {
+        return enemyNear;
     }
     [SerializeField] private Transform atkPos;
     [SerializeField] private Transform detectPos;
     [SerializeField] private LayerMask whatIsEnemy;
     [SerializeField] private float detectSize;
+    [SerializeField]private Vector2 detectBoxSize;
     [SerializeField] private float atkRate;
     private float nextAtkTime;
     private BaseUnit baseUnit;
@@ -45,6 +52,7 @@ public class BaseUnitDecoupleState : MonoBehaviour
         villagerAI = GetComponent<TaskTestVillagerAI>();
         ttworkerAI = GetComponent<TaskTestNewWorkerAI>();
         OnFoundEnemy += OnFoundEnemy_EnemyFound;
+        OnEnemyNear += OnEnemyNear_Turn;
         baseUnit = GetComponent<BaseUnit>();
         anim = GetComponentInChildren<SpriteAnimatorCustom>();
         anim.OnAnimationFrameCounterIncrease += OnAnimationFrameCounterIncrease_DoStuff;
@@ -52,16 +60,19 @@ public class BaseUnitDecoupleState : MonoBehaviour
         anim.OnAnimationLooped += OnAnimationLooped_Looped;
         anim.OnAnimationLoopedFirstTime += OnAnimationLooped_LoopedFirstTime;
         foundEnemy = false;
+        enemyNear = false;
         nextAtkTime = 0;
         atkRate = 2f;
+        baseUnit.OnTakeDamage += OnTakeDamage_PlayHurtAnimation;
+        baseUnit.OnKilled += OnKilled_PlayDeathAnimation;
     }
 
     // Update is called once per frame
     void Update()
     {
         foundEnemy = Physics2D.OverlapCircle(detectPos.position, detectSize, whatIsEnemy);
-        
-        if (!foundEnemy)
+        enemyNear = Physics2D.OverlapBox(transform.position, detectBoxSize, whatIsEnemy);
+        if (!enemyNear)
         {
             if(baseUnit.unitType == BaseUnit.UnitType.Hobo)
             {
@@ -91,10 +102,29 @@ public class BaseUnitDecoupleState : MonoBehaviour
                     state = State.Cower;
                 }
             }
-            
-
-
         }
+
+        if (enemyNear)
+        {
+            if(state == State.Walk || state == State.Idle)
+            {
+                OnEnemyNear?.Invoke(this, EventArgs.Empty);
+                if (baseUnit.unitType == BaseUnit.UnitType.Archer)
+                {
+                    state = State.AttackingMode;
+                }
+                else if (baseUnit.unitType == BaseUnit.UnitType.Hobo)
+                {
+                    //run or cower
+                    state = State.Cower;
+                }
+                else if(baseUnit.unitType == BaseUnit.UnitType.Villager)
+                {
+                    state = State.FearRun;
+                }
+            }
+        }
+
 
         if (state == State.AttackingMode)
         {
@@ -107,7 +137,17 @@ public class BaseUnitDecoupleState : MonoBehaviour
         }
     }
 
-    
+    private void OnTakeDamage_PlayHurtAnimation(object sender, EventArgs e)
+    {
+        state = State.Hurt;
+        baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Hurt);
+    }
+    private void OnKilled_PlayDeathAnimation(object sender, EventArgs e)
+    {
+        state = State.Die;
+        baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Die);
+    }
+
 
     private void OnFoundEnemy_EnemyFound(object sender, EventArgs e)
     {
@@ -129,6 +169,40 @@ public class BaseUnitDecoupleState : MonoBehaviour
             villagerAI.FinishTaskEarly();
             baseUnit.MoveTo(transform.position);
         }
+    }
+
+    private void OnEnemyNear_Turn(object sender, EventArgs e)
+    {
+        if(baseUnit.unitType == BaseUnit.UnitType.Archer)
+        {
+            //stop moving, turn to face enemy, may need to fix later
+            baseUnit.MoveTo(transform.position);
+            BaseEnemy closestBaseEnemy = BaseEnemy.GetClosestEnemy(transform.position, detectSize);
+            if (closestBaseEnemy != null)
+            {
+                Debug.Log("found enemy #" + closestBaseEnemy.GetIndexPositionInActiveBaseEnemyList());
+                if(baseUnit.GetFaceR() == true && closestBaseEnemy.transform.position.x < transform.position.x)
+                {
+                    baseUnit.Flip();
+                }
+                else if(baseUnit.GetFaceR() == false && closestBaseEnemy.transform.position.x > transform.position.x)
+                {
+                    baseUnit.Flip();
+                }
+            }
+        }
+        if (baseUnit.unitType == BaseUnit.UnitType.Hobo)
+        {
+            //cower
+            baseUnit.MoveTo(transform.position);
+        }
+        if (baseUnit.unitType == BaseUnit.UnitType.Villager)
+        {
+            //run if can else cower
+            villagerAI.FinishTaskEarly();
+            baseUnit.MoveTo(transform.position);
+        }
+
     }
 
     private void testdoAtk()//might need a whole seperate attack system later
@@ -183,6 +257,11 @@ public class BaseUnitDecoupleState : MonoBehaviour
                 baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Idle);
             }
         }
+        if (baseUnit.activeAnimType == BaseUnit.AnimationType.Hurt)
+        {
+            state = State.Idle;
+            baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Idle);
+        }
     }
 
     private void OnAnimationLooped_Looped(object sender, EventArgs e)
@@ -207,6 +286,7 @@ public class BaseUnitDecoupleState : MonoBehaviour
                 baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Idle);
             }
         }
+
     }
 
     private void OnAnimationLooped_StopPlaying(object sender, EventArgs e)
@@ -231,16 +311,27 @@ public class BaseUnitDecoupleState : MonoBehaviour
                     state = State.Idle;
                     baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Idle);
                     Debug.Log("Killed all enemies and no saved task, go back to idle pos");
-
                 }
             }
         }
-        
+        if (baseUnit.activeAnimType == BaseUnit.AnimationType.Hurt)
+        {
+            state = State.Idle;
+            baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Idle);
+        }
+        if(baseUnit.activeAnimType == BaseUnit.AnimationType.Die)
+        {
+            //gameObject.SetActive(false);
+            Destroy(gameObject);
+        }
+
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(detectPos.position, detectSize);
+        Gizmos.color = Color.black;
+        Gizmos.DrawWireCube(transform.position, detectBoxSize);
     }
 }

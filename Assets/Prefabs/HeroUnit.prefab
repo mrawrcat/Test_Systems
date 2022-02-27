@@ -107,9 +107,9 @@ MonoBehaviour:
   - {fileID: 21300090, guid: ae297123f091bbf4e8f1835eb98fb293, type: 3}
   - {fileID: 21300092, guid: ae297123f091bbf4e8f1835eb98fb293, type: 3}
   - {fileID: 21300094, guid: ae297123f091bbf4e8f1835eb98fb293, type: 3}
+  dieAnim:
   - {fileID: 21300096, guid: ae297123f091bbf4e8f1835eb98fb293, type: 3}
   - {fileID: 21300098, guid: ae297123f091bbf4e8f1835eb98fb293, type: 3}
-  dieAnim:
   - {fileID: 21300100, guid: ae297123f091bbf4e8f1835eb98fb293, type: 3}
   - {fileID: 21300102, guid: ae297123f091bbf4e8f1835eb98fb293, type: 3}
   - {fileID: 21300104, guid: ae297123f091bbf4e8f1835eb98fb293, type: 3}
@@ -134,12 +134,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   state: 0
   foundEnemy: 0
+  enemyNear: 0
   atkPos: {fileID: 8558002318450116790}
   detectPos: {fileID: 7354558929065910171}
   whatIsEnemy:
     serializedVersion: 2
     m_Bits: 128
   detectSize: 5
+  detectBoxSize: {x: 15, y: 2}
   atkRate: 1
   detectedEnemyList: []
 --- !u!114 &-469085262229490658
@@ -154,7 +156,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6049d9f2a599d654bbe12fd8ca34911e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: 0
   startingPos: {x: 0, y: 0, z: 0}
 --- !u!114 &-7693018316666997410
 MonoBehaviour:

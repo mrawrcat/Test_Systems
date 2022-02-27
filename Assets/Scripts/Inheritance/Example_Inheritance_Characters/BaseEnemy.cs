@@ -204,7 +204,7 @@ public class BaseEnemy : MonoBehaviour, IEnemy_Unit, IDmg_By_Ally<int>
                 default:
                 case AnimationType.Idle:
                     //spriteAnim.SetFrameArray(idleAnim);
-                    anim.PlayAnimationCustom(idleAnim, .1f);
+                    anim.PlayAnimationCustom(idleAnim, .2f);
                     break;
                 case AnimationType.Walk:
                     //spriteAnim.SetFrameArray(walkAnim);

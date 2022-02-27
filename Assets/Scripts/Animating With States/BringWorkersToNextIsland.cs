@@ -20,9 +20,9 @@ public class BringWorkersToNextIsland : MonoBehaviour
         //numOfUnits = 4;
         detectSize = new Vector3(4, 3);
         AllyUnits = LayerMask.GetMask("Villager");
-        unitTypes.Add(testUnits.hobo, 2);
-        unitTypes.Add(testUnits.villager, 4);
-        
+        //unitTypes.Add(testUnits.hobo, 2);
+        //unitTypes.Add(testUnits.villager, 4);
+
         /*
         if(unitTypes.TryGetValue(testUnits.hobo, out numOfUnits))
         {
@@ -33,7 +33,6 @@ public class BringWorkersToNextIsland : MonoBehaviour
         {
             Debug.Log("dictionary value of hobo " + unitTypes[testUnits.hobo]);
         }
-        */
         
         offset = new Vector3(Random.Range(-2f, 0f), 0);
         savedoffset = offset;
@@ -46,7 +45,8 @@ public class BringWorkersToNextIsland : MonoBehaviour
             BaseUnit.Create_BaseUnit(transform.position + offset, transform.position, BaseUnit.UnitType.Villager, new Vector3(-10,-3));
             savedoffset = offset;
         }
+        */
+        BaseUnit.Create_BaseUnit(transform.position + offset, transform.position, BaseUnit.UnitType.Villager, new Vector3(-5, -3));
 
-        
     }
 }

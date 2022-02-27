@@ -7,6 +7,7 @@ using UnityEngine;
 public class SpriteAnimatorCustom : MonoBehaviour
 {
     public event EventHandler OnAnimationFrameCounterIncrease;
+    public event EventHandler OnAnimationFrameCounterAlmostFinished;
     public event EventHandler OnAnimationLoopedFirstTime;
     public event EventHandler OnAnimationLooped;
     public event EventHandler OnAnimationLoopedStopPlaying;
@@ -71,6 +72,10 @@ public class SpriteAnimatorCustom : MonoBehaviour
                 }
                 OnAnimationLooped?.Invoke(this, EventArgs.Empty);
                 //if (OnAnimationLooped != null) OnAnimationLooped(this, EventArgs.Empty);
+            }
+            if(currentFrame == Mathf.RoundToInt(frameArray.Length * .7f))
+            {
+                OnAnimationFrameCounterAlmostFinished?.Invoke(this, EventArgs.Empty);
             }
         }
     }

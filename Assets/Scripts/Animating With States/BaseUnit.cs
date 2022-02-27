@@ -169,7 +169,10 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
     }
 
     //just make animationType public and move state to another script?
-   
+
+    public event EventHandler OnTakeDamage;
+    public event EventHandler OnKilled;
+
     [SerializeField] private Sprite[] idleAnim;
     [SerializeField] private Sprite[] walkAnim;
     [SerializeField] private Sprite[] atkAnim;
@@ -181,6 +184,10 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
     [SerializeField] private Coroutine _currentRoutine;
     [SerializeField] private Coroutine _animationRoutine;
     private bool faceR = true;
+    public bool GetFaceR()
+    {
+        return faceR;
+    }
 
     [SerializeField]private int health;
 
@@ -204,7 +211,7 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
         anim.PlayAnimationCustom(idleAnim, .1f);
         unitType = UnitType.Hobo;
         decoupleState = GetComponent<BaseUnitDecoupleState>();
-
+        
     }
 
     private void Update()
@@ -238,9 +245,16 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
         health -= dmgAmt;
         if(health <= 0)
         {
-            gameObject.SetActive(false);
+            OnKilled?.Invoke(this, EventArgs.Empty);
+            //gameObject.SetActive(false);
+        }
+        else
+        {
+            OnTakeDamage?.Invoke(this, EventArgs.Empty);
         }
     }
+
+    
 
     public void MoveTo(Vector3 position, Action OnArrivedAtPosition = null)
     {
@@ -351,7 +365,7 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
             Flip();
         }
     }
-    private void Flip()
+    public void Flip()
     {
         faceR = !faceR;
         /*

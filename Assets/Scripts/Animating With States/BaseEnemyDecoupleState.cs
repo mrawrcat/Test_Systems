@@ -36,6 +36,8 @@ public class BaseEnemyDecoupleState : MonoBehaviour
         baseEnemyUnit = GetComponent<BaseEnemy>();
         anim = GetComponentInChildren<SpriteAnimatorCustom>();
         anim.OnAnimationLoopedStopPlaying += OnAnimationLooped_StopPlaying;
+        anim.OnAnimationFrameCounterIncrease += OnAnimationFrameCounterIncrease_DoStuff;
+        anim.OnAnimationFrameCounterAlmostFinished += OnAnimationAlmostFinish_Attack;
         foundEnemy = false;
         nextAtkTime = 0;
         atkRate = 2f;
@@ -93,6 +95,39 @@ public class BaseEnemyDecoupleState : MonoBehaviour
         }
     }
 
+    private void OnAnimationFrameCounterIncrease_DoStuff(object sender, EventArgs e)
+    {
+        if (!foundEnemy)
+        {
+            if (!baseEnemyUnit.IsArrivedAtPosition())
+            {
+                state = State.Walk;
+                baseEnemyUnit.PlayCharacterAnimation(BaseEnemy.AnimationType.Walk);
+            }
+            else if (baseEnemyUnit.IsArrivedAtPosition())
+            {
+                state = State.Idle;
+                baseEnemyUnit.PlayCharacterAnimation(BaseEnemy.AnimationType.Idle);
+            }
+        }
+       
+    }
+
+    private void OnAnimationAlmostFinish_Attack(object sender, EventArgs e)
+    {
+        if (baseEnemyUnit.activeAnimType == BaseEnemy.AnimationType.Attack)
+        {
+            if (foundEnemy)
+            {
+                if (detectedEnemyList.Count > 0)
+                {
+                    //set takedmg of ally
+                    detectedEnemyList[0].GetComponent<BaseUnit>().TakeDmg(10);
+                }
+                detectedEnemyList.Clear();
+            }
+        }
+    }
     private void OnFoundEnemy_EnemyFound(object sender, EventArgs e)
     {
         Debug.Log("try to stop moving as soon as found enemy");
@@ -115,13 +150,6 @@ public class BaseEnemyDecoupleState : MonoBehaviour
                     detectedEnemyList.Add(baseUnit);
                 }
             }
-            if(detectedEnemyList.Count > 0)
-            {
-                //set takedmg of ally
-                detectedEnemyList[0].GetComponent<BaseUnit>().TakeDmg(10);
-            }
-            detectedEnemyList.Clear();
-                
         }
         baseEnemyUnit.PlayCharacterAnimation(BaseEnemy.AnimationType.Attack);
     }
@@ -134,6 +162,14 @@ public class BaseEnemyDecoupleState : MonoBehaviour
         {
             if (foundEnemy)
             {
+                /*
+                if (detectedEnemyList.Count > 0)
+                {
+                    //set takedmg of ally
+                    detectedEnemyList[0].GetComponent<BaseUnit>().TakeDmg(10);
+                }
+                detectedEnemyList.Clear();
+                */
                 state = State.AttackingMode;
                 baseEnemyUnit.PlayCharacterAnimation(BaseEnemy.AnimationType.Idle);
             }
