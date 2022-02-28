@@ -161,6 +161,8 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
         Attack,
         Hurt,
         Die,
+        Cower,
+        FearRun,
     }
     public AnimationType activeAnimType; 
     public AnimationType GetActiveAnimType()
@@ -178,6 +180,8 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
     [SerializeField] private Sprite[] atkAnim;
     [SerializeField] private Sprite[] hurtAnim;
     [SerializeField] private Sprite[] dieAnim;
+    [SerializeField] private Sprite[] cowerAnim;
+    [SerializeField] private Sprite[] fearRunAnim;
     private SpriteAnimatorCustom anim;
 
     [SerializeField] private Vector3 currentPos;
@@ -309,6 +313,12 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
                 case AnimationType.Die:
                     //spriteAnim.SetFrameArray(walkAnim);
                     anim.PlayAnimationCustom(dieAnim, .1f, false);
+                    break;
+                case AnimationType.Cower:
+                    anim.PlayAnimationCustom(cowerAnim, .1f);
+                    break;
+                case AnimationType.FearRun:
+                    anim.PlayAnimationCustom(fearRunAnim, .1f);
                     break;
             }
         }
