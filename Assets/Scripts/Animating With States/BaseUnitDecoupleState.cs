@@ -141,6 +141,15 @@ public class BaseUnitDecoupleState : MonoBehaviour
                         baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Cower);
                     }
                     break;
+                case BaseUnit.UnitType.Archer:
+                    if (state == State.Walk || state == State.Idle)
+                    {
+                        if (foundEnemy)
+                        {
+                            state = State.AttackingMode;
+                        }
+                    }
+                    break;
             }
             /*
             if (state == State.Walk || state == State.Idle)
@@ -191,28 +200,43 @@ public class BaseUnitDecoupleState : MonoBehaviour
 
     private void OnFoundEnemy_EnemyFound(object sender, EventArgs e)
     {
-        Debug.Log("try to stop moving as soon as found enemy");
-        //need to save task here
+        //enemy found should only be for archer
         if(baseUnit.unitType == BaseUnit.UnitType.Archer)
         {
             ttworkerAI.FinishTaskEarly();//for now worker is archer need to make new ai for archer and builder
             baseUnit.MoveTo(transform.position);
         }
-        if(baseUnit.unitType == BaseUnit.UnitType.Hobo)
-        {
-            //cower
-            //baseUnit.MoveTo(transform.position);
-        }
-        if(baseUnit.unitType == BaseUnit.UnitType.Villager)
-        {
-            //run if can else cower
-            villagerAI.FinishTaskEarly();
-            //baseUnit.MoveTo(transform.position);
-        }
     }
 
     private void OnEnemyNear_Turn(object sender, EventArgs e)
     {
+        switch (baseUnit.unitType)
+        {
+            default:
+            case BaseUnit.UnitType.Villager:
+                //villager either needs to run until cant detect enemy or run to safest wall/keep
+                villagerAI.FinishTaskEarly();
+                //baseUnit.MoveTo(transform.position);
+                break;
+            case BaseUnit.UnitType.Archer:
+                //stop moving, turn to face enemy, may need to fix later
+                baseUnit.MoveTo(transform.position);
+                BaseEnemy closestBaseEnemy = BaseEnemy.GetClosestEnemy(transform.position, detectSize);
+                if (closestBaseEnemy != null)
+                {
+                    Debug.Log("found enemy #" + closestBaseEnemy.GetIndexPositionInActiveBaseEnemyList());
+                    if (baseUnit.GetFaceR() == true && closestBaseEnemy.transform.position.x < transform.position.x)
+                    {
+                        baseUnit.Flip();
+                    }
+                    else if (baseUnit.GetFaceR() == false && closestBaseEnemy.transform.position.x > transform.position.x)
+                    {
+                        baseUnit.Flip();
+                    }
+                }
+                break;
+        }
+        /*
         if(baseUnit.unitType == BaseUnit.UnitType.Archer)
         {
             //stop moving, turn to face enemy, may need to fix later
@@ -239,10 +263,10 @@ public class BaseUnitDecoupleState : MonoBehaviour
         if (baseUnit.unitType == BaseUnit.UnitType.Villager)
         {
             //run if can else cower
-            //villagerAI.FinishTaskEarly();
+            villagerAI.FinishTaskEarly();
             //baseUnit.MoveTo(transform.position);
         }
-
+        */
     }
 
     private void testdoAtk()//might need a whole seperate attack system later
@@ -306,7 +330,7 @@ public class BaseUnitDecoupleState : MonoBehaviour
 
     private void OnAnimationLooped_Looped(object sender, EventArgs e)
     {
-        if (!enemyNear)
+        if (!enemyNear)//this assumes that only idle and run are the looping animations, need to refactor for more looping animations
         {
 
             if(baseUnit.GetComponent<TaskTestNewWorkerAI>().GetSavedTestTask() != null)
@@ -314,7 +338,6 @@ public class BaseUnitDecoupleState : MonoBehaviour
                 baseUnit.GetComponent<TaskTestNewWorkerAI>().DoSavedTask();
 
             }
-
             if (!baseUnit.IsArrivedAtPosition())
             {
                 state = State.Walk;
@@ -326,7 +349,6 @@ public class BaseUnitDecoupleState : MonoBehaviour
                 baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Idle);
             }
         }
-
     }
 
     private void OnAnimationLooped_StopPlaying(object sender, EventArgs e)
@@ -343,6 +365,48 @@ public class BaseUnitDecoupleState : MonoBehaviour
                         baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Cower);
                     }
                     else
+                    {
+                        state = State.Idle;
+                        baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Idle);
+                    }
+                }
+                if (baseUnit.activeAnimType == BaseUnit.AnimationType.Die)
+                {
+                    //gameObject.SetActive(false);
+                    Destroy(gameObject);
+                }
+                break;
+            case BaseUnit.UnitType.Archer:
+                if (baseUnit.activeAnimType == BaseUnit.AnimationType.Attack)
+                {
+                    if (foundEnemy)//maybe need to refactor for enemy behind archer
+                    {
+                        state = State.AttackingMode;
+                        baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Idle);
+                        Debug.Log("Shot arrow at an enemy go back to idle pos");
+                    }
+                    else //i think this usually never gets called because foundEnemy is always true because arrow didnt kill it before animation stopped
+                    {
+                        if (baseUnit.GetComponent<TaskTestNewWorkerAI>().GetSavedTestTask() != null)
+                        {
+                            baseUnit.GetComponent<TaskTestNewWorkerAI>().DoSavedTask();
+                        }
+                        else
+                        {
+                            state = State.Idle;
+                            baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Idle);
+                            Debug.Log("Killed all enemies and no saved task, go back to idle pos");
+                        }
+                    }
+                }
+                if (baseUnit.activeAnimType == BaseUnit.AnimationType.Hurt)
+                {
+                    if (foundEnemy)
+                    {
+                        state = State.AttackingMode;
+                        baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Idle);
+                    }
+                    else if(!enemyNear)
                     {
                         state = State.Idle;
                         baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Idle);
