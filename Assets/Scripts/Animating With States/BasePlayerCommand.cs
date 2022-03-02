@@ -37,12 +37,13 @@ public class BasePlayerCommand : MonoBehaviour
             {
                 if (hoboAI.enabled == true)
                 {
+                    hobo.GetComponent<BaseUnit>().SwitchInspectorName(BaseUnit.UnitType.Villager);
                     hobo.GetComponent<BaseUnit>().MoveTo(new Vector3(-10, -3));
                     villagerAI.enabled = true;
                     //villagerAI.FinishTaskEarly();
                     //inject the task to villager -> make him move to keep -> then he should roam until he gets new task
                     Debug.Log("found first Hobo, make him villager, subtract resource");
-                    hobo.GetComponent<TaskTestHoboAI>().enabled = false;
+                    hoboAI.enabled = false;
                 }
             }
             //villagerAI.GetComponent<BaseUnit>().MoveTo(new Vector3(-10, -3), () => { villagerAI.SetBackToWaiting(); });

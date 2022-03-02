@@ -18,8 +18,8 @@ public class BringWorkersToNextIsland : MonoBehaviour
     private void Start()
     {
         //numOfUnits = 4;
-        detectSize = new Vector3(4, 3);
-        AllyUnits = LayerMask.GetMask("Villager");
+        //detectSize = new Vector3(4, 3);
+        //AllyUnits = LayerMask.GetMask("Villager");
         //unitTypes.Add(testUnits.hobo, 2);
         //unitTypes.Add(testUnits.villager, 4);
 
@@ -46,7 +46,7 @@ public class BringWorkersToNextIsland : MonoBehaviour
             savedoffset = offset;
         }
         */
-        BaseUnit.Create_BaseUnit(transform.position + offset, transform.position, BaseUnit.UnitType.Villager, new Vector3(-5, -3));
+        BaseUnit.Create_BaseUnit(transform.position, transform.position, BaseUnit.UnitType.Villager);
 
     }
 }

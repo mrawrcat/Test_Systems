@@ -51,8 +51,8 @@ public class TaskGameHandler : MonoBehaviour
         taskSystem.AddTask(task);
         */
 
-        GameObject appleGameObject = SpawnResourceApple(new Vector3(7, -3.5f));
-        depositSlot = new DepositSlot(appleGameObject.transform);
+        //GameObject appleGameObject = SpawnResourceApple(new Vector3(7, -3.5f));
+        //depositSlot = new DepositSlot(appleGameObject.transform);
     }
 
     // Update is called once per frame
@@ -121,7 +121,7 @@ public class TaskGameHandler : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.T))
         {
-            ConvertTaskWorkerToTransporter(Archer_Station.position);
+            //ConvertTaskWorkerToTransporter(Archer_Station.position);
             //spawnedWorkerSave.GetComponent<TaskWorkerAI>().enabled = false;
             //spawnedWorkerSave.GetComponent<Transporter_TaskWorkerAI>().enabled = true;
             //spawnedWorkerSave.GetComponent<Transporter_TaskWorkerAI>().SetUp(spawnedWorkerSave.GetComponent<Worker>(), transporterTaskSystem);
@@ -427,6 +427,7 @@ public class TaskGameHandler : MonoBehaviour
         {
             public Vector3 resourcePosition;
             public Action<TaskTestVillagerAI> takeResource;
+            //public Vector3 villagerHoldingResourcePosition;
             public Vector3 resourceDepositPosition; //position where worker deposits resource
             public Action dropResource;
         }

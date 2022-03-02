@@ -10,6 +10,7 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
         Transform baseUnitTransform = Instantiate(GameResources.instance.AllyUnit, spawnPos, Quaternion.identity);
         BaseUnit baseUnit = baseUnitTransform.GetComponent<BaseUnit>();       
         baseUnit.SetUp(startingRoamPos, createUnitType, targetPos, roam);
+        //baseUnitTransform.gameObject.name = baseUnit.unitType.ToString();
         
     }
     public static void Create_BaseUnit(Vector3 spawnPos, Vector3 startingRoamPos, BaseUnit.UnitType createUnitType, bool roam = false)
@@ -47,17 +48,20 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
         
         if(onCreateUnitType == UnitType.Hobo)
         {
+            SwitchInspectorName(UnitType.Hobo);
             villagerAI.enabled = false;
             testNewWorker.enabled = false;
         }
         else if (onCreateUnitType == UnitType.Villager)
         {
+            SwitchInspectorName(UnitType.Villager);
             hoboAI.enabled = false;
             villagerAI.enabled = true;
             testNewWorker.enabled = false;
         }
         else if(onCreateUnitType == UnitType.Archer)
         {
+            SwitchInspectorName(UnitType.Archer);
             hoboAI.enabled = false;
             villagerAI.enabled = false;
             testNewWorker.enabled = true;
@@ -258,7 +262,12 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
         }
     }
 
-    
+    public void SwitchInspectorName(UnitType switchUnitType)
+    {
+        unitType = switchUnitType;
+        gameObject.name = unitType.ToString();
+    }
+
 
     public void MoveTo(Vector3 position, Action OnArrivedAtPosition = null)
     {

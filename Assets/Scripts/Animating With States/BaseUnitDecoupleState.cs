@@ -72,7 +72,7 @@ public class BaseUnitDecoupleState : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //foundEnemy = Physics2D.OverlapCircle(detectPos.position, detectSize, whatIsEnemy);
+        foundEnemy = Physics2D.OverlapCircle(detectPos.position, detectSize, whatIsEnemy);
         enemyNear = Physics2D.OverlapCircle(transform.position, detectSize, whatIsEnemy);
 
         if (!enemyNear)
@@ -137,6 +137,7 @@ public class BaseUnitDecoupleState : MonoBehaviour
                 case BaseUnit.UnitType.Villager:
                     if (state == State.Walk || state == State.Idle)
                     {
+                        OnEnemyNear?.Invoke(this, EventArgs.Empty);
                         state = State.Cower;
                         baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Cower);
                     }
@@ -144,6 +145,7 @@ public class BaseUnitDecoupleState : MonoBehaviour
                 case BaseUnit.UnitType.Archer:
                     if (state == State.Walk || state == State.Idle)
                     {
+                        OnEnemyNear?.Invoke(this, EventArgs.Empty);
                         if (foundEnemy)
                         {
                             state = State.AttackingMode;
@@ -298,6 +300,10 @@ public class BaseUnitDecoupleState : MonoBehaviour
                 state = State.Idle;
                 baseUnit.PlayCharacterAnimation(BaseUnit.AnimationType.Idle);
             }
+        }
+        else if (enemyNear)
+        {
+            //OnEnemyNear?.Invoke(this, EventArgs.Empty);
         }
     }
 
