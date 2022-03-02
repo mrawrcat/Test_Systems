@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using CodeMonkey;
 
-public class GameHandler : MonoBehaviour
+public class QueueGameHandler : MonoBehaviour
 {
 
    

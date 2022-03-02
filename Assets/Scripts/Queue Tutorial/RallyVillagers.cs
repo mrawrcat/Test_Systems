@@ -14,13 +14,13 @@ public class RallyVillagers : MonoBehaviour
     private Vector2 atkBoxSize;
     [SerializeField]
     private float circleSize;
-    private GameHandler gameHandler;
+    private QueueGameHandler gameHandler;
     private TestTransformHandler testHandler;
     private OrbitHandler orbitHandler;
     // Start is called before the first frame update
     void Start()
     {
-        gameHandler = FindObjectOfType<GameHandler>();
+        gameHandler = FindObjectOfType<QueueGameHandler>();
         testHandler = FindObjectOfType<TestTransformHandler>();
         orbitHandler = FindObjectOfType<OrbitHandler>();
     }
@@ -30,7 +30,7 @@ public class RallyVillagers : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            RallySkill();
+            //RallySkill();
         }
 
         if (Input.GetKeyDown(KeyCode.E))
@@ -46,11 +46,11 @@ public class RallyVillagers : MonoBehaviour
         }
     }
 
+    /*
     private void RallySkill()
     {
-        foundVillager = Physics2D.OverlapBox((Vector2)atkPos.position, atkBoxSize, 0, whatIsVillager);
-        Collider2D[] villagers = Physics2D.OverlapBoxAll((Vector2)atkPos.position, atkBoxSize, 0, whatIsVillager);
-
+        //foundVillager = Physics2D.OverlapBox((Vector2)atkPos.position, atkBoxSize, 0, whatIsVillager);
+        //Collider2D[] villagers = Physics2D.OverlapBoxAll((Vector2)atkPos.position, atkBoxSize, 0, whatIsVillager);
         if (foundVillager)
         {
             //Debug.Log(villagers.Length);
@@ -59,11 +59,12 @@ public class RallyVillagers : MonoBehaviour
                 //villager.GetComponent<Villager>().SetStateToFollow();
                 //gameHandler.DoAddGuest(villager.GetComponent<Villager>());
                 //testHandler.DoAddGuest(villager.GetComponent<Villager>());
-                orbitHandler.DoAddGuest(villager.GetComponent<Follower>());
+                //orbitHandler.DoAddGuest(villager.GetComponent<Follower>());
                 Debug.Log("found follwer");
             }
         }
     }
+    */
 
     void OnDrawGizmos()
     {

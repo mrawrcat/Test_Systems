@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ResourceSpawner : MonoBehaviour
 {
+    [Header("Resource Spawn Stuff")]
     [SerializeField] private Sprite PFCherrySprite;
     [SerializeField] private Sprite DepositSlotSprite;
     [SerializeField] private Vector2 detectSize;
@@ -14,17 +15,41 @@ public class ResourceSpawner : MonoBehaviour
     private Vector3 finalRandomPos;
     private TaskGameHandler taskGameHandler;
     private TaskGameHandler.DepositSlot resourceDepositSlot;
-    private List<GameObject> resourceObjList; //this probably cant be used unless i find a way to remove when object is destroyed
-    
+
+    [Header("Queue Stuff")]
+    //[SerializeField] private Transform QueueStartTransform;
+    [SerializeField] private float positionSize = 1.5f;
+    [SerializeField] private int maxSpots;
+    private GatherWaitingQueue gatherWaitingQueue;
+    private Vector3 firstPos;
+    private List<Vector3> gatherWaitingQueuePosList = new List<Vector3>();
+
     // Start is called before the first frame update
     void Start()
     {
         taskGameHandler = FindObjectOfType<TaskGameHandler>();
         GameObject depositSlotObj = SpawnDepositSlot(transform.position + new Vector3(10,0));
         resourceDepositSlot = new TaskGameHandler.DepositSlot(depositSlotObj.transform);
-        resourceObjList = new List<GameObject>();
         nextSpawnTime = spawnRate;
         finalRandomPos = transform.position + new Vector3(Random.Range(-3, 3), 0);
+        firstPos = resourceDepositSlot.GetPosition() + new Vector3(-1,0);
+
+        for(int i = 0; i < 5; i++)
+        {
+            BaseUnit.Create_BaseUnit(transform.position + new Vector3(-20 - i,0), transform.position, BaseUnit.UnitType.Villager);
+        }
+
+        for (int i = 0; i < maxSpots; i++)
+        {
+            gatherWaitingQueuePosList.Add(firstPos - new Vector3(1f, 0) * positionSize * i);
+        }
+        gatherWaitingQueue = new GatherWaitingQueue(gatherWaitingQueuePosList);
+        gatherWaitingQueue.OnUnitAdded += WaitingQueue_OnVillagerAdded;
+        gatherWaitingQueue.OnUnitArrivedAtFrontofQueue += WaitingQueue_OnVillagerArrivedAtFrontOfQueue;
+
+        List<Vector3> DepositSlotPosList = new List<Vector3>() { resourceDepositSlot.GetPosition() };//toilet positions
+        //TestBuilding testBuilding = new TestBuilding(waitingQueue, buildingPosList, toiletExit);
+
     }
 
     // Update is called once per frame
@@ -54,21 +79,26 @@ public class ResourceSpawner : MonoBehaviour
     private void SpawnResourceSendTask(Vector3 resourcePos)
     {
         GameObject resourceGameObject = SpawnResourcePFCherry(resourcePos);
-        //resourceObjList.Add(resourceGameObject);
+        /*
         taskGameHandler.villagerTaskSystem.EnqueueTaskHelper(() => 
         {
             if (resourceDepositSlot.isEmpty())
             {
                 resourceDepositSlot.SetDepositIncoming(true);
+
                 TaskGameHandler.TestTaskVillager gatherTask = new TaskGameHandler.TestTaskVillager.TakeResourceFromSlotToPosition
                 {
                     resourcePosition = resourceGameObject.transform.position,
                     resourceDepositPosition = resourceDepositSlot.GetPosition(),
-                    takeResource = (TaskTestVillagerAI villagerAI) => { resourceGameObject.transform.SetParent(villagerAI.transform); resourceGameObject.transform.position = villagerAI.transform.position + new Vector3(0, 2); },
+                    takeResource = (TaskTestVillagerAI villagerAI) => 
+                    { 
+                        resourceGameObject.transform.SetParent(villagerAI.transform); 
+                        resourceGameObject.transform.position = villagerAI.transform.position + new Vector3(0, 2); 
+                    },
                     dropResource = () =>
                     {
                         resourceGameObject.transform.SetParent(null);
-                        //resourceGameObject.transform.position = resourceDepositSlot.GetPosition();
+                        // resourceGameObject.transform.position = resourceDepositSlot.GetPosition();
                         resourceDepositSlot.SetDepositTransform(resourceGameObject.transform);
                     },
                 };
@@ -79,7 +109,7 @@ public class ResourceSpawner : MonoBehaviour
                 return null;
             }
         });
-        
+        */
     }
 
     private void SpawnResourceOnTimer(Vector3 resourcePos)
@@ -116,36 +146,41 @@ public class ResourceSpawner : MonoBehaviour
             }
         }
     }
-    /*
-    private void SpawnDewPickUp(Vector3 position)
+    public void AddPosLeft()
     {
-        GameObject dewGameObject = SpawnResourceDew(position);
-
-        taskSystem.EnqueueTaskHelper(() =>
-        {
-            if (depositSlot.isEmpty())
-            {
-                depositSlot.SetDepositIncoming(true);
-                Task task = new Task.TakeResourceToPosition
-                {
-                    resourcePosition = dewGameObject.transform.position,
-                    resourceDepositPosition = depositSlot.GetPosition(),
-                    takeResource = (TaskWorkerAI dewtaskWorkerAI) => { dewGameObject.transform.SetParent(dewtaskWorkerAI.transform); },
-                    dropResource = () =>
-                    {
-                        dewGameObject.transform.SetParent(null);
-                        depositSlot.SetDepositTransform(dewGameObject.transform);
-                    },
-                };
-                return task;
-            }
-            else
-            {
-                return null;
-            }
-        });
+        gatherWaitingQueue.AddPosition(gatherWaitingQueuePosList[gatherWaitingQueuePosList.Count - 1] + new Vector3(-positionSize, 0));
     }
-    */
+    public void DoAddGuest(BaseUnit baseUnit)
+    {
+        if (gatherWaitingQueue.CanAddUnit())
+        {
+            gatherWaitingQueue.AddUnit(baseUnit);
+        }
+    }
+
+    public void SendGuest()
+    {
+        BaseUnit baseUnit = gatherWaitingQueue.GetFirstInQueue();
+        if (baseUnit != null)
+        {
+            baseUnit.MoveTo(new Vector3(-5, baseUnit.transform.position.y));
+        }
+        else
+        {
+            Debug.Log("no units in queue");
+        }
+    }
+
+    private void WaitingQueue_OnVillagerArrivedAtFrontOfQueue(object sender, System.EventArgs e)
+    {
+        Debug.Log("Unit Arrived In Front of Queue");
+
+    }
+    private void WaitingQueue_OnVillagerAdded(object sender, System.EventArgs e)
+    {
+        Debug.Log("Unit Added To Queue");
+    }
+
 
     private void OnDrawGizmos()
     {

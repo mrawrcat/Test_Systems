@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class TaskTestVillagerAI : MonoBehaviour
 {
+
+    private GatherWaitingQueue gatherWaitingQueue;
+    private ResourceSpawner resourceSpawner;
+    
     private enum State
     {
         WaitingForNextTask,
@@ -35,6 +39,7 @@ public class TaskTestVillagerAI : MonoBehaviour
     {
         this.worker = worker;
         this.taskSystem = taskSystem;
+        resourceSpawner = FindObjectOfType<ResourceSpawner>();
     }
     private void Roam()
     {
@@ -175,13 +180,16 @@ public class TaskTestVillagerAI : MonoBehaviour
         Debug.Log("Execute MoveTo Task");
         worker.MoveTo(new Vector3(moveToPosTask.targetPosition.x, moveToPosTask.targetPosition.y), () => { state = State.WaitingForNextTask; savedTestTask = null; });
     }
-    private void ExecuteTask_TakeResourceToPosition(TaskGameHandler.TestTaskVillager.TakeResourceFromSlotToPosition takeResourceTask)
+    private void ExecuteTask_TakeResourceToPosition(TaskGameHandler.TestTaskVillager.TakeResourceFromSlotToPosition takeResourceTask)//needs to integrate queue system in here
     {
         Debug.Log("Execute Take Resource To Position Task");
         worker.MoveTo(takeResourceTask.resourcePosition, () =>
         {
             takeResourceTask.takeResource(this);
-            worker.MoveTo(takeResourceTask.resourceDepositPosition, () =>
+            //start queueing up here
+            resourceSpawner.DoAddGuest(GetComponent<BaseUnit>());
+            //maybe add code here that when this unit gets to the resourcedepositposition do the dropresource
+            worker.MoveTo(takeResourceTask.resourceDepositPosition, () => 
             {
                 takeResourceTask.dropResource();
                 state = State.WaitingForNextTask;

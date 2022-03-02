@@ -173,7 +173,13 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
     {
         return activeAnimType;
     }
-
+    private enum QueuedState
+    {
+        Idle,
+        InQueue,
+        InBuilding,
+    }
+    private QueuedState queuedState;
     //just make animationType public and move state to another script?
 
     public event EventHandler OnTakeDamage;
@@ -235,6 +241,21 @@ public class BaseUnit : MonoBehaviour, IUnit, IDamagable<int>
         {
             //PlayCharacterAnimation(AnimationType.Idle);
         }
+    }
+
+    public void SetQueuedStateIdle()
+    {
+        queuedState = QueuedState.Idle;
+    }
+
+    public void SetQueuedStateQueued()
+    {
+        queuedState = QueuedState.InQueue;
+    }
+
+    public bool IsQueued()
+    {
+        return queuedState == QueuedState.InQueue;
     }
 
     public bool IsArrivedAtPosition()//for not go to transform
