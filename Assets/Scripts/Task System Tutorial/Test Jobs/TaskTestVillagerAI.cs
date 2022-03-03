@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,6 +22,7 @@ public class TaskTestVillagerAI : MonoBehaviour
     private Vector3 startingPos;
     private Vector3 roamingPos;
     private float nextRoamTime;
+    private TaskGameHandler.TestTaskVillager task;
     private TaskGameHandler.TestTaskVillager savedTestTask;
     public TaskGameHandler.TestTaskVillager GetSavedTestTask()
     {
@@ -32,14 +34,14 @@ public class TaskTestVillagerAI : MonoBehaviour
     }
     private Vector3 GetRoamingPos()
     {
-        return startingPos + GetRandomLR() * Random.Range(-5, 5);
+        return startingPos + GetRandomLR() * UnityEngine.Random.Range(-5, 5);
     }
 
     public void SetUp(IUnit worker, TaskSystem<TaskGameHandler.TestTaskVillager> taskSystem)
     {
         this.worker = worker;
         this.taskSystem = taskSystem;
-        resourceSpawner = FindObjectOfType<ResourceSpawner>();
+        
     }
     private void Roam()
     {
@@ -50,7 +52,7 @@ public class TaskTestVillagerAI : MonoBehaviour
             if (Vector3.Distance(transform.position, roamingPos) < reachedPosDist)
             {
                 roamingPos = GetRoamingPos();
-                float chooseRate = Random.Range(.5f, .8f);
+                float chooseRate = UnityEngine.Random.Range(.5f, .8f);
                 nextRoamTime = Time.time + chooseRate;
             }
 
@@ -60,6 +62,10 @@ public class TaskTestVillagerAI : MonoBehaviour
     private void Start()
     {
         roamingPos = GetRoamingPos();
+        resourceSpawner = FindObjectOfType<ResourceSpawner>();
+        gatherWaitingQueue = resourceSpawner.GetGatherWaitingQueue();
+        gatherWaitingQueue.OnUnitArrivedAtFrontofQueue += GatherWaitingQueue_OnUnitArrivedAtFrontofQueue;
+
     }
     private void Update()
     {
@@ -118,6 +124,12 @@ public class TaskTestVillagerAI : MonoBehaviour
             ExecuteTask_TakeResourceToPosition(savedTestTask as TaskGameHandler.TestTaskVillager.TakeResourceFromSlotToPosition);
             return;
         }
+        if (savedTestTask is TaskGameHandler.TestTaskVillager.DropResourceFromPositionToSlot)
+        {
+            Debug.Log("saved test task = " + GetSavedTestTask());
+            ExecuteTask_DropResourceToPosition(savedTestTask as TaskGameHandler.TestTaskVillager.DropResourceFromPositionToSlot);
+            return;
+        }
         if (savedTestTask is TaskGameHandler.TestTaskVillager.ConvertToArcher)
         {
             ExecuteTask_ConvertToArcher(savedTestTask as TaskGameHandler.TestTaskVillager.ConvertToArcher);
@@ -134,7 +146,7 @@ public class TaskTestVillagerAI : MonoBehaviour
     private void RequestNextTask()
     {
         //Debug.Log("RequestNextTask");
-        TaskGameHandler.TestTaskVillager task = taskSystem.RequestNextTask();
+        task = taskSystem.RequestNextTask();
         if (task == null)
         {
             state = State.WaitingForNextTask;
@@ -155,6 +167,13 @@ public class TaskTestVillagerAI : MonoBehaviour
                 savedTestTask = task;
                 Debug.Log("saved test task = " + GetSavedTestTask());
                 ExecuteTask_TakeResourceToPosition(task as TaskGameHandler.TestTaskVillager.TakeResourceFromSlotToPosition);
+                return;
+            }
+            if (task is TaskGameHandler.TestTaskVillager.DropResourceFromPositionToSlot)
+            {
+                savedTestTask = task;
+                Debug.Log("saved test task = " + GetSavedTestTask());
+                ExecuteTask_DropResourceToPosition(task as TaskGameHandler.TestTaskVillager.DropResourceFromPositionToSlot);
                 return;
             }
             if (task is TaskGameHandler.TestTaskVillager.ConvertToArcher)
@@ -183,19 +202,39 @@ public class TaskTestVillagerAI : MonoBehaviour
     private void ExecuteTask_TakeResourceToPosition(TaskGameHandler.TestTaskVillager.TakeResourceFromSlotToPosition takeResourceTask)//needs to integrate queue system in here
     {
         Debug.Log("Execute Take Resource To Position Task");
+       
         worker.MoveTo(takeResourceTask.resourcePosition, () =>
         {
             takeResourceTask.takeResource(this);
             //start queueing up here
             resourceSpawner.DoAddGuest(GetComponent<BaseUnit>());
             //maybe add code here that when this unit gets to the resourcedepositposition do the dropresource
+            /*
             worker.MoveTo(takeResourceTask.resourceDepositPosition, () => 
             {
                 takeResourceTask.dropResource();
                 state = State.WaitingForNextTask;
             });
+            */
         });
     }
+    private void ExecuteTask_DropResourceToPosition(TaskGameHandler.TestTaskVillager.DropResourceFromPositionToSlot dropResourceTask)//needs to integrate queue system in here
+    {
+        Debug.Log("Execute Drop Resource To Position Task");
+       
+       
+        //maybe add code here that when this unit gets to the resourcedepositposition do the dropresource
+        worker.MoveTo(dropResourceTask.resourceDepositPosition, () => 
+        {
+            dropResourceTask.dropResource();
+            state = State.WaitingForNextTask;
+        });
+        /*
+        */
+        
+    }
+
+    
     private void ExecuteTask_ConvertToArcher(TaskGameHandler.TestTaskVillager.ConvertToArcher convertToArcherTask)
     {
         Debug.Log("Execute Convert To Archer Task");
@@ -206,6 +245,11 @@ public class TaskTestVillagerAI : MonoBehaviour
         Debug.Log("Execute Convert To Builder Task");
         worker.MoveTo(convertToBuilderTask.targetPosition, () => { convertToBuilderTask.convertAction(this); state = State.WaitingForNextTask; });
     }
+    private void GatherWaitingQueue_OnUnitArrivedAtFrontofQueue(object sender, EventArgs e)
+    {
+        Debug.Log("Villager Arrived At Front of Queue");
+    }
 
+    
 
 }

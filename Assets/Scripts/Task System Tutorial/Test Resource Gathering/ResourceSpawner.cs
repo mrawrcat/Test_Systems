@@ -21,6 +21,10 @@ public class ResourceSpawner : MonoBehaviour
     [SerializeField] private float positionSize = 1.5f;
     [SerializeField] private int maxSpots;
     private GatherWaitingQueue gatherWaitingQueue;
+    public GatherWaitingQueue GetGatherWaitingQueue()
+    {
+        return gatherWaitingQueue;
+    }
     private Vector3 firstPos;
     private List<Vector3> gatherWaitingQueuePosList = new List<Vector3>();
 
@@ -34,7 +38,7 @@ public class ResourceSpawner : MonoBehaviour
         finalRandomPos = transform.position + new Vector3(Random.Range(-3, 3), 0);
         firstPos = resourceDepositSlot.GetPosition() + new Vector3(-1,0);
 
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < 2; i++)
         {
             BaseUnit.Create_BaseUnit(transform.position + new Vector3(-20 - i,0), transform.position, BaseUnit.UnitType.Villager);
         }
@@ -44,12 +48,13 @@ public class ResourceSpawner : MonoBehaviour
             gatherWaitingQueuePosList.Add(firstPos - new Vector3(1f, 0) * positionSize * i);
         }
         gatherWaitingQueue = new GatherWaitingQueue(gatherWaitingQueuePosList);
-        gatherWaitingQueue.OnUnitAdded += WaitingQueue_OnVillagerAdded;
-        gatherWaitingQueue.OnUnitArrivedAtFrontofQueue += WaitingQueue_OnVillagerArrivedAtFrontOfQueue;
+        gatherWaitingQueue.OnUnitAdded += GatherWaitingQueue_OnVillagerAdded;
+        gatherWaitingQueue.OnUnitArrivedAtFrontofQueue += GatherWaitingQueue_OnUnitArrivedAtFrontOfQueue;
 
         List<Vector3> DepositSlotPosList = new List<Vector3>() { resourceDepositSlot.GetPosition() };//toilet positions
         //TestBuilding testBuilding = new TestBuilding(waitingQueue, buildingPosList, toiletExit);
-
+        /*
+        */
     }
 
     // Update is called once per frame
@@ -79,7 +84,7 @@ public class ResourceSpawner : MonoBehaviour
     private void SpawnResourceSendTask(Vector3 resourcePos)
     {
         GameObject resourceGameObject = SpawnResourcePFCherry(resourcePos);
-        /*
+
         taskGameHandler.villagerTaskSystem.EnqueueTaskHelper(() => 
         {
             if (resourceDepositSlot.isEmpty())
@@ -95,7 +100,7 @@ public class ResourceSpawner : MonoBehaviour
                         resourceGameObject.transform.SetParent(villagerAI.transform); 
                         resourceGameObject.transform.position = villagerAI.transform.position + new Vector3(0, 2); 
                     },
-                    dropResource = () =>
+                    dropResource = () => //actual action of drop resource
                     {
                         resourceGameObject.transform.SetParent(null);
                         // resourceGameObject.transform.position = resourceDepositSlot.GetPosition();
@@ -109,8 +114,10 @@ public class ResourceSpawner : MonoBehaviour
                 return null;
             }
         });
+        /*
         */
-    }
+
+        }
 
     private void SpawnResourceOnTimer(Vector3 resourcePos)
     {
@@ -171,12 +178,13 @@ public class ResourceSpawner : MonoBehaviour
         }
     }
 
-    private void WaitingQueue_OnVillagerArrivedAtFrontOfQueue(object sender, System.EventArgs e)
+    private void GatherWaitingQueue_OnUnitArrivedAtFrontOfQueue(object sender, System.EventArgs e)
     {
         Debug.Log("Unit Arrived In Front of Queue");
+        
 
     }
-    private void WaitingQueue_OnVillagerAdded(object sender, System.EventArgs e)
+    private void GatherWaitingQueue_OnVillagerAdded(object sender, System.EventArgs e)
     {
         Debug.Log("Unit Added To Queue");
     }

@@ -21,13 +21,13 @@ public class GatherWaitingQueue_AI : MonoBehaviour
         baseUnit.MoveTo(entrancePosition, () =>
         {
             state = State.WaitingInMiddleOfQueue;
-            gatherWaitingQueue.VillagerRequestSetQueuePosition(this);
+            gatherWaitingQueue.UnitRequestSetQueuePosition(this);
         });
     }
 
     public void SetQueuePosition(Vector3 position)
     {
-        baseUnit.MoveTo(position, () => { gatherWaitingQueue.VillagerArrivedAtQueuePosition(this); });
+        baseUnit.MoveTo(position, () => { gatherWaitingQueue.UnitArrivedAtQueuePosition(this); });
     }
 
     public BaseUnit GetUnit()

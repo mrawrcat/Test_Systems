@@ -67,7 +67,7 @@ public class GatherWaitingQueue : MonoBehaviour
             //World_Sprite.Create(entrancePosition, new Vector3(1f, 1f), Color.magenta);
         }
     }
-    public void VillagerRequestSetQueuePosition(GatherWaitingQueue_AI villagerAI)
+    public void UnitRequestSetQueuePosition(GatherWaitingQueue_AI villagerAI)
     {
         for (int i = 0; i < gathererAIList.Count; i++)
         {
@@ -140,7 +140,7 @@ public class GatherWaitingQueue : MonoBehaviour
 
     }
 
-    public void VillagerArrivedAtQueuePosition(GatherWaitingQueue_AI villagerAI)
+    public void UnitArrivedAtQueuePosition(GatherWaitingQueue_AI villagerAI)
     {
 
         if (villagerAI == gathererAIList[0])

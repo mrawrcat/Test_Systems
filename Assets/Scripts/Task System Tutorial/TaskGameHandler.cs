@@ -431,6 +431,13 @@ public class TaskGameHandler : MonoBehaviour
             public Vector3 resourceDepositPosition; //position where worker deposits resource
             public Action dropResource;
         }
+        public class DropResourceFromPositionToSlot : TestTaskVillager
+        {
+            public Vector3 resourcePosition;
+            //public Action<TaskTestVillagerAI> takeResource;
+            public Vector3 resourceDepositPosition; //position where worker deposits resource
+            public Action dropResource;
+        }
         public class ConvertToBuilder : TestTaskVillager
         {
             public Vector3 targetPosition;
