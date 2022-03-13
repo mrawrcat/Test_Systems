@@ -18,7 +18,7 @@ public class GhostTutorialHandler : MonoBehaviour
 
     private GameObject ghostSave;
     private Tutorial_Ghost tutorial_Ghost;
-    private TaskSystem<TaskGameHandler.GhostTask> ghostTaskSytem;
+    private TaskSystem<TaskClasses.GhostTask> ghostTaskSytem;
 
     private bool madeCampfire;
     private bool madeOneArcher;
@@ -28,7 +28,7 @@ public class GhostTutorialHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ghostTaskSytem = new TaskSystem<TaskGameHandler.GhostTask>();
+        ghostTaskSytem = new TaskSystem<TaskClasses.GhostTask>();
         GameObject spawnedWorker = Instantiate(ghost);
         spawnedWorker.transform.position = player.transform.position + new Vector3(3, 0); //ghost in kingdom spawns at monument which you have to pass
         spawnedWorker.GetComponent<GhostTutorial_TaskSystemAI>().SetUp(spawnedWorker.GetComponent<Tutorial_Ghost>(), ghostTaskSytem);
@@ -53,19 +53,19 @@ public class GhostTutorialHandler : MonoBehaviour
     {
         Debug.Log("Ghost touched player from handler");
        
-        TaskGameHandler.GhostTask task = new TaskGameHandler.GhostTask.MoveToPosition { targetPosition = new Vector3(townCenter.position.x + 2f, -3f) };
+        TaskClasses.GhostTask task = new TaskClasses.GhostTask.MoveToPosition { targetPosition = new Vector3(townCenter.position.x + 2f, -3f) };
         ghostTaskSytem.AddTask(task);
         tutorial_Ghost.onPlayerTriggerEnter -= ghost_Touched_Player_Event; //finished tutorial so dont have to touch ghost anymore so unsubscribe to event
            
         /*
         if (!madeOneArcher)
         {
-            TaskGameHandler.GhostTask task = new TaskGameHandler.GhostTask.MoveToPosition { targetPosition = new Vector3(archerStation.position.x +2f, -3f) };
+            TaskClasses.GhostTask task = new TaskClasses.GhostTask.MoveToPosition { targetPosition = new Vector3(archerStation.position.x +2f, -3f) };
             ghostTaskSytem.AddTask(task);
         }
         else if (!madeOneBuilder)
         {
-            TaskGameHandler.GhostTask task = new TaskGameHandler.GhostTask.MoveToPosition { targetPosition = new Vector3(builderStation.position.x + 2f, -3f) };
+            TaskClasses.GhostTask task = new TaskClasses.GhostTask.MoveToPosition { targetPosition = new Vector3(builderStation.position.x + 2f, -3f) };
             ghostTaskSytem.AddTask(task);
         }
         */
@@ -75,13 +75,13 @@ public class GhostTutorialHandler : MonoBehaviour
     private void On_Made_Campfire_Event(object sender, EventArgs e)
     {
         //go to player? direct him to archer station?
-        TaskGameHandler.GhostTask task = new TaskGameHandler.GhostTask.MoveToPosition { targetPosition = new Vector3(archerStation.position.x + 2f, -3f) };
+        TaskClasses.GhostTask task = new TaskClasses.GhostTask.MoveToPosition { targetPosition = new Vector3(archerStation.position.x + 2f, -3f) };
         ghostTaskSytem.AddTask(task);
     }
     private void On_Made_Archer_Event(object sender, EventArgs e)
     {
         //go to player? direct him to builder station?
-        TaskGameHandler.GhostTask task = new TaskGameHandler.GhostTask.MoveToPosition { targetPosition = new Vector3(builderStation.position.x + 2f, -3f) };
+        TaskClasses.GhostTask task = new TaskClasses.GhostTask.MoveToPosition { targetPosition = new Vector3(builderStation.position.x + 2f, -3f) };
         ghostTaskSytem.AddTask(task);
     }
     private void On_Made_Builder_Event(object sender, EventArgs e)

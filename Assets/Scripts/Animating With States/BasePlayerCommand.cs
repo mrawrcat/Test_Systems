@@ -47,7 +47,7 @@ public class BasePlayerCommand : MonoBehaviour
                 }
             }
             //villagerAI.GetComponent<BaseUnit>().MoveTo(new Vector3(-10, -3), () => { villagerAI.SetBackToWaiting(); });
-            TaskGameHandler.TestTaskVillager directTask = new TaskGameHandler.TestTaskVillager.MoveToPosition
+            TaskClasses.TestTaskVillager directTask = new TaskClasses.TestTaskVillager.MoveToPosition
             {
                 targetPosition = new Vector3(-10,-3)
             };

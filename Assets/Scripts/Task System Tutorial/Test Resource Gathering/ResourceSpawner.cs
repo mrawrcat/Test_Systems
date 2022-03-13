@@ -11,15 +11,22 @@ public class ResourceSpawner : MonoBehaviour
     [SerializeField] private LayerMask whatIsResource;
     [SerializeField] private int maxResourceContain;
     [SerializeField] private float spawnRate;
+    [SerializeField] private int Num_Of_Units_To_Create_At_Start;
     private float nextSpawnTime;
     private Vector3 finalRandomPos;
+
+    private float waitingTimer;
+
     private TaskGameHandler taskGameHandler;
     private TaskGameHandler.DepositSlot resourceDepositSlot;
-
+    public TaskGameHandler.DepositSlot GetResourceDepositSlot()
+    {
+        return resourceDepositSlot;
+    }
     [Header("Queue Stuff")]
     //[SerializeField] private Transform QueueStartTransform;
     [SerializeField] private float positionSize = 1.5f;
-    [SerializeField] private int maxSpots;
+    [SerializeField] private int maxSpots = 5; //spots should be more or equal to num of units to create at start to prevent bugs for now
     private GatherWaitingQueue gatherWaitingQueue;
     public GatherWaitingQueue GetGatherWaitingQueue()
     {
@@ -28,19 +35,59 @@ public class ResourceSpawner : MonoBehaviour
     private Vector3 firstPos;
     private List<Vector3> gatherWaitingQueuePosList = new List<Vector3>();
 
+    public Vector3 GetPosition()
+    {
+        return transform.position;
+    }
+    private static List<ResourceSpawner> activeResourceSpawnerList;
+    public static ResourceSpawner GetClosestResourceSpawner(Vector3 position, float maxRange)//maybe dont need the maxRange because want to detect all spawners?
+    {
+        ResourceSpawner closest = null;
+        foreach (ResourceSpawner spawner in activeResourceSpawnerList)
+        {
+            if (Vector3.Distance(position, spawner.GetPosition()) <= maxRange)
+            {
+                if (closest == null)
+                {
+                    closest = spawner;
+                }
+                else
+                {
+                    float currentClosest = Vector3.Distance(position, closest.transform.position);
+                    float currentChecking = Vector3.Distance(position, spawner.transform.position);
+                    if (currentChecking < currentClosest)
+                    {
+                        closest = spawner;
+                    }
+                }
+            }
+
+        }
+        return closest;
+    }
+
+    private void Awake()
+    {
+        if (activeResourceSpawnerList == null)
+        {
+            activeResourceSpawnerList = new List<ResourceSpawner>();
+        }
+        activeResourceSpawnerList.Add(this);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         taskGameHandler = FindObjectOfType<TaskGameHandler>();
-        GameObject depositSlotObj = SpawnDepositSlot(transform.position + new Vector3(10,0));
-        resourceDepositSlot = new TaskGameHandler.DepositSlot(depositSlotObj.transform);
+        GameObject depositSlotObj = SpawnDepositSlot(transform.position + new Vector3(15, -1));
+        resourceDepositSlot = new TaskGameHandler.DepositSlot(depositSlotObj.transform, gatherWaitingQueue);
         nextSpawnTime = spawnRate;
         finalRandomPos = transform.position + new Vector3(Random.Range(-3, 3), 0);
-        firstPos = resourceDepositSlot.GetPosition() + new Vector3(-1,0);
+        firstPos = resourceDepositSlot.GetPosition() + new Vector3(-1.5f, 0); //front of line i think, no need to touch y here
 
-        for(int i = 0; i < 2; i++)
+        for(int i = 0; i < Num_Of_Units_To_Create_At_Start; i++)
         {
-            BaseUnit.Create_BaseUnit(transform.position + new Vector3(-20 - i,0), transform.position, BaseUnit.UnitType.Villager);
+            BaseUnit.Create_BaseUnit(transform.position + new Vector3(-20 - i, 0), transform.position, BaseUnit.UnitType.Villager);
         }
 
         for (int i = 0; i < maxSpots; i++)
@@ -51,7 +98,9 @@ public class ResourceSpawner : MonoBehaviour
         gatherWaitingQueue.OnUnitAdded += GatherWaitingQueue_OnVillagerAdded;
         gatherWaitingQueue.OnUnitArrivedAtFrontofQueue += GatherWaitingQueue_OnUnitArrivedAtFrontOfQueue;
 
-        List<Vector3> DepositSlotPosList = new List<Vector3>() { resourceDepositSlot.GetPosition() };//toilet positions
+        List<Vector3> DepositSlotPosList = new List<Vector3>() { resourceDepositSlot.GetPosition() };//deposit slot/box positions
+        GatherWaitingQueueDeposit depositBuilding = new GatherWaitingQueueDeposit(gatherWaitingQueue, DepositSlotPosList, resourceDepositSlot.GetPosition() + new Vector3(3, 0), this);
+        Debug.Log("Deposit Slot List: " + DepositSlotPosList);
         //TestBuilding testBuilding = new TestBuilding(waitingQueue, buildingPosList, toiletExit);
         /*
         */
@@ -61,12 +110,24 @@ public class ResourceSpawner : MonoBehaviour
     void Update()
     {
         SpawnResourceOnTimer(transform.position);
+
+        waitingTimer -= Time.deltaTime;
+        if (waitingTimer <= 0)
+        {
+            float waitingTimerMax = .2f;
+            //resourceDepositSlot.CallNextFirstInLine();
+            
+            Debug.Log("someone waiting in front of line");
+            
+            waitingTimer = waitingTimerMax;
+        }
     }
     private GameObject SpawnResourcePFCherry(Vector3 position) //resources need a collider so that resource spawner can detect them
     {
         GameObject gameObject = new GameObject("PFCherry", typeof(SpriteRenderer));
         gameObject.GetComponent<SpriteRenderer>().sprite = PFCherrySprite;
-        gameObject.layer = LayerMask.NameToLayer("CherryResource");
+        gameObject.layer = LayerMask.NameToLayer("Resource");
+        gameObject.AddComponent<ResourceObject>();
         gameObject.AddComponent<CircleCollider2D>();
         gameObject.GetComponent<CircleCollider2D>().isTrigger = true;
         gameObject.transform.position = position;
@@ -87,32 +148,18 @@ public class ResourceSpawner : MonoBehaviour
 
         taskGameHandler.villagerTaskSystem.EnqueueTaskHelper(() => 
         {
-            if (resourceDepositSlot.isEmpty())
+            //resourceDepositSlot.SetDepositIncoming(true);
+            TaskClasses.TestTaskVillager gatherTask = new TaskClasses.TestTaskVillager.TakeResourceFromSlotToPosition
             {
-                resourceDepositSlot.SetDepositIncoming(true);
-
-                TaskGameHandler.TestTaskVillager gatherTask = new TaskGameHandler.TestTaskVillager.TakeResourceFromSlotToPosition
-                {
-                    resourcePosition = resourceGameObject.transform.position,
-                    resourceDepositPosition = resourceDepositSlot.GetPosition(),
-                    takeResource = (TaskTestVillagerAI villagerAI) => 
-                    { 
-                        resourceGameObject.transform.SetParent(villagerAI.transform); 
-                        resourceGameObject.transform.position = villagerAI.transform.position + new Vector3(0, 2); 
-                    },
-                    dropResource = () => //actual action of drop resource
-                    {
-                        resourceGameObject.transform.SetParent(null);
-                        // resourceGameObject.transform.position = resourceDepositSlot.GetPosition();
-                        resourceDepositSlot.SetDepositTransform(resourceGameObject.transform);
-                    },
-                };
-                return gatherTask;
-            }
-            else
-            {
-                return null;
-            }
+                resourcePosition = resourceGameObject.transform.position,
+                //resourceDepositPosition = resourceDepositSlot.GetPosition(),
+                takeResource = (TaskTestVillagerAI villagerAI) => 
+                { 
+                    resourceGameObject.transform.SetParent(villagerAI.transform); 
+                    resourceGameObject.transform.position = villagerAI.transform.position + new Vector3(0, 1); 
+                },
+            };
+            return gatherTask;
         });
         /*
         */
@@ -121,8 +168,8 @@ public class ResourceSpawner : MonoBehaviour
 
     private void SpawnResourceOnTimer(Vector3 resourcePos)
     {
-        Collider2D[] resources = Physics2D.OverlapBoxAll(transform.position, detectSize, 0, whatIsResource);//resources dont have collider so it doesnt detect
-        Debug.Log("amount of resources in detect: " + resources.Length);
+        Collider2D[] resources = Physics2D.OverlapBoxAll(transform.position, detectSize, 0, whatIsResource);
+        //Debug.Log("amount of resources in detect: " + resources.Length);
         if(resources.Length < maxResourceContain)
         {
             nextSpawnTime -= Time.deltaTime;
@@ -135,7 +182,7 @@ public class ResourceSpawner : MonoBehaviour
                         if(resource.transform.position == finalRandomPos)
                         {
                             finalRandomPos = resourcePos + new Vector3(Random.Range(-3, 3), 0);
-                            Debug.Log("current final random Pos" + finalRandomPos);
+                            //Debug.Log("current final random Pos" + finalRandomPos);
                         }
                         else
                         {
@@ -159,9 +206,9 @@ public class ResourceSpawner : MonoBehaviour
     }
     public void DoAddGuest(BaseUnit baseUnit)
     {
-        if (gatherWaitingQueue.CanAddUnit())
+        if (gatherWaitingQueue.CanAddVillager())
         {
-            gatherWaitingQueue.AddUnit(baseUnit);
+            gatherWaitingQueue.AddVillager(baseUnit);
         }
     }
 
@@ -181,8 +228,6 @@ public class ResourceSpawner : MonoBehaviour
     private void GatherWaitingQueue_OnUnitArrivedAtFrontOfQueue(object sender, System.EventArgs e)
     {
         Debug.Log("Unit Arrived In Front of Queue");
-        
-
     }
     private void GatherWaitingQueue_OnVillagerAdded(object sender, System.EventArgs e)
     {

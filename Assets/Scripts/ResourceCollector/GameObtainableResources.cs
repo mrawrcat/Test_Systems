@@ -11,6 +11,7 @@ public static class GameObtainableResources
     {
         Gold,
         Wood,
+        Cherry,
     }
 
     private static Dictionary<ResourceType, int> resourceAmountDictionary;

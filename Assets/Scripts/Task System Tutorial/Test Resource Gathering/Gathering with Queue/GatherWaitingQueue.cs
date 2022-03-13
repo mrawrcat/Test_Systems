@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using CodeMonkey.Utils;
 
-public class GatherWaitingQueue : MonoBehaviour
+public class GatherWaitingQueue
 {
     public event EventHandler OnUnitAdded;
     public event EventHandler OnUnitArrivedAtFrontofQueue;
@@ -17,25 +17,26 @@ public class GatherWaitingQueue : MonoBehaviour
     {
         this.positionList = positionList;
         CalculateEntrancePosition();
-        /*
+        
         foreach (Vector3 position in positionList)
         {
             World_Sprite.Create(position, new Vector3(1f, 1f), Color.green);
         }
         World_Sprite.Create(entrancePosition, new Vector3(1f, 1f), Color.magenta);
-        */
+        
         gathererAIList = new List<GatherWaitingQueue_AI>();
     }
-    public bool CanAddUnit()
+    
+    public bool CanAddVillager()
     {
         return gathererAIList.Count < positionList.Count;
     }
-
+    
 
     public void AddPosition(Vector3 position)
     {
         positionList.Add(position);
-        //World_Sprite.Create(position, new Vector3(1f, 1f), Color.green);
+        World_Sprite.Create(position, new Vector3(1f, 1f), Color.green);
         CalculateEntrancePosition();
     }
 
@@ -58,16 +59,18 @@ public class GatherWaitingQueue : MonoBehaviour
         if (positionList.Count < 1)
         {
             entrancePosition = positionList[positionList.Count - 1] + new Vector3(gapWidth, 0);
-            //World_Sprite.Create(entrancePosition, new Vector3(1f, 1f), Color.magenta);
+            World_Sprite.Create(entrancePosition, new Vector3(1f, 1f), Color.magenta);
         }
         else
         {
             Vector3 dir = positionList[positionList.Count - 1] - positionList[positionList.Count - 2];
             entrancePosition = positionList[positionList.Count - 1] + dir;
-            //World_Sprite.Create(entrancePosition, new Vector3(1f, 1f), Color.magenta);
+            World_Sprite.Create(entrancePosition, new Vector3(1f, 1f), Color.magenta);
         }
     }
-    public void UnitRequestSetQueuePosition(GatherWaitingQueue_AI villagerAI)
+
+    
+    public void VillagerRequestSetQueuePosition(GatherWaitingQueue_AI villagerAI)
     {
         for (int i = 0; i < gathererAIList.Count; i++)
         {
@@ -87,8 +90,9 @@ public class GatherWaitingQueue : MonoBehaviour
         }
         villagerAI.SetQueuePosition(positionList[gathererAIList.IndexOf(villagerAI)]);
     }
-
-    public void AddUnit(BaseUnit villagerObj)//cant check if villager is in queue now because dont know how to check if contains
+    
+    
+    public void AddVillager(BaseUnit villagerObj)//cant check if villager is in queue now because dont know how to check if contains
     {
         if (!villagerObj.IsQueued())
         {
@@ -99,7 +103,7 @@ public class GatherWaitingQueue : MonoBehaviour
         {
             Debug.Log("villager already in Queue");
         }
-        Debug.Log(gathererAIList.Count);
+        //Debug.Log(gathererAIList.Count);
 
         OnUnitAdded?.Invoke(this, EventArgs.Empty);
 
@@ -107,7 +111,7 @@ public class GatherWaitingQueue : MonoBehaviour
         //villagerAI.SetQueuePosition(positionList[villagerAIList.IndexOf(villagerAI)]);
         //villagerObj.MoveTo(entrancePosition, () => { villagerObj.MoveTo(positionList[villagerAIList.IndexOf(villagerObj)], () => { VillagerArrivedAtQueuePosition(villagerObj); }); });
     }
-
+    
     public BaseUnit GetFirstInQueue()
     {
         if (gathererAIList.Count == 0)
@@ -119,13 +123,13 @@ public class GatherWaitingQueue : MonoBehaviour
             BaseUnit baseUnit = gathererAIList[0].GetUnit();
             gathererAIList.RemoveAt(0);
             //villager.SetQueuedStateIdle();//for now set to idle here because dont have building to send to
-            RelocateAllRalliedVillagers();
+            RelocateAllQueuedVillagers();
             return baseUnit;
         }
     }
 
 
-    private void RelocateAllRalliedVillagers()
+    private void RelocateAllQueuedVillagers()
     {
 
         for (int i = 0; i < gathererAIList.Count; i++)
@@ -140,19 +144,20 @@ public class GatherWaitingQueue : MonoBehaviour
 
     }
 
-    public void UnitArrivedAtQueuePosition(GatherWaitingQueue_AI villagerAI)
+    
+    public void VillagerArrivedAtQueuePosition(GatherWaitingQueue_AI villagerAI)
     {
-
         if (villagerAI == gathererAIList[0])
         {
             OnUnitArrivedAtFrontofQueue?.Invoke(this, EventArgs.Empty);
         }
 
     }
+    
 
-    public int GetCurrentListCount()
+    public int GetCurrentVillagerListCount()
     {
         return gathererAIList.Count;
     }
-
+    
 }

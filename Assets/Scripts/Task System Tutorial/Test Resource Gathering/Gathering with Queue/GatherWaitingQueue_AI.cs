@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GatherWaitingQueue_AI : MonoBehaviour
+public class GatherWaitingQueue_AI
 {
     private enum State
     {
@@ -18,16 +18,16 @@ public class GatherWaitingQueue_AI : MonoBehaviour
         this.baseUnit = baseUnit;
         baseUnit.SetQueuedStateQueued();
         state = State.GoingToEntrance;
-        baseUnit.MoveTo(entrancePosition, () =>
+        baseUnit.MoveTo(new Vector3(entrancePosition.x, 0), () =>
         {
             state = State.WaitingInMiddleOfQueue;
-            gatherWaitingQueue.UnitRequestSetQueuePosition(this);
+            gatherWaitingQueue.VillagerRequestSetQueuePosition(this);
         });
     }
 
     public void SetQueuePosition(Vector3 position)
     {
-        baseUnit.MoveTo(position, () => { gatherWaitingQueue.UnitArrivedAtQueuePosition(this); });
+        baseUnit.MoveTo(new Vector3(position.x,0), () => { gatherWaitingQueue.VillagerArrivedAtQueuePosition(this); });
     }
 
     public BaseUnit GetUnit()

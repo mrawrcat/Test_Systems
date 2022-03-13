@@ -10,12 +10,12 @@ public class GhostTutorial_TaskSystemAI : MonoBehaviour
         ExecutingTask,
     }
     private IWorker worker;
-    private TaskSystem<TaskGameHandler.GhostTask> taskSystem;
+    private TaskSystem<TaskClasses.GhostTask> taskSystem;
     private State state;
     private float waitingTimer;
 
 
-    public void SetUp(IWorker worker, TaskSystem<TaskGameHandler.GhostTask> taskSystem)
+    public void SetUp(IWorker worker, TaskSystem<TaskClasses.GhostTask> taskSystem)
     {
         this.worker = worker;
         this.taskSystem = taskSystem;
@@ -45,7 +45,7 @@ public class GhostTutorial_TaskSystemAI : MonoBehaviour
     private void RequestNextTask()
     {
         //Debug.Log("RequestNextTask");
-        TaskGameHandler.GhostTask task = taskSystem.RequestNextTask();
+        TaskClasses.GhostTask task = taskSystem.RequestNextTask();
         if (task == null)
         {
             state = State.WaitingForNextTask;
@@ -53,15 +53,15 @@ public class GhostTutorial_TaskSystemAI : MonoBehaviour
         else
         {
             state = State.ExecutingTask;
-            if (task is TaskGameHandler.GhostTask.MoveToPosition)
+            if (task is TaskClasses.GhostTask.MoveToPosition)
             {
-                ExecuteTask_MoveToPosition(task as TaskGameHandler.GhostTask.MoveToPosition);
+                ExecuteTask_MoveToPosition(task as TaskClasses.GhostTask.MoveToPosition);
                 return;
             }
         }
     }
 
-    private void ExecuteTask_MoveToPosition(TaskGameHandler.GhostTask.MoveToPosition moveToPosTask)
+    private void ExecuteTask_MoveToPosition(TaskClasses.GhostTask.MoveToPosition moveToPosTask)
     {
         Debug.Log("Execute MoveTo Task");
         worker.MoveTo(new Vector3(moveToPosTask.targetPosition.x, moveToPosTask.targetPosition.y), () => { state = State.WaitingForNextTask; });

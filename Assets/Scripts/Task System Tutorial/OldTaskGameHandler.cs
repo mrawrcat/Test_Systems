@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using CodeMonkey.Utils;
 
-public class TaskGameHandler : MonoBehaviour
+public class OldTaskGameHandler : MonoBehaviour
 {
     private TaskSystem<Task> taskSystem;
     public TaskSystem<TransporterTask> transporterTaskSystem;
@@ -200,7 +200,7 @@ public class TaskGameHandler : MonoBehaviour
                 { 
                     convertTaskWorkerAI.GetComponent<TaskWorkerAI>().enabled = false; 
                     convertTaskWorkerAI.GetComponent<Transporter_TaskWorkerAI>().enabled = true;
-                    convertTaskWorkerAI.GetComponent<Transporter_TaskWorkerAI>().SetUp(convertTaskWorkerAI.GetComponent<Worker>(), transporterTaskSystem);
+                    //convertTaskWorkerAI.GetComponent<Transporter_TaskWorkerAI>().SetUp(convertTaskWorkerAI.GetComponent<Worker>(), transporterTaskSystem);
                 },
             };
             return task;

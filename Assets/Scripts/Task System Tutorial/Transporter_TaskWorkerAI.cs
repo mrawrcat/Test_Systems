@@ -10,12 +10,12 @@ public class Transporter_TaskWorkerAI : MonoBehaviour
         ExecutingTask,
     }
     private IWorker worker;
-    private TaskSystem<TaskGameHandler.TransporterTask> taskSystem;
+    private TaskSystem<TaskClasses.TransporterTask> taskSystem;
     private State state;
     private float waitingTimer;
 
     
-    public void SetUp(IWorker worker, TaskSystem<TaskGameHandler.TransporterTask> taskSystem)
+    public void SetUp(IWorker worker, TaskSystem<TaskClasses.TransporterTask> taskSystem)
     {
         this.worker = worker;
         this.taskSystem = taskSystem;
@@ -45,7 +45,7 @@ public class Transporter_TaskWorkerAI : MonoBehaviour
     private void RequestNextTask()
     {
         //Debug.Log("RequestNextTask");
-        TaskGameHandler.TransporterTask task = taskSystem.RequestNextTask();
+        TaskClasses.TransporterTask task = taskSystem.RequestNextTask();
         if(task == null)
         {
             state = State.WaitingForNextTask;
@@ -53,14 +53,14 @@ public class Transporter_TaskWorkerAI : MonoBehaviour
         else
         {
             state = State.ExecutingTask;
-            if (task is TaskGameHandler.TransporterTask.MoveToPosition)
+            if (task is TaskClasses.TransporterTask.MoveToPosition)
             {
-                ExecuteTask_MoveToPosition(task as TaskGameHandler.TransporterTask.MoveToPosition);
+                ExecuteTask_MoveToPosition(task as TaskClasses.TransporterTask.MoveToPosition);
                 return;
             }
-            if (task is TaskGameHandler.TransporterTask.TakeWeaponFromSlotToPosition)
+            if (task is TaskClasses.TransporterTask.TakeWeaponFromSlotToPosition)
             {
-                ExecuteTask_TakeResourceToPosition(task as TaskGameHandler.TransporterTask.TakeWeaponFromSlotToPosition);
+                ExecuteTask_TakeResourceToPosition(task as TaskClasses.TransporterTask.TakeWeaponFromSlotToPosition);
                 return;
             }
 
@@ -68,13 +68,13 @@ public class Transporter_TaskWorkerAI : MonoBehaviour
         }
     }
 
-    private void ExecuteTask_MoveToPosition(TaskGameHandler.TransporterTask.MoveToPosition moveToPosTask)
+    private void ExecuteTask_MoveToPosition(TaskClasses.TransporterTask.MoveToPosition moveToPosTask)
     {
         Debug.Log("Execute MoveTo Task");
         worker.MoveTo(new Vector3(moveToPosTask.targetPosition.x, moveToPosTask.targetPosition.y), () => { state = State.WaitingForNextTask; });
     }
 
-    private void ExecuteTask_TakeResourceToPosition(TaskGameHandler.TransporterTask.TakeWeaponFromSlotToPosition takeResourceTask)
+    private void ExecuteTask_TakeResourceToPosition(TaskClasses.TransporterTask.TakeWeaponFromSlotToPosition takeResourceTask)
     {
         Debug.Log("Execute Take Resource To Position Task");
         worker.MoveTo(takeResourceTask.resourcePosition, () => 

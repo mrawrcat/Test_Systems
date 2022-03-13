@@ -11,17 +11,17 @@ public class TaskTestNewWorkerAI : MonoBehaviour
         TemporaryDontWaitNextTask,
     }
     private IUnit worker;
-    private TaskSystem<TaskGameHandler.TestTask> taskSystem;
+    private TaskSystem<TaskClasses.TestTask> taskSystem;
     [SerializeField] private State state;
     private float waitingTimer;
-    private TaskGameHandler.TestTask savedTestTask;
-    public TaskGameHandler.TestTask GetSavedTestTask()
+    private TaskClasses.TestTask savedTestTask;
+    public TaskClasses.TestTask GetSavedTestTask()
     {
         return savedTestTask;
     }
 
 
-    public void SetUp(IUnit worker, TaskSystem<TaskGameHandler.TestTask> taskSystem)
+    public void SetUp(IUnit worker, TaskSystem<TaskClasses.TestTask> taskSystem)
     {
         this.worker = worker;
         this.taskSystem = taskSystem;
@@ -60,19 +60,19 @@ public class TaskTestNewWorkerAI : MonoBehaviour
     public void DoSavedTask()
     {
         state = State.ExecutingTask;
-        if (savedTestTask is TaskGameHandler.TestTask.MoveToPosition)
+        if (savedTestTask is TaskClasses.TestTask.MoveToPosition)
         {
-            ExecuteTask_MoveToPosition(savedTestTask as TaskGameHandler.TestTask.MoveToPosition);
+            ExecuteTask_MoveToPosition(savedTestTask as TaskClasses.TestTask.MoveToPosition);
             return;
         }
-        if (savedTestTask is TaskGameHandler.TestTask.MoveToPositionThenDie)
+        if (savedTestTask is TaskClasses.TestTask.MoveToPositionThenDie)
         {
-            ExecuteTask_MoveToPositionThenDie(savedTestTask as TaskGameHandler.TestTask.MoveToPositionThenDie);
+            ExecuteTask_MoveToPositionThenDie(savedTestTask as TaskClasses.TestTask.MoveToPositionThenDie);
             return;
         }
-        if (savedTestTask is TaskGameHandler.TestTask.StopAndAttack)
+        if (savedTestTask is TaskClasses.TestTask.StopAndAttack)
         {
-            ExecuteTask_StopAndAttack(savedTestTask as TaskGameHandler.TestTask.StopAndAttack);
+            ExecuteTask_StopAndAttack(savedTestTask as TaskClasses.TestTask.StopAndAttack);
             return;
         }
         savedTestTask = null;
@@ -81,7 +81,7 @@ public class TaskTestNewWorkerAI : MonoBehaviour
     private void RequestNextTask()
     {
         //Debug.Log("RequestNextTask");
-        TaskGameHandler.TestTask task = taskSystem.RequestNextTask();
+        TaskClasses.TestTask task = taskSystem.RequestNextTask();
         if (task == null)
         {
             state = State.WaitingForNextTask;
@@ -90,25 +90,25 @@ public class TaskTestNewWorkerAI : MonoBehaviour
         else
         {
             state = State.ExecutingTask;
-            if (task is TaskGameHandler.TestTask.MoveToPosition)
+            if (task is TaskClasses.TestTask.MoveToPosition)
             {
                 savedTestTask = task;
                 Debug.Log("saved test task = " + GetSavedTestTask());
-                ExecuteTask_MoveToPosition(task as TaskGameHandler.TestTask.MoveToPosition);
+                ExecuteTask_MoveToPosition(task as TaskClasses.TestTask.MoveToPosition);
                 return;
             }
-            if (task is TaskGameHandler.TestTask.MoveToPositionThenDie)
+            if (task is TaskClasses.TestTask.MoveToPositionThenDie)
             {
                 savedTestTask = task;
                 Debug.Log("saved test task = " + GetSavedTestTask());
-                ExecuteTask_MoveToPositionThenDie(task as TaskGameHandler.TestTask.MoveToPositionThenDie);
+                ExecuteTask_MoveToPositionThenDie(task as TaskClasses.TestTask.MoveToPositionThenDie);
                 return;
             }
-            if (task is TaskGameHandler.TestTask.StopAndAttack)
+            if (task is TaskClasses.TestTask.StopAndAttack)
             {
                 savedTestTask = task;
                 Debug.Log("saved test task = " + GetSavedTestTask());
-                ExecuteTask_StopAndAttack(task as TaskGameHandler.TestTask.StopAndAttack);
+                ExecuteTask_StopAndAttack(task as TaskClasses.TestTask.StopAndAttack);
                 return;
             }
 
@@ -116,17 +116,17 @@ public class TaskTestNewWorkerAI : MonoBehaviour
         }
     }
 
-    private void ExecuteTask_MoveToPosition(TaskGameHandler.TestTask.MoveToPosition moveToPosTask)
+    private void ExecuteTask_MoveToPosition(TaskClasses.TestTask.MoveToPosition moveToPosTask)
     {
         Debug.Log("Execute MoveTo Task");
         worker.MoveTo(new Vector3(moveToPosTask.targetPosition.x, moveToPosTask.targetPosition.y), () => { state = State.WaitingForNextTask; savedTestTask = null; });
     }
-    private void ExecuteTask_MoveToPositionThenDie(TaskGameHandler.TestTask.MoveToPositionThenDie moveToPosThenDieTask)
+    private void ExecuteTask_MoveToPositionThenDie(TaskClasses.TestTask.MoveToPositionThenDie moveToPosThenDieTask)
     {
         Debug.Log("Execute MoveToAndDie Task");
         worker.MoveTo(new Vector3(moveToPosThenDieTask.targetPosition.x, moveToPosThenDieTask.targetPosition.y), () => { moveToPosThenDieTask.DieAction(this); state = State.WaitingForNextTask; savedTestTask = null; });
     } 
-    private void ExecuteTask_StopAndAttack(TaskGameHandler.TestTask.StopAndAttack stopAndAttackTask)
+    private void ExecuteTask_StopAndAttack(TaskClasses.TestTask.StopAndAttack stopAndAttackTask)
     {
         Debug.Log("Execute Stop And Attack Task");
         worker.MoveTo(transform.position, () => { stopAndAttackTask.AttackAction(this); state = State.WaitingForNextTask; savedTestTask = null; });

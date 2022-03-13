@@ -30,7 +30,7 @@ public class RallyVillagers : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            //RallySkill();
+            RallySkill();
         }
 
         if (Input.GetKeyDown(KeyCode.E))
@@ -39,31 +39,29 @@ public class RallyVillagers : MonoBehaviour
             //testHandler.SendGuest();
         }
         foundVillager = Physics2D.OverlapCircle((Vector2)atkPos.position, circleSize, 0, whatIsVillager);
-        Collider2D[] villagers = Physics2D.OverlapCircleAll((Vector2)atkPos.position, circleSize, 0, whatIsVillager);
+        //Collider2D[] villagers = Physics2D.OverlapCircleAll((Vector2)atkPos.position, circleSize, 0, whatIsVillager);
         if (foundVillager)
         {
             Debug.Log("follower in circle");
         }
+        
     }
 
-    /*
     private void RallySkill()
     {
         //foundVillager = Physics2D.OverlapBox((Vector2)atkPos.position, atkBoxSize, 0, whatIsVillager);
-        //Collider2D[] villagers = Physics2D.OverlapBoxAll((Vector2)atkPos.position, atkBoxSize, 0, whatIsVillager);
-        if (foundVillager)
+        Collider2D[] villagers = Physics2D.OverlapBoxAll((Vector2)atkPos.position, atkBoxSize, 0, whatIsVillager);
+        foreach (Collider2D villager in villagers)
         {
-            //Debug.Log(villagers.Length);
-            foreach (Collider2D villager in villagers)
-            {
-                //villager.GetComponent<Villager>().SetStateToFollow();
-                //gameHandler.DoAddGuest(villager.GetComponent<Villager>());
-                //testHandler.DoAddGuest(villager.GetComponent<Villager>());
-                //orbitHandler.DoAddGuest(villager.GetComponent<Follower>());
-                Debug.Log("found follwer");
-            }
+            //villager.GetComponent<Villager>().SetStateToFollow();
+            gameHandler.DoAddGuest(villager.GetComponent<Villager>());
+            //testHandler.DoAddGuest(villager.GetComponent<Villager>());
+            //orbitHandler.DoAddGuest(villager.GetComponent<Follower>());
+            Debug.Log("found follwer");
+            return;
         }
     }
+    /*
     */
 
     void OnDrawGizmos()
