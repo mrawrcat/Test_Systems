@@ -5,12 +5,25 @@ using UnityEngine;
 
 public class BaseEnemy : MonoBehaviour, IEnemy_Unit, IDmg_By_Ally<int>
 {
-    public static void Create_BaseUnit(Vector3 spawnPos, Vector3 targetPos)
+    public static void Create_BaseUnit(Vector3 spawnPos, Vector3 targetPos, bool moveWhenSpawn = false)
     {
         Transform baseEnemyTransform = Instantiate(GameResources.instance.Bandit, spawnPos, Quaternion.identity);
         BaseEnemy baseEnemy = baseEnemyTransform.GetComponent<BaseEnemy>();
-        baseEnemy.SetUp(targetPos);
+        baseEnemy.SetUp(targetPos, moveWhenSpawn);
     }
+
+    private void SetUp(Vector3 spawnMoveToPos, bool moveWhenSpawn = false)
+    {
+        if (moveWhenSpawn)
+        {
+            currentPos = spawnMoveToPos;
+        }
+        else
+        {
+            currentPos = transform.position;
+        }
+    }
+
 
     private static List<BaseEnemy> activeBaseEnemyList;
 
@@ -74,12 +87,6 @@ public class BaseEnemy : MonoBehaviour, IEnemy_Unit, IDmg_By_Ally<int>
     [SerializeField] private Coroutine _currentRoutine;
     [SerializeField] private Coroutine _animationRoutine;
     private bool faceR = false;
-   
-
-    private void SetUp(Vector3 targetPos)
-    {
-        this.currentPos = targetPos;
-    }
 
     private void Awake()
     {
